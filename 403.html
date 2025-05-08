@@ -33,6 +33,19 @@
       color: #888;
       background-color: #ddd;
     }
+    #appel {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    #appel:hover {
+      background-color: #388e3c;
+    }
   </style>
 </head>
 <body>
@@ -88,11 +101,14 @@
     <div class="case">K.Inahya</div>
   </div>
 
-  <p style="margin-top: 40px;">
+  <button id="appel">Appel terminé</button>
+
+  <p style="margin-top: 30px;">
     <a href="index.html">← Retour à l'accueil</a>
   </p>
 
   <script>
+    // Rendre les cases cliquables
     document.querySelectorAll('.case').forEach(cell => {
       if (cell.textContent.trim() !== '') {
         cell.addEventListener('click', () => {
@@ -100,9 +116,18 @@
         });
       }
     });
+
+    // Bouton "Appel terminé"
+    document.getElementById('appel').addEventListener('click', () => {
+      const absents = Array.from(document.querySelectorAll('.case.barre'))
+        .map(el => el.textContent.trim());
+      console.log("Voici le vecteur Python des élèves absents :");
+      console.log("[" + absents.map(n => `"${n}"`).join(", ") + "]");
+    });
   </script>
 
 </body>
 </html>
+
 
 
