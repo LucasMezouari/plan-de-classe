@@ -2,60 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Plan de classe interactif</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    .plan-de-classe {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      max-width: 600px;
-      margin: auto;
-    }
-    .eleve {
-      padding: 12px;
-      border: 1px solid #444;
-      text-align: center;
-      cursor: pointer;
-      border-radius: 6px;
-      background-color: #f5f5f5;
-      transition: 0.2s;
-    }
-    .eleve.barre {
-      text-decoration: line-through;
-      background-color: #ddd;
-      color: #888;
-    }
-  </style>
+  <title>Accueil</title>
 </head>
 <body>
-
-  <h1 style="text-align: center;">Plan de classe</h1>
-  <div class="plan-de-classe" id="plan">
-    <!-- Les élèves seront injectés ici -->
-  </div>
-
-  <script>
-    const eleves = [
-      "Alice", "Benoît", "Camille", "David", "Emma",
-      "Fabrice", "Giselle", "Hugo", "Ismaël", "Julie"
-    ];
-
-    const container = document.getElementById("plan");
-
-    eleves.forEach(nom => {
-      const div = document.createElement("div");
-      div.className = "eleve";
-      div.textContent = nom;
-      div.onclick = () => {
-        div.classList.toggle("barre");
-      };
-      container.appendChild(div);
-    });
-  </script>
-
+  <h1>Bienvenue sur le site</h1>
+  <ul>
+    <li><a href="403.html">Onglet 403 : Plan de classe</a></li>
+    <li><a href="404.html">Onglet 404</a></li>
+  </ul>
 </body>
 </html>
