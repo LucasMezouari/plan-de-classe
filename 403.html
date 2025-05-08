@@ -35,7 +35,7 @@
     }
     #appel {
       margin-top: 30px;
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 16px;
       border-radius: 8px;
       border: none;
@@ -51,6 +51,7 @@
 <body>
 
   <h1>Plan de classe – 403</h1>
+
   <div class="grille">
     <!-- Rangée 1 -->
     <div class="case"></div>
@@ -123,6 +124,7 @@
         .map(el => el.textContent.trim());
       console.log("Voici le vecteur Python des élèves absents :");
       console.log("[" + absents.map(n => `"${n}"`).join(", ") + "]");
+      alert("Consulte la console (F12) pour voir le vecteur Python !");
     });
   </script>
 
