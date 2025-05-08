@@ -49,6 +49,11 @@
     #resultat {
       margin-top: 20px;
       font-weight: bold;
+      font-family: monospace;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+      display: inline-block;
     }
   </style>
 </head>
@@ -100,31 +105,25 @@
       }
     });
 
-    // Bouton "Appel terminé"
+    // Appel terminé = afficher les présents (barrés)
     document.getElementById('appel').addEventListener('click', () => {
       const cases = document.querySelectorAll('.case');
       const presents = [];
-      const absents = [];
 
       cases.forEach(cell => {
         const nom = cell.textContent.trim();
-        if (nom !== '') {
-          if (cell.classList.contains('barre')) {
-            presents.push(nom); // ✅ Barré = présent
-          } else {
-            absents.push(nom); // ❌ Non barré = absent
-          }
+        if (nom !== '' && cell.classList.contains('barre')) {
+          presents.push(nom);
         }
       });
 
-      // Console debug
-      console.log("Présents :", presents);
-      console.log("Absents :", absents);
-      console.log("Vecteur Python des présents : [" + presents.map(n => `"${n}"`).join(", ") + "]");
+      // Génère un vecteur Python
+      const vecteurPython = "[" + presents.map(n => `"${n}"`).join(", ") + "]";
 
-      // Affichage HTML
+      // Affichage
       const res = document.getElementById('resultat');
-      res.innerHTML = `Présents : ${presents.join(", ")}`;
+      res.textContent = vecteurPython;
+      console.log("Présents =", vecteurPython);
     });
   </script>
 
