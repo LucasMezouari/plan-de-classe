@@ -46,6 +46,10 @@
     #appel:hover {
       background-color: #388e3c;
     }
+    #resultat {
+      margin-top: 20px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -54,55 +58,33 @@
 
   <div class="grille">
     <!-- Rangée 1 -->
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
+    <div class="case"></div><div class="case"></div><div class="case"></div>
+    <div class="case"></div><div class="case"></div><div class="case"></div>
 
     <!-- Rangée 2 -->
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case"></div>
+    <div class="case"></div><div class="case"></div><div class="case"></div>
+    <div class="case"></div><div class="case"></div><div class="case"></div>
 
     <!-- Rangée 3 -->
-    <div class="case">D.Nemaaly</div>
-    <div class="case">D.Mathys</div>
-    <div class="case">K.Ismaël</div>
-    <div class="case"></div>
-    <div class="case">P.Malone</div>
-    <div class="case">D.Théo</div>
+    <div class="case">D.Nemaaly</div><div class="case">D.Mathys</div><div class="case">K.Ismaël</div>
+    <div class="case"></div><div class="case">P.Malone</div><div class="case">D.Théo</div>
 
     <!-- Rangée 4 -->
-    <div class="case">D.Néhémie</div>
-    <div class="case">Z.Inès</div>
-    <div class="case">S.Nour El Houd</div>
-    <div class="case"></div>
-    <div class="case">T.Jilyan</div>
-    <div class="case"></div>
+    <div class="case">D.Néhémie</div><div class="case">Z.Inès</div><div class="case">S.Nour El Houd</div>
+    <div class="case"></div><div class="case">T.Jilyan</div><div class="case"></div>
 
     <!-- Rangée 5 -->
-    <div class="case">L.Aïssa</div>
-    <div class="case">B.Maryam</div>
-    <div class="case">A.Roumaïssa</div>
-    <div class="case">C.Merve</div>
-    <div class="case">Z.Ismaël</div>
-    <div class="case">B.Mohamed</div>
+    <div class="case">L.Aïssa</div><div class="case">B.Maryam</div><div class="case">A.Roumaïssa</div>
+    <div class="case">C.Merve</div><div class="case">Z.Ismaël</div><div class="case">B.Mohamed</div>
 
     <!-- Rangée 6 -->
-    <div class="case"></div>
-    <div class="case"></div>
-    <div class="case">P.Raphaël</div>
-    <div class="case">F.Sheldon</div>
-    <div class="case">A.Aya</div>
-    <div class="case">K.Inahya</div>
+    <div class="case"></div><div class="case"></div><div class="case">P.Raphaël</div>
+    <div class="case">F.Sheldon</div><div class="case">A.Aya</div><div class="case">K.Inahya</div>
   </div>
 
   <button id="appel">Appel terminé</button>
+
+  <div id="resultat"></div>
 
   <p style="margin-top: 30px;">
     <a href="index.html">← Retour à l'accueil</a>
@@ -120,11 +102,29 @@
 
     // Bouton "Appel terminé"
     document.getElementById('appel').addEventListener('click', () => {
-      const absents = Array.from(document.querySelectorAll('.case.barre'))
-        .map(el => el.textContent.trim());
-      console.log("Voici le vecteur Python des élèves absents :");
-      console.log("[" + absents.map(n => `"${n}"`).join(", ") + "]");
-      alert("Consulte la console (F12) pour voir le vecteur Python !");
+      const cases = document.querySelectorAll('.case');
+      const presents = [];
+      const absents = [];
+
+      cases.forEach(cell => {
+        const nom = cell.textContent.trim();
+        if (nom !== '') {
+          if (cell.classList.contains('barre')) {
+            presents.push(nom); // ✅ Barré = présent
+          } else {
+            absents.push(nom); // ❌ Non barré = absent
+          }
+        }
+      });
+
+      // Console debug
+      console.log("Présents :", presents);
+      console.log("Absents :", absents);
+      console.log("Vecteur Python des présents : [" + presents.map(n => `"${n}"`).join(", ") + "]");
+
+      // Affichage HTML
+      const res = document.getElementById('resultat');
+      res.innerHTML = `Présents : ${presents.join(", ")}`;
     });
   </script>
 
