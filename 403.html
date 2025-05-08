@@ -48,12 +48,9 @@
     }
     #resultat {
       margin-top: 20px;
+      font-size: 20px;
       font-weight: bold;
-      font-family: monospace;
-      background-color: #f0f0f0;
-      padding: 10px;
-      border-radius: 6px;
-      display: inline-block;
+      color: green;
     }
   </style>
 </head>
@@ -96,7 +93,7 @@
   </p>
 
   <script>
-    // Rendre les cases cliquables
+    // Barrer / Débarrer les noms
     document.querySelectorAll('.case').forEach(cell => {
       if (cell.textContent.trim() !== '') {
         cell.addEventListener('click', () => {
@@ -105,25 +102,9 @@
       }
     });
 
-    // Appel terminé = afficher les présents (barrés)
+    // Affichage du message BRAVO
     document.getElementById('appel').addEventListener('click', () => {
-      const cases = document.querySelectorAll('.case');
-      const presents = [];
-
-      cases.forEach(cell => {
-        const nom = cell.textContent.trim();
-        if (nom !== '' && cell.classList.contains('barre')) {
-          presents.push(nom);
-        }
-      });
-
-      // Génère un vecteur Python
-      const vecteurPython = "[" + presents.map(n => `"${n}"`).join(", ") + "]";
-
-      // Affichage
-      const res = document.getElementById('resultat');
-      res.textContent = vecteurPython;
-      console.log("Présents =", vecteurPython);
+      document.getElementById('resultat').textContent = "BRAVO";
     });
   </script>
 
