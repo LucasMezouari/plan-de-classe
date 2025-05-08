@@ -2,63 +2,104 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Plan de classe interactif</title>
+  <title>Plan de classe – 403</title>
   <style>
     body {
       font-family: sans-serif;
       padding: 20px;
-    }
-    .plan-de-classe {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      max-width: 600px;
-      margin: auto;
-    }
-    .eleve {
-      padding: 12px;
-      border: 1px solid #444;
       text-align: center;
-      cursor: pointer;
+    }
+    .grille {
+      display: grid;
+      grid-template-columns: repeat(6, 100px);
+      grid-auto-rows: 60px;
+      gap: 10px;
+      justify-content: center;
+    }
+    .case {
+      border: 1px solid #aaa;
       border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background-color: #f5f5f5;
+      cursor: pointer;
       transition: 0.2s;
     }
-    .eleve.barre {
+    .case.barre {
       text-decoration: line-through;
-      background-color: #ddd;
       color: #888;
+      background-color: #ddd;
     }
   </style>
 </head>
 <body>
 
-  <h1 style="text-align: center;">Plan de classe – 403</h1>
-  <div class="plan-de-classe" id="plan"></div>
+  <h1>Plan de classe – 403</h1>
+  <div class="grille">
+    <!-- Rangée 1 -->
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+
+    <!-- Rangée 2 -->
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case"></div>
+
+    <!-- Rangée 3 -->
+    <div class="case">D.Nemaaly</div>
+    <div class="case">D.Mathys</div>
+    <div class="case">K.Ismaël</div>
+    <div class="case"></div>
+    <div class="case">P.Malone</div>
+    <div class="case">D.Théo</div>
+
+    <!-- Rangée 4 -->
+    <div class="case">D.Néhémie</div>
+    <div class="case">Z.Inès</div>
+    <div class="case">S.Nour El Houd</div>
+    <div class="case"></div>
+    <div class="case">T.Jilyan</div>
+    <div class="case"></div>
+
+    <!-- Rangée 5 -->
+    <div class="case">L.Aïssa</div>
+    <div class="case">B.Maryam</div>
+    <div class="case">A.Roumaïssa</div>
+    <div class="case">C.Merve</div>
+    <div class="case">Z.Ismaël</div>
+    <div class="case">B.Mohamed</div>
+
+    <!-- Rangée 6 -->
+    <div class="case"></div>
+    <div class="case"></div>
+    <div class="case">P.Raphaël</div>
+    <div class="case">F.Sheldon</div>
+    <div class="case">A.Aya</div>
+    <div class="case">K.Inahya</div>
+  </div>
+
+  <p style="margin-top: 40px;">
+    <a href="index.html">← Retour à l'accueil</a>
+  </p>
 
   <script>
-    const eleves = [
-      "Alice", "Benoît", "Camille", "David", "Emma",
-      "Fabrice", "Giselle", "Hugo", "Ismaël", "Julie"
-    ];
-    const container = document.getElementById("plan");
-    eleves.forEach(nom => {
-      const div = document.createElement("div");
-      div.className = "eleve";
-      div.textContent = nom;
-      div.onclick = () => {
-        div.classList.toggle("barre");
-      };
-      container.appendChild(div);
+    document.querySelectorAll('.case').forEach(cell => {
+      if (cell.textContent.trim() !== '') {
+        cell.addEventListener('click', () => {
+          cell.classList.toggle('barre');
+        });
+      }
     });
   </script>
 
-  <p style="text-align:center; margin-top: 40px;">
-    <a href="index.html">← Retour à l'accueil</a>
-  </p>
 </body>
 </html>
 
-  
-</body>
-</html>
