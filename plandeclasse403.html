@@ -17,43 +17,36 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, 150px);
+      grid-template-columns: repeat(3, 160px);
       grid-template-rows: repeat(5, auto);
       gap: 20px 50px;
       justify-content: center;
     }
 
     .cell {
-      width: 150px;
-      height: 80px;
+      width: 160px;
+      height: 60px;
       background-color: #ffffff;
       border: 1px solid #ccc;
       border-radius: 6px;
-      overflow: hidden;
       box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
       display: flex;
-      flex-direction: column;
+      flex-direction: row; /* ✅ découpe gauche/droite */
+      overflow: hidden;
     }
 
     .half {
-      height: 50%;
+      width: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .half.top {
-      border-bottom: 1px solid #ccc;
-      background-color: #f0f0f0;
-    }
-
-    .half.bottom {
-      font-size: 14px;
+      border-right: 1px solid #ccc;
+      font-size: 13px;
       font-weight: bold;
     }
 
-    .cartable {
-      font-size: 20px;
+    .half:last-child {
+      border-right: none;
     }
   </style>
 </head>
@@ -63,70 +56,25 @@
 
   <div class="grid">
     <!-- Colonne 1 -->
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">D. Nemaaly</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">D. Mathys</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">D. Néhémie</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">Z. Inès</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">L. Aïssa</div>
-    </div>
+    <div class="cell"><div class="half">📁</div><div class="half">D. Nemaaly</div></div>
+    <div class="cell"><div class="half"></div><div class="half">D. Mathys</div></div>
+    <div class="cell"><div class="half"></div><div class="half">D. Néhémie</div></div>
+    <div class="cell"><div class="half"></div><div class="half">Z. Inès</div></div>
+    <div class="cell"><div class="half"></div><div class="half">L. Aïssa</div></div>
 
     <!-- Colonne 2 -->
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">K. Ismaël</div>
-    </div>
-    <div class="cell">
-      <div class="half top"><span class="cartable">📁</span></div>
-      <div class="half bottom">S. Nour El Houd</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">A. Roumaissa</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">C. Merve</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">P. Raphaël</div>
-    </div>
+    <div class="cell"><div class="half"></div><div class="half">K. Ismaël</div></div>
+    <div class="cell"><div class="half">📁</div><div class="half">S. Nour El Houd</div></div>
+    <div class="cell"><div class="half"></div><div class="half">A. Roumaissa</div></div>
+    <div class="cell"><div class="half"></div><div class="half">C. Merve</div></div>
+    <div class="cell"><div class="half"></div><div class="half">P. Raphaël</div></div>
 
     <!-- Colonne 3 -->
-    <div class="cell">
-      <div class="half top"><span class="cartable">📁</span></div>
-      <div class="half bottom">P. Malone</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">D. Théo</div>
-    </div>
-    <div class="cell">
-      <div class="half top"><span class="cartable">📁</span></div>
-      <div class="half bottom">T. Jilyan</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">Z. Ismael</div>
-    </div>
-    <div class="cell">
-      <div class="half top"></div>
-      <div class="half bottom">A. Aya</div>
-    </div>
+    <div class="cell"><div class="half">📁</div><div class="half">P. Malone</div></div>
+    <div class="cell"><div class="half"></div><div class="half">D. Théo</div></div>
+    <div class="cell"><div class="half">📁</div><div class="half">T. Jilyan</div></div>
+    <div class="cell"><div class="half"></div><div class="half">Z. Ismael</div></div>
+    <div class="cell"><div class="half"></div><div class="half">A. Aya</div></div>
   </div>
 
 </body>
