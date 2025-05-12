@@ -7,26 +7,81 @@
     body {
       margin: 0;
       font-family: sans-serif;
+    }
+
+    /* Navigation identique à index.html */
+    .navbar {
+      display: flex;
+      background-color: #f1f1f1;
+      padding: 10px;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .dropdown {
+      position: relative;
+      margin-right: 20px;
+    }
+
+    .dropbtn {
+      padding: 10px 20px;
+      background-color: #ddd;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      display: inline-block;
+    }
+
+    .dropbtn:hover { background-color: #ccc; }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      border: 1px solid #aaa;
+      z-index: 1;
+      border-radius: 5px;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 10px 15px;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Contenu centré verticalement */
+    .main {
+      height: calc(100vh - 60px); /* moins la navbar */
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
 
     .container {
       display: flex;
       align-items: center;
+      width: 80%;
     }
 
     .line {
-      height: 1px;
+      height: 2px;
       background-color: blue;
       flex: 1;
     }
 
     .button-notes {
-      margin: 0 15px;
-      padding: 10px 20px;
+      margin: 0 20px;
+      padding: 10px 25px;
       background-color: white;
       border: 2px solid blue;
       border-radius: 5px;
@@ -43,11 +98,56 @@
 </head>
 <body>
 
-  <div class="container">
-    <div class="line"></div>
-    <a class="button-notes" href="notedecours.html">Notes</a>
-    <div class="line"></div>
+  <!-- Barre de navigation -->
+  <div class="navbar">
+    <div class="dropdown">
+      <div class="dropbtn">Collège</div>
+      <div class="dropdown-content">
+        <a href="6e.html">6<sup>e</sup></a>
+        <a href="#">5<sup>e</sup></a>
+        <div class="dropdown">
+          <a class="dropbtn" href="#">4<sup>e</sup></a>
+          <div class="dropdown-content">
+            <a href="javascript:void(0)" onclick="checkPassword()">403</a>
+          </div>
+        </div>
+        <a href="#">3<sup>e</sup></a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <div class="dropbtn">Lycée</div>
+      <div class="dropdown-content">
+        <a href="#">Seconde</a>
+        <a href="#">Première</a>
+        <a href="#">Terminale</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <a class="dropbtn" href="test.html">Test</a>
+    </div>
   </div>
+
+  <!-- Contenu principal -->
+  <div class="main">
+    <div class="container">
+      <div class="line"></div>
+      <a class="button-notes" href="notedecours.html">Notes</a>
+      <div class="line"></div>
+    </div>
+  </div>
+
+  <script>
+    function checkPassword() {
+      const password = prompt("Mot de passe requis pour accéder à la page 403 :");
+      if (password === "1205") {
+        window.location.href = "403.html";
+      } else if (password !== null) {
+        alert("Mot de passe incorrect.");
+      }
+    }
+  </script>
 
 </body>
 </html>
