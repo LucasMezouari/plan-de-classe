@@ -92,7 +92,7 @@
       padding: 20px;
     }
 
-    /* Boîte lala */
+    /* Boîte cliquable Séance 1 */
     .box-lala {
       margin-top: 30px;
       padding: 20px;
@@ -102,6 +102,13 @@
       font-size: 16px;
       width: fit-content;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      display: inline-block;
+      text-decoration: none;
+      color: black;
+    }
+
+    .box-lala:hover {
+      background-color: #e0efff;
     }
   </style>
 </head>
@@ -150,10 +157,10 @@
     <h1>Bienvenue sur mon site.</h1>
     <p>Vous trouverez ici l'ensemble des cours, exercices, contrôles.</p>
 
-    <!-- Boîte lala -->
-    <div class="box-lala">
-      📦 Ceci est la boîte <strong>lala</strong>.
-    </div>
+    <!-- Boîte Séance 1 cliquable -->
+    <a href="seance1.pdf" class="box-lala" target="_blank">
+      📘 <strong>Séance 1</strong>
+    </a>
   </div>
 
   <script>
