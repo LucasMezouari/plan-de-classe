@@ -61,14 +61,42 @@
     .context-menu div.selected {
       background-color: #d0ebff;
     }
+    .footer-layout {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+      position: relative;
+    }
+    .left-button {
+      position: absolute;
+      left: 0;
+      text-align: left;
+    }
+    .bouton, .tableau {
+      width: 200px;
+      height: 40px;
+      background-color: #e0e0e0;
+      border: 2px solid #666;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+      margin-top: 10px;
+    }
     #feedback {
-      margin-top: 40px;
+      margin-top: 10px;
       font-size: 14px;
       color: #222;
       text-align: left;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      position: absolute;
+      right: 20px;
+      top: 100px;
+      width: 200px;
     }
   </style>
 </head>
@@ -76,7 +104,6 @@
   <h1>Plan de classe 403</h1>
   <div class="grid">
     <!-- 15 lignes de 2 moitiés (30 cases) -->
-    <!-- Ligne 1 -->
     <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
     <div class="cell"><div class="half">case 3</div><div class="half">case 4</div></div>
     <div class="cell"><div class="half">case 5</div><div class="half">case 6</div></div>
@@ -92,6 +119,13 @@
     <div class="cell"><div class="half">case 25</div><div class="half">case 26</div></div>
     <div class="cell"><div class="half">case 27</div><div class="half">case 28</div></div>
     <div class="cell"><div class="half">case 29</div><div class="half">case 30</div></div>
+  </div>
+
+  <div class="footer-layout">
+    <div class="left-button">
+      <div class="bouton">Appel terminé</div>
+    </div>
+    <div class="tableau">Tableau</div>
   </div>
 
   <div id="context-menu" class="context-menu">
@@ -172,7 +206,7 @@
     function afficherFeedback(nom, remarque) {
       const div = document.getElementById("feedback");
       const ligne = document.createElement("div");
-      ligne.textContent = `${nom} : ${remarque}`;
+      ligne.innerHTML = `<strong>${nom}</strong> : ${remarque}`;
       div.appendChild(ligne);
     }
   </script>
