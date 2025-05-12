@@ -3,12 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <title>Accueil</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    .navbar {
+      display: flex;
+      background-color: #f1f1f1;
+      padding: 10px;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .tab {
+      position: relative;
+      margin-right: 20px;
+      padding: 10px 20px;
+      background-color: #ddd;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+    }
+
+    .tab:hover {
+      background-color: #ccc;
+    }
+
+    .tab::after {
+      content: attr(data-hover);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #eee;
+      padding: 5px 10px;
+      border: 1px solid #aaa;
+      display: none;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .tab:hover::after {
+      display: block;
+    }
+
+    .content {
+      padding: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bienvenue sur le site</h1>
-  <ul>
-    <li><a href="403.html">Onglet 403 : Plan de classe</a></li>
-    <li><a href="404.html">Géométrie algébrique</a></li>
-  </ul>
+
+  <div class="navbar">
+    <a href="#" class="tab" data-hover="photo de classe">photo</a>
+    <a href="403.html" class="tab">Plan de classe</a>
+    <a href="404.html" class="tab">Géométrie algébrique</a>
+  </div>
+
+  <div class="content">
+    <h1>Bienvenue sur le site</h1>
+  </div>
+
 </body>
 </html>
