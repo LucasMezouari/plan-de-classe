@@ -92,24 +92,22 @@
       padding: 20px;
     }
 
-    /* Boîte cliquable Séance 1 */
     .box-lala {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #d4f8d4; /* ✅ Vert clair */
-  border: 2px solid #2e8b57;
-  border-radius: 10px;
-  font-size: 16px;
-  width: fit-content;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  display: inline-block;
-  text-decoration: none;
-  color: black;
-}
-
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #eaffea;
+      border: 2px solid #2e8b57;
+      border-radius: 10px;
+      font-size: 16px;
+      width: fit-content;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      display: inline-block;
+      text-decoration: none;
+      color: black;
+    }
 
     .box-lala:hover {
-      background-color: #c2f0c2;
+      background-color: #dcf5dc;
     }
   </style>
 </head>
@@ -158,7 +156,7 @@
     <h1>Bienvenue sur mon site.</h1>
     <p>Vous trouverez ici l'ensemble des cours, exercices, contrôles.</p>
 
-    <!-- Boîte Séance 1 cliquable -->
+    <!-- Boîte cliquable vers un PDF -->
     <a href="seance1.pdf" class="box-lala" target="_blank">
       📘 <strong>Séance 1</strong>
     </a>
@@ -169,23 +167,16 @@
       const clicked = document.getElementById(id);
       const wasActive = clicked.classList.contains('active');
 
-      // Fermer tous les menus
       document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
-
-      // Si ce n'était pas déjà actif, l'ouvrir
-      if (!wasActive) {
-        clicked.classList.add('active');
-      }
+      if (!wasActive) clicked.classList.add('active');
     }
 
-    // Fermer si clic en dehors
     document.addEventListener('click', function (event) {
       if (!event.target.closest('.dropdown')) {
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
       }
     });
 
-    // Fermer le menu actif si la souris passe sur un autre onglet
     document.querySelectorAll('.dropdown').forEach(drop => {
       drop.addEventListener('mouseenter', () => {
         document.querySelectorAll('.dropdown').forEach(d => {
@@ -197,7 +188,7 @@
     function checkPassword() {
       const password = prompt("Mot de passe requis pour accéder à la page 403 :");
       if (password === "1205") {
-        window.location.href = "403.html";
+        window.location.href = "403.html"; // ✅ redirige bien vers 403.html
       } else if (password !== null) {
         alert("Mot de passe incorrect.");
       }
