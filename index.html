@@ -96,6 +96,7 @@
 <body>
 
   <div class="navbar">
+    <!-- Collège avec 4e > 403 + 404 -->
     <div class="dropdown" id="college-dropdown">
       <div class="dropbtn" onclick="toggleDropdown('college-dropdown')">Collège</div>
       <div class="dropdown-content">
@@ -105,12 +106,14 @@
           <a href="#">4<sup>e</sup></a>
           <div class="sub-dropdown-content">
             <a href="javascript:void(0)" onclick="checkPassword()">403</a>
+            <a href="404.html">404</a>
           </div>
         </div>
         <a href="#">3<sup>e</sup></a>
       </div>
     </div>
 
+    <!-- Lycée -->
     <div class="dropdown" id="lycee-dropdown">
       <div class="dropbtn" onclick="toggleDropdown('lycee-dropdown')">Lycée</div>
       <div class="dropdown-content">
@@ -120,6 +123,7 @@
       </div>
     </div>
 
+    <!-- Test -->
     <div class="dropdown">
       <a class="dropbtn" href="test.html">Test</a>
     </div>
@@ -144,14 +148,14 @@
       }
     }
 
-    // Fermer si on clique en dehors
+    // Fermer si clic en dehors
     document.addEventListener('click', function (event) {
       if (!event.target.closest('.dropdown')) {
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
       }
     });
 
-    // Fermer les autres menus si la souris entre sur un autre onglet
+    // Fermer le menu actif si on passe la souris sur un autre onglet
     document.querySelectorAll('.dropdown').forEach(drop => {
       drop.addEventListener('mouseenter', () => {
         document.querySelectorAll('.dropdown').forEach(d => {
