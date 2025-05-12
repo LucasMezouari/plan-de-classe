@@ -37,9 +37,13 @@
       cursor: pointer;
       position: relative;
       user-select: none;
+      transition: background-color 0.2s;
     }
     .half:last-child {
       border-right: none;
+    }
+    .half.active {
+      background-color: #c8facc;
     }
     .context-menu {
       position: absolute;
@@ -71,7 +75,23 @@
 <body>
   <h1>Plan de classe 403</h1>
   <div class="grid">
-    <div class="cell"><div class="half">Neemaly</div><div class="half">case 2</div></div>
+    <!-- 15 lignes de 2 moitiés (30 cases) -->
+    <!-- Ligne 1 -->
+    <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
+    <div class="cell"><div class="half">case 3</div><div class="half">case 4</div></div>
+    <div class="cell"><div class="half">case 5</div><div class="half">case 6</div></div>
+    <div class="cell"><div class="half">case 7</div><div class="half">case 8</div></div>
+    <div class="cell"><div class="half">case 9</div><div class="half">case 10</div></div>
+    <div class="cell"><div class="half">case 11</div><div class="half">case 12</div></div>
+    <div class="cell"><div class="half">Neemaly</div><div class="half">case 14</div></div>
+    <div class="cell"><div class="half">case 15</div><div class="half">case 16</div></div>
+    <div class="cell"><div class="half">case 17</div><div class="half">case 18</div></div>
+    <div class="cell"><div class="half">case 19</div><div class="half">case 20</div></div>
+    <div class="cell"><div class="half">case 21</div><div class="half">case 22</div></div>
+    <div class="cell"><div class="half">case 23</div><div class="half">case 24</div></div>
+    <div class="cell"><div class="half">case 25</div><div class="half">case 26</div></div>
+    <div class="cell"><div class="half">case 27</div><div class="half">case 28</div></div>
+    <div class="cell"><div class="half">case 29</div><div class="half">case 30</div></div>
   </div>
 
   <div id="context-menu" class="context-menu">
@@ -97,6 +117,9 @@
 
     document.querySelectorAll('.half').forEach(half => {
       let timer;
+      half.addEventListener('click', () => {
+        half.classList.toggle('active');
+      });
       half.addEventListener('mousedown', () => {
         timer = setTimeout(() => {
           caseCible = half;
