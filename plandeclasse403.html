@@ -98,6 +98,15 @@
       top: 100px;
       width: 200px;
     }
+    #presence-result {
+      position: absolute;
+      left: 20px;
+      top: 100px;
+      text-align: left;
+      font-size: 14px;
+      color: #222;
+      width: 200px;
+    }
   </style>
 </head>
 <body>
@@ -123,7 +132,7 @@
 
   <div class="footer-layout">
     <div class="left-button">
-      <div class="bouton">Appel terminé</div>
+      <div class="bouton" onclick="afficherAppel()">Appel terminé</div>
     </div>
     <div class="tableau">Tableau</div>
   </div>
@@ -134,6 +143,7 @@
     <div class="menu-option">Oubli de matériel</div>
   </div>
 
+  <div id="presence-result"></div>
   <div id="feedback"></div>
 
   <script>
@@ -208,6 +218,18 @@
       const ligne = document.createElement("div");
       ligne.innerHTML = `<strong>${nom}</strong> : ${remarque}`;
       div.appendChild(ligne);
+    }
+
+    function afficherAppel() {
+      const all = document.querySelectorAll(".half");
+      const presents = document.querySelectorAll(".half.active");
+      const absents = Array.from(all).filter(e => !e.classList.contains("active"));
+
+      const resultDiv = document.getElementById("presence-result");
+      resultDiv.innerHTML = `<div><strong>Présents :</strong> ${presents.length}</div><br><strong>Absents :</strong><br>`;
+      absents.forEach(el => {
+        resultDiv.innerHTML += `${el.textContent.trim()}<br>`;
+      });
     }
   </script>
 </body>
