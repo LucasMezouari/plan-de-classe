@@ -43,10 +43,16 @@
       border-right: 1px solid #ccc;
       font-size: 13px;
       font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
 
     .half:last-child {
       border-right: none;
+    }
+
+    .active {
+      background-color: #c8facc; /* vert clair */
     }
 
     .tableau {
@@ -72,33 +78,34 @@
   <h1>Plan de classe – 403</h1>
 
   <div class="grid">
-    <!-- Ligne 1 -->
+    <!-- Exemple : ligne 1 -->
     <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
     <div class="cell"><div class="half">case 3</div><div class="half">case 4</div></div>
     <div class="cell"><div class="half">case 5</div><div class="half">case 6</div></div>
-
-    <!-- Ligne 2 -->
     <div class="cell"><div class="half">case 7</div><div class="half">case 8</div></div>
     <div class="cell"><div class="half">case 9</div><div class="half">case 10</div></div>
     <div class="cell"><div class="half">case 11</div><div class="half">case 12</div></div>
-
-    <!-- Ligne 3 -->
     <div class="cell"><div class="half">Nemaaly</div><div class="half">case 14</div></div>
     <div class="cell"><div class="half">case 15</div><div class="half">case 16</div></div>
     <div class="cell"><div class="half">case 17</div><div class="half">case 18</div></div>
-
-    <!-- Ligne 4 -->
     <div class="cell"><div class="half">case 19</div><div class="half">case 20</div></div>
     <div class="cell"><div class="half">case 21</div><div class="half">case 22</div></div>
     <div class="cell"><div class="half">case 23</div><div class="half">case 24</div></div>
-
-    <!-- Ligne 5 -->
     <div class="cell"><div class="half">case 25</div><div class="half">case 26</div></div>
     <div class="cell"><div class="half">case 27</div><div class="half">case 28</div></div>
     <div class="cell"><div class="half">case 29</div><div class="half">case 30</div></div>
   </div>
 
   <div class="tableau">Tableau</div>
+
+  <script>
+    // Active / désactive la classe "active" au clic
+    document.querySelectorAll('.half').forEach(half => {
+      half.addEventListener('click', () => {
+        half.classList.toggle('active');
+      });
+    });
+  </script>
 
 </body>
 </html>
