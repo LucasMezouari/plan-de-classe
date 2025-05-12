@@ -10,18 +10,12 @@
       padding: 20px;
       text-align: center;
     }
-
-    h1 {
-      margin-bottom: 30px;
-    }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 160px);
       gap: 20px 50px;
       justify-content: center;
     }
-
     .cell {
       width: 160px;
       height: 60px;
@@ -32,7 +26,6 @@
       display: flex;
       overflow: hidden;
     }
-
     .half {
       width: 50%;
       display: flex;
@@ -45,65 +38,14 @@
       position: relative;
       user-select: none;
     }
-
     .half:last-child {
       border-right: none;
     }
-
-    .active {
-      background-color: #c8facc;
-    }
-
-    .footer-layout {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 50px;
-      position: relative;
-    }
-
-    .left-button {
-      position: absolute;
-      left: 0;
-      text-align: left;
-    }
-
-    .bouton, .tableau {
-      width: 200px;
-      height: 40px;
-      background-color: #e0e0e0;
-      border: 2px solid #666;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 16px;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    #presence-count {
-      font-size: 16px;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    #liste-absents {
-      margin-top: 40px;
-      font-size: 16px;
-      color: #444;
-    }
-
     .note {
       font-size: 11px;
       color: #555;
       margin-left: 4px;
     }
-
-    /* Menu contextuel */
     .context-menu {
       position: absolute;
       display: none;
@@ -113,101 +55,44 @@
       z-index: 1000;
       font-size: 13px;
     }
-
     .context-menu div {
       padding: 6px 12px;
       cursor: pointer;
     }
-
-    .context-menu div:hover {
-      background-color: #eee;
+    .context-menu div.selected {
+      background-color: #d0ebff;
     }
   </style>
 </head>
 <body>
-
-  <h1>Plan de classe – 403</h1>
-
+  <h1>Plan de classe 403</h1>
   <div class="grid">
-    <!-- Exemple d’une ligne -->
     <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
-    <div class="cell"><div class="half">case 3</div><div class="half">case 4</div></div>
-    <div class="cell"><div class="half">case 5</div><div class="half">case 6</div></div>
-    <div class="cell"><div class="half">case 7</div><div class="half">case 8</div></div>
-    <div class="cell"><div class="half">case 9</div><div class="half">case 10</div></div>
-    <div class="cell"><div class="half">case 11</div><div class="half">case 12</div></div>
-    <div class="cell"><div class="half">Nemaaly</div><div class="half">case 14</div></div>
-    <div class="cell"><div class="half">case 15</div><div class="half">case 16</div></div>
-    <div class="cell"><div class="half">case 17</div><div class="half">case 18</div></div>
-    <div class="cell"><div class="half">case 19</div><div class="half">case 20</div></div>
-    <div class="cell"><div class="half">case 21</div><div class="half">case 22</div></div>
-    <div class="cell"><div class="half">case 23</div><div class="half">case 24</div></div>
-    <div class="cell"><div class="half">case 25</div><div class="half">case 26</div></div>
-    <div class="cell"><div class="half">case 27</div><div class="half">case 28</div></div>
-    <div class="cell"><div class="half">case 29</div><div class="half">case 30</div></div>
+    <!-- Ajoute d'autres cases ici -->
   </div>
 
-  <div class="footer-layout">
-    <div class="left-button">
-      <div id="presence-count">Présents : 0</div>
-      <div class="bouton" onclick="appelTermine()">Appel terminé</div>
-    </div>
-    <div class="tableau">Tableau</div>
-  </div>
-
-  <div id="liste-absents"></div>
-
-  <!-- Menu contextuel -->
   <div id="context-menu" class="context-menu">
-    <div onclick="ajouterNote('Comportement')">Comportement</div>
-    <div onclick="ajouterNote('Travail non fait')">Travail non fait</div>
-    <div onclick="ajouterNote('Oubli de matériel')">Oubli de matériel</div>
+    <div class="menu-option">Comportement</div>
+    <div class="menu-option">Travail non fait</div>
+    <div class="menu-option">Oubli de matériel</div>
   </div>
 
   <script>
-    // Activer présence
-    document.querySelectorAll('.half').forEach(half => {
-      half.addEventListener('click', () => {
-        half.classList.toggle('active');
-      });
-    });
-
-    // Compter présents et afficher absents
-    function appelTermine() {
-      const absents = [];
-      const demiCases = document.querySelectorAll('.half');
-      demiCases.forEach(half => {
-        if (!half.classList.contains('active')) {
-          absents.push(half.textContent.trim());
-        }
-      });
-
-      const nbPresents = demiCases.length - absents.length;
-      document.getElementById('presence-count').textContent = `Présents : ${nbPresents}`;
-
-      const div = document.getElementById("liste-absents");
-      if (absents.length === 0) {
-        alert("Tous les élèves sont présents !");
-        div.innerHTML = "";
-      } else {
-        alert("Élèves absents :\n\n" + absents.join('\n'));
-        div.innerHTML = "<strong>Absents :</strong><br>" + absents.join("<br>");
-      }
-    }
-
-    // Menu contextuel
     let caseCible = null;
     const menu = document.getElementById("context-menu");
+    const options = menu.querySelectorAll(".menu-option");
+    let selectedIndex = 0;
 
     document.querySelectorAll('.half').forEach(half => {
       let timer;
-      half.addEventListener('mousedown', e => {
+      half.addEventListener('mousedown', () => {
         timer = setTimeout(() => {
           caseCible = half;
           const rect = half.getBoundingClientRect();
           menu.style.left = `${rect.right + window.scrollX + 5}px`;
           menu.style.top = `${rect.top + window.scrollY}px`;
           menu.style.display = 'block';
+          selectOption(0);
         }, 500);
       });
       half.addEventListener('mouseup', () => clearTimeout(timer));
@@ -220,14 +105,43 @@
       }
     });
 
-    function ajouterNote(note) {
-      if (caseCible) {
-        let texte = caseCible.textContent.split('–')[0].trim();
-        caseCible.innerHTML = `${texte} <span class="note">– ${note}</span>`;
-        menu.style.display = 'none';
-      }
+    function selectOption(index) {
+      options.forEach((opt, i) => {
+        opt.classList.toggle('selected', i === index);
+      });
+      selectedIndex = index;
     }
-  </script>
 
+    document.addEventListener('keydown', (e) => {
+      if (menu.style.display === 'block') {
+        if (e.key === 'ArrowDown') {
+          selectedIndex = (selectedIndex + 1) % options.length;
+          selectOption(selectedIndex);
+          e.preventDefault();
+        } else if (e.key === 'ArrowUp') {
+          selectedIndex = (selectedIndex - 1 + options.length) % options.length;
+          selectOption(selectedIndex);
+          e.preventDefault();
+        } else if (e.key === 'Enter') {
+          const text = options[selectedIndex].textContent;
+          if (caseCible) {
+            let texte = caseCible.textContent.split('–')[0].trim();
+            caseCible.innerHTML = `${texte} <span class="note">– ${text}</span>`;
+            menu.style.display = 'none';
+          }
+        }
+      }
+    });
+
+    options.forEach((opt, i) => {
+      opt.addEventListener('click', () => {
+        if (caseCible) {
+          let texte = caseCible.textContent.split('–')[0].trim();
+          caseCible.innerHTML = `${texte} <span class="note">– ${opt.textContent}</span>`;
+          menu.style.display = 'none';
+        }
+      });
+    });
+  </script>
 </body>
 </html>
