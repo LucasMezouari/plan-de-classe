@@ -7,51 +7,47 @@
     body {
       font-family: sans-serif;
       background-color: #f8f8f8;
-      padding: 20px;
-    }
-
-    h1 {
+      margin: 0;
+      padding: 40px;
       text-align: center;
     }
 
+    h1 {
+      margin-bottom: 40px;
+    }
+
     .timeline {
-      margin: 50px auto;
+      margin: 0 auto 50px;
       width: 90%;
       border-top: 4px solid #ccc;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
       padding-top: 20px;
+      display: flex;
+      justify-content: center;
       flex-wrap: wrap;
+      gap: 20px;
     }
 
-    .seance {
+    .seance-btn {
       background-color: #3498db;
       color: white;
-      padding: 10px 20px;
-      border-radius: 20px;
+      padding: 15px 30px;
+      border-radius: 25px;
       text-decoration: none;
       font-weight: bold;
-      margin: 10px;
+      font-size: 18px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      display: inline-block;
     }
 
-    .seance:hover {
+    .seance-btn:hover {
       background-color: #2c80c9;
     }
   </style>
 </head>
 <body>
 
-  <h1>TEST ✅</h1>
-
+  <h1>Progression de la classe 403</h1>
 
   <div class="timeline">
-    <a href="seance1.html" class="seance">Séance 1</a>
-    <a href="seance2.html" class="seance">Séance 2</a>
-    <a href="seance3.html" class="seance">Séance 3</a>
-    <a href="seance4.html" class="seance">Séance 4</a>
-    <a href="seance5.html" class="seance">Séance 5</a>
-  </div>
-
-</body>
-</html>
+    <!-- Ajoute d'autres boutons ici si besoin -->
+    <a href="seance1.html" class="
