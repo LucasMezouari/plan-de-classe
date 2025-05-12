@@ -89,6 +89,12 @@
       font-weight: bold;
       color: #333;
     }
+
+    #liste-absents {
+      margin-top: 40px;
+      font-size: 16px;
+      color: #444;
+    }
   </style>
 </head>
 <body>
@@ -122,21 +128,24 @@
     <div class="tableau">Tableau</div>
   </div>
 
+  <!-- ✅ zone lisible depuis Python -->
+  <div id="liste-absents"></div>
+
   <script>
-    // Clic → active/désactive la case
+    // Toggle présence
     document.querySelectorAll('.half').forEach(half => {
       half.addEventListener('click', () => {
         half.classList.toggle('active');
       });
     });
 
-    // Compter les cases vertes
+    // Compte les présents
     function compterPresences() {
       const actifs = document.querySelectorAll('.half.active').length;
       document.getElementById('presence-count').textContent = `Présents : ${actifs}`;
     }
 
-    // Afficher les élèves absents
+    // Affiche aussi la liste dans le HTML (et pas juste alert)
     function afficherAbsents() {
       const absents = [];
       document.querySelectorAll('.half').forEach(half => {
@@ -145,10 +154,14 @@
         }
       });
 
+      const div = document.getElementById("liste-absents");
+
       if (absents.length === 0) {
         alert("Tous les élèves sont présents !");
+        div.innerHTML = "";
       } else {
         alert("Élèves absents :\n\n" + absents.join('\n'));
+        div.innerHTML = "<strong>Absents :</strong><br>" + absents.join("<br>");
       }
     }
   </script>
