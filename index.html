@@ -96,7 +96,7 @@
 <body>
 
   <div class="navbar">
-    <!-- Collège avec 4e > 403 + 404 -->
+    <!-- Collège -->
     <div class="dropdown" id="college-dropdown">
       <div class="dropbtn" onclick="toggleDropdown('college-dropdown')">Collège</div>
       <div class="dropdown-content">
@@ -127,6 +127,11 @@
     <div class="dropdown">
       <a class="dropbtn" href="test.html">Test</a>
     </div>
+
+    <!-- Cest -->
+    <div class="dropdown">
+      <a class="dropbtn" href="cest.html">Cest</a>
+    </div>
   </div>
 
   <div class="content">
@@ -155,7 +160,7 @@
       }
     });
 
-    // Fermer le menu actif si on passe la souris sur un autre onglet
+    // Fermer les autres menus si la souris passe sur un autre onglet
     document.querySelectorAll('.dropdown').forEach(drop => {
       drop.addEventListener('mouseenter', () => {
         document.querySelectorAll('.dropdown').forEach(d => {
@@ -167,7 +172,7 @@
     function checkPassword() {
       const password = prompt("Mot de passe requis pour accéder à la page 403 :");
       if (password === "1205") {
-        window.location.href = "403.html";
+        window.location.href = "progression403.html";
       } else if (password !== null) {
         alert("Mot de passe incorrect.");
       }
