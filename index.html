@@ -81,7 +81,12 @@
       <div class="dropdown-content">
         <a href="6e.html">6<sup>e</sup></a>
         <a href="#">5<sup>e</sup></a>
-        <a href="#">4<sup>e</sup></a>
+        <div class="dropdown">
+          <a class="dropbtn" href="#">4<sup>e</sup></a>
+          <div class="dropdown-content">
+            <a href="javascript:void(0)" onclick="checkPassword()">403</a>
+          </div>
+        </div>
         <a href="#">3<sup>e</sup></a>
       </div>
     </div>
@@ -100,6 +105,17 @@
     <h1>Bienvenue sur mon site.</h1>
     <p>Vous trouverez ici l'ensemble des cours, exercices, contrôles.</p>
   </div>
+
+  <script>
+    function checkPassword() {
+      const password = prompt("Mot de passe requis pour accéder à la page 403 :");
+      if (password === "1205") {
+        window.location.href = "403.html";
+      } else if (password !== null) {
+        alert("Mot de passe incorrect.");
+      }
+    }
+  </script>
 
 </body>
 </html>
