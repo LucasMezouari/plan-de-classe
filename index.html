@@ -64,7 +64,6 @@
       background-color: #eee;
     }
 
-    /* Sous-menu */
     .sub-dropdown {
       position: relative;
     }
@@ -85,8 +84,6 @@
       display: block;
     }
 
-    /* Affichage :hover OU .active */
-    .dropdown:hover .dropdown-content,
     .dropdown.active .dropdown-content {
       display: block;
     }
@@ -99,7 +96,6 @@
 <body>
 
   <div class="navbar">
-    <!-- Collège avec menu actif au clic -->
     <div class="dropdown" id="college-dropdown">
       <div class="dropbtn" onclick="toggleDropdown('college-dropdown')">Collège</div>
       <div class="dropdown-content">
@@ -115,7 +111,6 @@
       </div>
     </div>
 
-    <!-- Lycée (optionnel : on peut ajouter le même comportement si tu veux) -->
     <div class="dropdown" id="lycee-dropdown">
       <div class="dropbtn" onclick="toggleDropdown('lycee-dropdown')">Lycée</div>
       <div class="dropdown-content">
@@ -125,7 +120,6 @@
       </div>
     </div>
 
-    <!-- Onglet Test -->
     <div class="dropdown">
       <a class="dropbtn" href="test.html">Test</a>
     </div>
@@ -138,16 +132,32 @@
 
   <script>
     function toggleDropdown(id) {
-      const dropdown = document.getElementById(id);
-      dropdown.classList.toggle('active');
+      const clicked = document.getElementById(id);
+      const wasActive = clicked.classList.contains('active');
+
+      // Fermer tous les menus
+      document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+
+      // Si ce n'était pas déjà actif, l'ouvrir
+      if (!wasActive) {
+        clicked.classList.add('active');
+      }
     }
 
-    // Fermer les menus si on clique ailleurs
+    // Fermer si on clique en dehors
     document.addEventListener('click', function (event) {
-      const isDropdown = event.target.closest('.dropdown');
-      if (!isDropdown) {
+      if (!event.target.closest('.dropdown')) {
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
       }
+    });
+
+    // Fermer les autres menus si la souris entre sur un autre onglet
+    document.querySelectorAll('.dropdown').forEach(drop => {
+      drop.addEventListener('mouseenter', () => {
+        document.querySelectorAll('.dropdown').forEach(d => {
+          if (d !== drop) d.classList.remove('active');
+        });
+      });
     });
 
     function checkPassword() {
