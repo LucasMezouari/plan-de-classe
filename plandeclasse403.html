@@ -7,34 +7,32 @@
     body {
       font-family: sans-serif;
       background-color: #f8f8f8;
-      text-align: center;
       padding: 20px;
+      text-align: center;
     }
 
     h1 {
       margin-bottom: 30px;
     }
 
-    .row {
-      display: flex;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 150px);
+      grid-template-rows: repeat(5, auto);
+      gap: 20px 50px;
       justify-content: center;
-      gap: 50px;
-      margin-bottom: 30px;
     }
 
-    .column {
+    .cell {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 10px;
+      min-height: 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
-    }
-
-    .student {
-      width: 100px;
-      padding: 8px;
-      background-color: white;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      justify-content: center;
     }
 
     .cartable {
@@ -51,45 +49,27 @@
 
   <h1>Plan de classe – 403</h1>
 
-  <div class="row">
-    <!-- Colonne gauche -->
-    <div class="column">
-      <div class="cartable">📁</div>
-      <div class="cartable">📁</div>
-      <div class="cartable">📁</div>
-      <div class="cartable">📁</div>
-      <div class="student name">D. Nemaaly</div>
-      <div class="student name">D. Mathys</div>
-      <div class="student name">D. Néhémie</div>
-      <div class="student name">Z. Inès</div>
-      <div class="student name">L. Aïssa</div>
-      <div class="student name">B. Maryam</div>
-    </div>
+  <div class="grid">
+    <!-- Colonne 1 -->
+    <div class="cell"><div class="name">D. Nemaaly</div></div>
+    <div class="cell"><div class="name">D. Mathys</div></div>
+    <div class="cell"><div class="name">D. Néhémie</div></div>
+    <div class="cell"><div class="name">Z. Inès</div></div>
+    <div class="cell"><div class="name">L. Aïssa</div></div>
 
-    <!-- Colonne centrale -->
-    <div class="column">
-      <div class="student name">K. Ismaël</div>
-      <div class="cartable">📁</div>
-      <div class="student name">S. Nour El Houd</div>
-      <div class="student name">A. Roumaissa</div>
-      <div class="student name">C. Merve</div>
-      <div class="student name">P. Raphaël</div>
-      <div class="student name">F. Sheldon</div>
-    </div>
+    <!-- Colonne 2 -->
+    <div class="cell"><div class="name">K. Ismaël</div></div>
+    <div class="cell"><div class="cartable">📁</div><div class="name">S. Nour El Houd</div></div>
+    <div class="cell"><div class="name">A. Roumaissa</div></div>
+    <div class="cell"><div class="name">C. Merve</div></div>
+    <div class="cell"><div class="name">P. Raphaël</div></div>
 
-    <!-- Colonne droite -->
-    <div class="column">
-      <div class="cartable">📁</div>
-      <div class="cartable">📁</div>
-      <div class="student name">P. Malone</div>
-      <div class="student name">D. Théo</div>
-      <div class="cartable">📁</div>
-      <div class="student name">T. Jilyan</div>
-      <div class="student name">Z. Ismael</div>
-      <div class="student name">B. Mohamed</div>
-      <div class="student name">A. Aya</div>
-      <div class="student name">K. Inahya</div>
-    </div>
+    <!-- Colonne 3 -->
+    <div class="cell"><div class="cartable">📁</div><div class="name">P. Malone</div></div>
+    <div class="cell"><div class="name">D. Théo</div></div>
+    <div class="cell"><div class="cartable">📁</div><div class="name">T. Jilyan</div></div>
+    <div class="cell"><div class="name">Z. Ismael</div></div>
+    <div class="cell"><div class="name">A. Aya</div></div>
   </div>
 
 </body>
