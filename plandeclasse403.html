@@ -41,11 +41,6 @@
     .half:last-child {
       border-right: none;
     }
-    .note {
-      font-size: 11px;
-      color: #555;
-      margin-left: 4px;
-    }
     .context-menu {
       position: absolute;
       display: none;
@@ -62,13 +57,21 @@
     .context-menu div.selected {
       background-color: #d0ebff;
     }
+    #feedback {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #222;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
   </style>
 </head>
 <body>
   <h1>Plan de classe 403</h1>
   <div class="grid">
-    <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
-    <!-- Ajoute d'autres cases ici -->
+    <div class="cell"><div class="half">Neemaly</div><div class="half">case 2</div></div>
   </div>
 
   <div id="context-menu" class="context-menu">
@@ -77,11 +80,20 @@
     <div class="menu-option">Oubli de matériel</div>
   </div>
 
+  <div id="feedback"></div>
+
   <script>
     let caseCible = null;
     const menu = document.getElementById("context-menu");
     const options = menu.querySelectorAll(".menu-option");
     let selectedIndex = 0;
+
+    function selectOption(index) {
+      options.forEach((opt, i) => {
+        opt.classList.toggle('selected', i === index);
+      });
+      selectedIndex = index;
+    }
 
     document.querySelectorAll('.half').forEach(half => {
       let timer;
@@ -105,12 +117,14 @@
       }
     });
 
-    function selectOption(index) {
-      options.forEach((opt, i) => {
-        opt.classList.toggle('selected', i === index);
+    options.forEach((opt, i) => {
+      opt.addEventListener('click', () => {
+        if (caseCible) {
+          afficherFeedback(caseCible.textContent.trim(), opt.textContent);
+          menu.style.display = 'none';
+        }
       });
-      selectedIndex = index;
-    }
+    });
 
     document.addEventListener('keydown', (e) => {
       if (menu.style.display === 'block') {
@@ -125,23 +139,19 @@
         } else if (e.key === 'Enter') {
           const text = options[selectedIndex].textContent;
           if (caseCible) {
-            let texte = caseCible.textContent.split('–')[0].trim();
-            caseCible.innerHTML = `${texte} <span class="note">– ${text}</span>`;
+            afficherFeedback(caseCible.textContent.trim(), text);
             menu.style.display = 'none';
           }
         }
       }
     });
 
-    options.forEach((opt, i) => {
-      opt.addEventListener('click', () => {
-        if (caseCible) {
-          let texte = caseCible.textContent.split('–')[0].trim();
-          caseCible.innerHTML = `${texte} <span class="note">– ${opt.textContent}</span>`;
-          menu.style.display = 'none';
-        }
-      });
-    });
+    function afficherFeedback(nom, remarque) {
+      const div = document.getElementById("feedback");
+      const ligne = document.createElement("div");
+      ligne.textContent = `${nom} : ${remarque}`;
+      div.appendChild(ligne);
+    }
   </script>
 </body>
 </html>
