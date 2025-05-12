@@ -2,22 +2,25 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Test</title>
+  <title>Accueil</title>
   <style>
     body {
       margin: 0;
       font-family: sans-serif;
     }
+
     .navbar {
       display: flex;
       background-color: #f1f1f1;
       padding: 10px;
       border-bottom: 2px solid #ccc;
     }
+
     .dropdown {
       position: relative;
       margin-right: 20px;
     }
+
     .dropbtn {
       padding: 10px 20px;
       background-color: #ddd;
@@ -28,7 +31,11 @@
       color: black;
       display: inline-block;
     }
-    .dropbtn:hover { background-color: #ccc; }
+
+    .dropbtn:hover {
+      background-color: #ccc;
+    }
+
     .dropdown-content {
       display: none;
       position: absolute;
@@ -40,6 +47,7 @@
       z-index: 1;
       border-radius: 5px;
     }
+
     .dropdown-content a {
       color: black;
       padding: 10px 15px;
@@ -47,7 +55,42 @@
       display: block;
       border-bottom: 1px solid #ddd;
     }
-    .dropdown:hover .dropdown-content { display: block; }
+
+    .dropdown-content a:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #eee;
+    }
+
+    /* Sous-menu */
+    .sub-dropdown {
+      position: relative;
+    }
+
+    .sub-dropdown-content {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      background-color: #f9f9f9;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      min-width: 160px;
+      z-index: 1;
+    }
+
+    .sub-dropdown:hover .sub-dropdown-content {
+      display: block;
+    }
+
+    /* Affichage :hover OU .active */
+    .dropdown:hover .dropdown-content,
+    .dropdown.active .dropdown-content {
+      display: block;
+    }
+
     .content {
       padding: 20px;
     }
@@ -55,16 +98,16 @@
 </head>
 <body>
 
-  <!-- Barre de navigation -->
   <div class="navbar">
-    <div class="dropdown">
-      <div class="dropbtn">Collège</div>
+    <!-- Collège avec menu actif au clic -->
+    <div class="dropdown" id="college-dropdown">
+      <div class="dropbtn" onclick="toggleDropdown('college-dropdown')">Collège</div>
       <div class="dropdown-content">
         <a href="6e.html">6<sup>e</sup></a>
         <a href="#">5<sup>e</sup></a>
-        <div class="dropdown">
-          <a class="dropbtn" href="#">4<sup>e</sup></a>
-          <div class="dropdown-content">
+        <div class="sub-dropdown">
+          <a href="#">4<sup>e</sup></a>
+          <div class="sub-dropdown-content">
             <a href="javascript:void(0)" onclick="checkPassword()">403</a>
           </div>
         </div>
@@ -72,8 +115,9 @@
       </div>
     </div>
 
-    <div class="dropdown">
-      <div class="dropbtn">Lycée</div>
+    <!-- Lycée (optionnel : on peut ajouter le même comportement si tu veux) -->
+    <div class="dropdown" id="lycee-dropdown">
+      <div class="dropbtn" onclick="toggleDropdown('lycee-dropdown')">Lycée</div>
       <div class="dropdown-content">
         <a href="#">Seconde</a>
         <a href="#">Première</a>
@@ -81,17 +125,31 @@
       </div>
     </div>
 
+    <!-- Onglet Test -->
     <div class="dropdown">
       <a class="dropbtn" href="test.html">Test</a>
     </div>
   </div>
 
-  <!-- Contenu volontairement vide -->
   <div class="content">
-    <!-- Rien ici -->
+    <h1>Bienvenue sur mon site.</h1>
+    <p>Vous trouverez ici l'ensemble des cours, exercices, contrôles.</p>
   </div>
 
   <script>
+    function toggleDropdown(id) {
+      const dropdown = document.getElementById(id);
+      dropdown.classList.toggle('active');
+    }
+
+    // Fermer les menus si on clique ailleurs
+    document.addEventListener('click', function (event) {
+      const isDropdown = event.target.closest('.dropdown');
+      if (!isDropdown) {
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+      }
+    });
+
     function checkPassword() {
       const password = prompt("Mot de passe requis pour accéder à la page 403 :");
       if (password === "1205") {
