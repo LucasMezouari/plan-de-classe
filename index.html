@@ -16,9 +16,12 @@
       border-bottom: 2px solid #ccc;
     }
 
-    .tab {
+    .dropdown {
       position: relative;
       margin-right: 20px;
+    }
+
+    .dropbtn {
       padding: 10px 20px;
       background-color: #ddd;
       border: 1px solid #aaa;
@@ -26,49 +29,43 @@
       cursor: pointer;
       text-decoration: none;
       color: black;
+      display: inline-block;
     }
 
-    .tab:hover {
+    .dropbtn:hover {
       background-color: #ccc;
     }
 
-    .tab::after {
-      content: attr(data-hover);
+    .dropdown-content {
+      display: none;
       position: absolute;
       top: 110%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: #fff;
-      padding: 6px 10px;
-      font-size: 0.9em;
+      left: 0;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      border: 1px solid #aaa;
+      z-index: 1;
       border-radius: 5px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 10;
     }
 
-    .tab:hover::after {
-      opacity: 1;
+    .dropdown-content a {
+      color: black;
+      padding: 10px 15px;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid #ddd;
     }
 
-    .tab::before {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 6px;
-      border-style: solid;
-      border-color: #333 transparent transparent transparent;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    .dropdown-content a:last-child {
+      border-bottom: none;
     }
 
-    .tab:hover::before {
-      opacity: 1;
+    .dropdown-content a:hover {
+      background-color: #eee;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
     }
 
     .content {
@@ -79,9 +76,24 @@
 <body>
 
   <div class="navbar">
-    <a href="#" class="tab" data-hover="photo de classe">photo</a>
-    <a href="403.html" class="tab">Plan de classe</a>
-    <a href="404.html" class="tab">Géométrie algébrique</a>
+    <div class="dropdown">
+      <div class="dropbtn">Collège</div>
+      <div class="dropdown-content">
+        <a href="#">6<sup>e</sup></a>
+        <a href="#">5<sup>e</sup></a>
+        <a href="#">4<sup>e</sup></a>
+        <a href="#">3<sup>e</sup></a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <div class="dropbtn">Lycée</div>
+      <div class="dropdown-content">
+        <a href="#">Seconde</a>
+        <a href="#">Première</a>
+        <a href="#">Terminale</a>
+      </div>
+    </div>
   </div>
 
   <div class="content">
