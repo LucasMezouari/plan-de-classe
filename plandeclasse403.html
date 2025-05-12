@@ -42,7 +42,8 @@
       font-size: 13px;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s;
+      position: relative;
+      user-select: none;
     }
 
     .half:last-child {
@@ -95,6 +96,32 @@
       font-size: 16px;
       color: #444;
     }
+
+    .note {
+      font-size: 11px;
+      color: #555;
+      margin-left: 4px;
+    }
+
+    /* Menu contextuel */
+    .context-menu {
+      position: absolute;
+      display: none;
+      background-color: #fff;
+      border: 1px solid #aaa;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 13px;
+    }
+
+    .context-menu div {
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    .context-menu div:hover {
+      background-color: #eee;
+    }
   </style>
 </head>
 <body>
@@ -102,6 +129,7 @@
   <h1>Plan de classe – 403</h1>
 
   <div class="grid">
+    <!-- Exemple d’une ligne -->
     <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
     <div class="cell"><div class="half">case 3</div><div class="half">case 4</div></div>
     <div class="cell"><div class="half">case 5</div><div class="half">case 6</div></div>
@@ -129,15 +157,22 @@
 
   <div id="liste-absents"></div>
 
+  <!-- Menu contextuel -->
+  <div id="context-menu" class="context-menu">
+    <div onclick="ajouterNote('Comportement')">Comportement</div>
+    <div onclick="ajouterNote('Travail non fait')">Travail non fait</div>
+    <div onclick="ajouterNote('Oubli de matériel')">Oubli de matériel</div>
+  </div>
+
   <script>
-    // Gérer le clic sur chaque demi-case
+    // Activer présence
     document.querySelectorAll('.half').forEach(half => {
       half.addEventListener('click', () => {
         half.classList.toggle('active');
       });
     });
 
-    // Quand on clique sur Appel terminé
+    // Compter présents et afficher absents
     function appelTermine() {
       const absents = [];
       const demiCases = document.querySelectorAll('.half');
@@ -147,11 +182,9 @@
         }
       });
 
-      // Affiche le nombre de présents
       const nbPresents = demiCases.length - absents.length;
       document.getElementById('presence-count').textContent = `Présents : ${nbPresents}`;
 
-      // Affiche la liste dans la page et dans une alerte
       const div = document.getElementById("liste-absents");
       if (absents.length === 0) {
         alert("Tous les élèves sont présents !");
@@ -159,6 +192,39 @@
       } else {
         alert("Élèves absents :\n\n" + absents.join('\n'));
         div.innerHTML = "<strong>Absents :</strong><br>" + absents.join("<br>");
+      }
+    }
+
+    // Menu contextuel
+    let caseCible = null;
+    const menu = document.getElementById("context-menu");
+
+    document.querySelectorAll('.half').forEach(half => {
+      let timer;
+      half.addEventListener('mousedown', e => {
+        timer = setTimeout(() => {
+          caseCible = half;
+          const rect = half.getBoundingClientRect();
+          menu.style.left = `${rect.right + window.scrollX + 5}px`;
+          menu.style.top = `${rect.top + window.scrollY}px`;
+          menu.style.display = 'block';
+        }, 500);
+      });
+      half.addEventListener('mouseup', () => clearTimeout(timer));
+      half.addEventListener('mouseleave', () => clearTimeout(timer));
+    });
+
+    document.body.addEventListener('click', e => {
+      if (!menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    function ajouterNote(note) {
+      if (caseCible) {
+        let texte = caseCible.textContent.split('–')[0].trim();
+        caseCible.innerHTML = `${texte} <span class="note">– ${note}</span>`;
+        menu.style.display = 'none';
       }
     }
   </script>
