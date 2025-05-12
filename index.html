@@ -35,18 +35,40 @@
     .tab::after {
       content: attr(data-hover);
       position: absolute;
-      top: 100%;
-      left: 0;
-      background: #eee;
-      padding: 5px 10px;
-      border: 1px solid #aaa;
-      display: none;
+      top: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 6px 10px;
+      font-size: 0.9em;
+      border-radius: 5px;
       white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
       z-index: 10;
     }
 
     .tab:hover::after {
-      display: block;
+      opacity: 1;
+    }
+
+    .tab::before {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .tab:hover::before {
+      opacity: 1;
     }
 
     .content {
@@ -63,7 +85,8 @@
   </div>
 
   <div class="content">
-    <h1>Bienvenue sur le site</h1>
+    <h1>Bienvenue sur mon site.</h1>
+    <p>Vous trouverez ici l'ensemble des cours, exercices, contrôles.</p>
   </div>
 
 </body>
