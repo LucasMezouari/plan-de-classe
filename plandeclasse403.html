@@ -64,6 +64,7 @@
     .left-button {
       position: absolute;
       left: 0;
+      text-align: left;
     }
 
     .bouton, .tableau {
@@ -79,6 +80,14 @@
       font-size: 16px;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
       cursor: pointer;
+      margin-top: 5px;
+    }
+
+    #presence-count {
+      font-size: 16px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
@@ -106,18 +115,25 @@
 
   <div class="footer-layout">
     <div class="left-button">
-      <div class="bouton" onclick="alert('Appel terminé !')">Appel terminé</div>
+      <div id="presence-count">Présents : 0</div>
+      <div class="bouton" onclick="compterPresences()">Appel terminé</div>
     </div>
     <div class="tableau">Tableau</div>
   </div>
 
   <script>
-    // Active/désactive la case au clic
+    // Active/désactive une case au clic
     document.querySelectorAll('.half').forEach(half => {
       half.addEventListener('click', () => {
         half.classList.toggle('active');
       });
     });
+
+    // Compte les cases vertes (présents)
+    function compterPresences() {
+      const actifs = document.querySelectorAll('.half.active').length;
+      document.getElementById('presence-count').textContent = `Présents : ${actifs}`;
+    }
   </script>
 
 </body>
