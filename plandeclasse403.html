@@ -161,22 +161,41 @@
 
     document.querySelectorAll('.half').forEach(half => {
       let timer;
+      let isTouch = false;
+
       half.addEventListener('click', () => {
-        half.classList.toggle('active');
+        if (!isTouch) {
+          half.classList.toggle('active');
+        }
+        isTouch = false;
       });
+
       half.addEventListener('mousedown', () => {
         timer = setTimeout(() => {
-          caseCible = half;
-          const rect = half.getBoundingClientRect();
-          menu.style.left = `${rect.right + window.scrollX + 5}px`;
-          menu.style.top = `${rect.top + window.scrollY}px`;
-          menu.style.display = 'block';
-          selectOption(0);
+          openContextMenu(half);
         }, 500);
       });
+
+      half.addEventListener('touchstart', (e) => {
+        isTouch = true;
+        timer = setTimeout(() => {
+          openContextMenu(half);
+        }, 500);
+      });
+
       half.addEventListener('mouseup', () => clearTimeout(timer));
       half.addEventListener('mouseleave', () => clearTimeout(timer));
+      half.addEventListener('touchend', () => clearTimeout(timer));
     });
+
+    function openContextMenu(target) {
+      caseCible = target;
+      const rect = target.getBoundingClientRect();
+      menu.style.left = `${rect.right + window.scrollX + 5}px`;
+      menu.style.top = `${rect.top + window.scrollY}px`;
+      menu.style.display = 'block';
+      selectOption(0);
+    }
 
     document.body.addEventListener('click', e => {
       if (!menu.contains(e.target)) {
