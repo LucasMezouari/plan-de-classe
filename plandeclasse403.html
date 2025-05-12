@@ -1,118 +1,27 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Plan de classe 403</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: #f8f8f8;
-      padding: 20px;
-      text-align: center;
-    }
+.footer-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  position: relative;
+}
 
-    h1 {
-      margin-bottom: 30px;
-    }
+.left-button {
+  position: absolute;
+  left: 0;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 160px);
-      grid-template-rows: repeat(5, auto);
-      gap: 20px 50px;
-      justify-content: center;
-    }
-
-    .cell {
-      width: 160px;
-      height: 60px;
-      background-color: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: row;
-      overflow: hidden;
-    }
-
-    .half {
-      width: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px solid #ccc;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .half:last-child {
-      border-right: none;
-    }
-
-    .active {
-      background-color: #c8facc; /* vert clair */
-    }
-
-    .footer-bar {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 50px;
-    }
-
-    .bouton, .tableau {
-      width: 200px;
-      height: 40px;
-      background-color: #e0e0e0;
-      border: 2px solid #666;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 16px;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>Plan de classe – 403</h1>
-
-  <div class="grid">
-    <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
-    <div class="cell"><div class="half">case 3</div><div class="half">case 4</div></div>
-    <div class="cell"><div class="half">case 5</div><div class="half">case 6</div></div>
-    <div class="cell"><div class="half">case 7</div><div class="half">case 8</div></div>
-    <div class="cell"><div class="half">case 9</div><div class="half">case 10</div></div>
-    <div class="cell"><div class="half">case 11</div><div class="half">case 12</div></div>
-    <div class="cell"><div class="half">Nemaaly</div><div class="half">case 14</div></div>
-    <div class="cell"><div class="half">case 15</div><div class="half">case 16</div></div>
-    <div class="cell"><div class="half">case 17</div><div class="half">case 18</div></div>
-    <div class="cell"><div class="half">case 19</div><div class="half">case 20</div></div>
-    <div class="cell"><div class="half">case 21</div><div class="half">case 22</div></div>
-    <div class="cell"><div class="half">case 23</div><div class="half">case 24</div></div>
-    <div class="cell"><div class="half">case 25</div><div class="half">case 26</div></div>
-    <div class="cell"><div class="half">case 27</div><div class="half">case 28</div></div>
-    <div class="cell"><div class="half">case 29</div><div class="half">case 30</div></div>
-  </div>
-
-  <div class="footer-bar">
-    <div class="bouton" onclick="alert('Appel terminé !')">Appel terminé</div>
-    <div class="tableau">Tableau</div>
-  </div>
-
-  <script>
-    // Activer/désactiver le vert clair au clic
-    document.querySelectorAll('.half').forEach(half => {
-      half.addEventListener('click', () => {
-        half.classList.toggle('active');
-      });
-    });
-  </script>
-
-</body>
-</html>
+.bouton, .tableau {
+  width: 200px;
+  height: 40px;
+  background-color: #e0e0e0;
+  border: 2px solid #666;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
