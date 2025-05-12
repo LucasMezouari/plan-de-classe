@@ -80,12 +80,12 @@
       font-size: 16px;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
       cursor: pointer;
-      margin-top: 5px;
+      margin-top: 10px;
     }
 
     #presence-count {
       font-size: 16px;
-      margin-bottom: 5px;
+      margin-top: 10px;
       font-weight: bold;
       color: #333;
     }
@@ -115,6 +115,7 @@
 
   <div class="footer-layout">
     <div class="left-button">
+      <div class="bouton" onclick="afficherAbsents()">Élèves absents</div>
       <div id="presence-count">Présents : 0</div>
       <div class="bouton" onclick="compterPresences()">Appel terminé</div>
     </div>
@@ -122,17 +123,33 @@
   </div>
 
   <script>
-    // Active/désactive une case au clic
+    // Clic → active/désactive la case
     document.querySelectorAll('.half').forEach(half => {
       half.addEventListener('click', () => {
         half.classList.toggle('active');
       });
     });
 
-    // Compte les cases vertes (présents)
+    // Compter les cases vertes
     function compterPresences() {
       const actifs = document.querySelectorAll('.half.active').length;
       document.getElementById('presence-count').textContent = `Présents : ${actifs}`;
+    }
+
+    // Afficher les élèves absents
+    function afficherAbsents() {
+      const absents = [];
+      document.querySelectorAll('.half').forEach(half => {
+        if (!half.classList.contains('active')) {
+          absents.push(half.textContent.trim());
+        }
+      });
+
+      if (absents.length === 0) {
+        alert("Tous les élèves sont présents !");
+      } else {
+        alert("Élèves absents :\n\n" + absents.join('\n'));
+      }
     }
   </script>
 
