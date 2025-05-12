@@ -55,8 +55,14 @@
       background-color: #c8facc; /* vert clair */
     }
 
-    .tableau {
+    .footer-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
       margin-top: 50px;
+    }
+
+    .bouton, .tableau {
       width: 200px;
       height: 40px;
       background-color: #e0e0e0;
@@ -67,9 +73,8 @@
       justify-content: center;
       font-weight: bold;
       font-size: 16px;
-      margin-left: auto;
-      margin-right: auto;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
     }
   </style>
 </head>
@@ -78,7 +83,6 @@
   <h1>Plan de classe – 403</h1>
 
   <div class="grid">
-    <!-- Exemple : ligne 1 -->
     <div class="cell"><div class="half">case 1</div><div class="half">case 2</div></div>
     <div class="cell"><div class="half">case 3</div><div class="half">case 4</div></div>
     <div class="cell"><div class="half">case 5</div><div class="half">case 6</div></div>
@@ -96,10 +100,13 @@
     <div class="cell"><div class="half">case 29</div><div class="half">case 30</div></div>
   </div>
 
-  <div class="tableau">Tableau</div>
+  <div class="footer-bar">
+    <div class="bouton" onclick="alert('Appel terminé !')">Appel terminé</div>
+    <div class="tableau">Tableau</div>
+  </div>
 
   <script>
-    // Active / désactive la classe "active" au clic
+    // Activer/désactiver le vert clair au clic
     document.querySelectorAll('.half').forEach(half => {
       half.addEventListener('click', () => {
         half.classList.toggle('active');
