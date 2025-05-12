@@ -2,111 +2,61 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Plan de classe – 403</title>
+  <title>403</title>
   <style>
     body {
       font-family: sans-serif;
-      padding: 20px;
-      text-align: center;
+      margin: 0;
+      padding: 0;
     }
-    .grille {
-      display: grid;
-      grid-template-columns: repeat(6, 100px);
-      grid-template-rows: repeat(6, 60px);
-      gap: 10px;
-      justify-content: center;
-      width: 660px;
-      margin: auto;
+
+    .navbar {
+      background-color: #f1f1f1;
+      padding: 10px;
+      border-bottom: 2px solid #ccc;
     }
-    .case {
-      border: 1px solid #aaa;
-      border-radius: 6px;
+
+    .tabs {
       display: flex;
-      align-items: center;
       justify-content: center;
-      background-color: #f5f5f5;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .case.barre {
-      text-decoration: line-through;
-      color: #888;
       background-color: #ddd;
+      padding: 10px;
     }
-    #appel {
-      margin-top: 30px;
-      padding: 12px 24px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-    }
-    #appel:hover {
-      background-color: #388e3c;
-    }
-    #resultat {
-      margin-top: 20px;
-      font-size: 20px;
+
+    .tab {
+      margin: 0 10px;
+      padding: 10px 20px;
+      background-color: white;
+      border: 2px solid blue;
+      color: blue;
+      text-decoration: none;
+      border-radius: 5px;
       font-weight: bold;
-      color: green;
+    }
+
+    .tab:hover {
+      background-color: #eef;
+    }
+
+    .content {
+      padding: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Plan de classe – 403</h1>
-
-  <div class="grille">
-    <!-- Rangée 1 -->
-    <div class="case"></div><div class="case"></div><div class="case"></div>
-    <div class="case"></div><div class="case"></div><div class="case"></div>
-
-    <!-- Rangée 2 -->
-    <div class="case"></div><div class="case"></div><div class="case"></div>
-    <div class="case"></div><div class="case"></div><div class="case"></div>
-
-    <!-- Rangée 3 -->
-    <div class="case">D.Nemaaly</div><div class="case">D.Mathys</div><div class="case">K.Ismaël</div>
-    <div class="case"></div><div class="case">P.Malone</div><div class="case">D.Théo</div>
-
-    <!-- Rangée 4 -->
-    <div class="case">D.Néhémie</div><div class="case">Z.Inès</div><div class="case">S.Nour El Houd</div>
-    <div class="case"></div><div class="case">T.Jilyan</div><div class="case"></div>
-
-    <!-- Rangée 5 -->
-    <div class="case">L.Aïssa</div><div class="case">B.Maryam</div><div class="case">A.Roumaïssa</div>
-    <div class="case">C.Merve</div><div class="case">Z.Ismaël</div><div class="case">B.Mohamed</div>
-
-    <!-- Rangée 6 -->
-    <div class="case"></div><div class="case"></div><div class="case">P.Raphaël</div>
-    <div class="case">F.Sheldon</div><div class="case">A.Aya</div><div class="case">K.Inahya</div>
+  <div class="navbar">
+    <h2>Classe de 4e – Groupe 403</h2>
   </div>
 
-  <button id="appel">Appel terminé</button>
+  <div class="tabs">
+    <a class="tab" href="progression403.html">Progression</a>
+    <a class="tab" href="plandeclasse403.html">Plan de classe</a>
+  </div>
 
-  <div id="resultat"></div>
-
-  <p style="margin-top: 30px;">
-    <a href="index.html">← Retour à l'accueil</a>
-  </p>
-
-  <script>
-    // Barrer / Débarrer les noms
-    document.querySelectorAll('.case').forEach(cell => {
-      if (cell.textContent.trim() !== '') {
-        cell.addEventListener('click', () => {
-          cell.classList.toggle('barre');
-        });
-      }
-    });
-
-    // Affichage du message BRAVO
-    document.getElementById('appel').addEventListener('click', () => {
-      document.getElementById('resultat').textContent = "BRAVO";
-    });
-  </script>
+  <div class="content">
+    <p>Choisissez un onglet ci-dessus pour continuer.</p>
+  </div>
 
 </body>
 </html>
