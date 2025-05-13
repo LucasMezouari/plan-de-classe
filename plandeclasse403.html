@@ -28,8 +28,7 @@
       align-items: center;
       justify-content: center;
       font-size: 13px; font-weight: bold;
-      cursor: pointer;
-      user-select: none;
+      cursor: pointer; user-select: none;
       transition: background-color .2s;
       margin-bottom: 10px;
     }
@@ -67,7 +66,7 @@
     .left-button {
       position: absolute; left: 20px; top: 80px; text-align: left;
     }
-    .bouton, .tableau, .export-btn {
+    .bouton, .tableau {
       width: 200px; height: 40px;
       background: #e0e0e0; border: 2px solid #666;
       border-radius: 6px; display: flex;
@@ -92,7 +91,7 @@
   <h1>Plan de classe 403</h1>
 
   <div class="grid">
-    <!-- Exemple pour cases 1–2, dupliquez jusqu'à case 30 -->
+    <!-- Dupliquez ce bloc jusqu'à case 30 -->
     <div class="cell">
       <div class="half">case 1
         <input type="checkbox" class="toggle-notes">
@@ -118,12 +117,7 @@
     <div class="left-button">
       <div id="presence-count"></div>
       <div class="bouton" onclick="afficherAppel()">Appel terminé</div>
-      <div class="export-btn" onclick="exportState()">Exporter l’état</div>
-      <input type="file" id="import-file" style="display:none" accept="application/json"
-             onchange="importState(event)">
-      <div class="export-btn" onclick="document.getElementById('import-file').click()">
-        Importer l’état
-      </div>
+      <div class="bouton" onclick="copyLink()">Copier le lien</div>
     </div>
     <div class="tableau">Tableau</div>
   </div>
@@ -137,17 +131,18 @@
   <div id="feedback"></div>
 
   <script>
-    // ----- context menu
+    // --- CONTEXT MENU & FEEDBACK (inchangé) ---
     let caseCible = null;
     const menu = document.getElementById("context-menu"),
           opts = menu.querySelectorAll(".menu-option");
-    let selectedIndex = 0;
-
-    function selectOption(i) {
-      opts.forEach((o,j)=>o.classList.toggle('selected', i===j));
-      selectedIndex = i;
-    }
-    function openContextMenu(target) {
+    opts.forEach((opt,i)=>opt.addEventListener('click', ()=>{
+      if(!caseCible) return;
+      afficherFeedback(caseCible, opt.textContent);
+      menu.style.display='none';
+      updateURL();
+    }));
+    function selectOption(i){ opts.forEach((o,j)=>o.classList.toggle('selected', i===j)); }
+    function openContextMenu(target){
       caseCible = target;
       const r = target.getBoundingClientRect();
       menu.style.left = `${r.right+5+window.scrollX}px`;
@@ -158,68 +153,6 @@
     document.body.addEventListener('click', e=>{
       if(!menu.contains(e.target)) menu.style.display='none';
     });
-    opts.forEach((opt,i)=>{
-      opt.addEventListener('click', ()=>{
-        if(!caseCible) return;
-        afficherFeedback(caseCible, opt.textContent);
-        menu.style.display='none';
-        saveState();
-      });
-    });
-
-    // ----- gestion notes
-    document.querySelectorAll('.toggle-notes').forEach(cb=>{
-      cb.addEventListener('change', ()=>{
-        const no = cb.parentElement.querySelector('.notes-options');
-        no.style.display = cb.checked ? 'block' : 'none';
-        saveState();
-      });
-    });
-
-    // ----- toggle présence / long-press
-    document.querySelectorAll('.half').forEach(half=>{
-      let timer, longPress=false;
-      half.addEventListener('mousedown',()=>{
-        longPress=false;
-        timer = setTimeout(()=>{
-          longPress=true;
-          openContextMenu(half);
-        }, 500);
-      });
-      half.addEventListener('touchstart', e=>{
-        e.preventDefault();
-        longPress=false;
-        timer = setTimeout(()=>{
-          longPress=true;
-          openContextMenu(half);
-        }, 500);
-      });
-      function upHandler(){
-        clearTimeout(timer);
-        if(!longPress){
-          half.classList.toggle('active');
-          saveState();
-        }
-      }
-      half.addEventListener('mouseup', upHandler);
-      half.addEventListener('touchend', upHandler);
-      half.addEventListener('mouseleave', ()=> clearTimeout(timer));
-    });
-
-    // ----- fonction appel
-    function afficherAppel(){
-      const halves = Array.from(document.querySelectorAll('.half'));
-      const presCount = halves.filter(h=>h.classList.contains('active')).length;
-      document.getElementById('presence-count').textContent = `Présents : ${presCount}`;
-
-      const abs = halves.filter(h=>!h.classList.contains('active'))
-                .map(h=>h.childNodes[0].textContent.trim());
-      const uniq = [...new Set(abs)];
-      document.getElementById('presence-result').innerHTML =
-        `<div><strong>Absents (${uniq.length}) :</strong> ${uniq.join(', ')}</div>`;
-    }
-
-    // ----- feedback
     function afficherFeedback(el, remark){
       const name = el.childNodes[0].textContent.trim();
       const d = document.createElement('div');
@@ -227,74 +160,104 @@
       document.getElementById('feedback').appendChild(d);
     }
 
-    // ----- export/import JSON
+    // --- TOGGLE NOTES & PRESENCE ---
+    document.querySelectorAll('.toggle-notes').forEach(cb=>{
+      cb.addEventListener('change', ()=>{
+        cb.parentElement.querySelector('.notes-options')
+          .style.display = cb.checked ? 'block':'none';
+        updateURL();
+      });
+    });
+    document.querySelectorAll('.half').forEach(half=>{
+      let timer, longPress=false;
+      half.addEventListener('mousedown', ()=>{
+        longPress=false;
+        timer = setTimeout(()=>{
+          longPress=true; openContextMenu(half);
+        }, 500);
+      });
+      half.addEventListener('touchstart', e=>{
+        e.preventDefault(); longPress=false;
+        timer = setTimeout(()=>{
+          longPress=true; openContextMenu(half);
+        }, 500);
+      });
+      function up(){
+        clearTimeout(timer);
+        if(!longPress){
+          half.classList.toggle('active');
+          updateURL();
+        }
+      }
+      half.addEventListener('mouseup', up);
+      half.addEventListener('touchend', up);
+      half.addEventListener('mouseleave', ()=> clearTimeout(timer));
+    });
+
+    // --- APPEL & COMPTEUR ---
+    function afficherAppel(){
+      const all = Array.from(document.querySelectorAll('.half'));
+      const pres = all.filter(h=>h.classList.contains('active')).length;
+      document.getElementById('presence-count').textContent = `Présents : ${pres}`;
+      const abs = all.filter(h=>!h.classList.contains('active'))
+                     .map(h=>h.childNodes[0].textContent.trim());
+      const uniq = [...new Set(abs)];
+      document.getElementById('presence-result').innerHTML =
+        `<div><strong>Absents (${uniq.length}) :</strong> ${uniq.join(', ')}</div>`;
+      updateURL();
+    }
+
+    // --- PERMALINK VIA HASH ---
     function getState(){
       const s = {};
       document.querySelectorAll('.half').forEach(h=>{
         const name = h.childNodes[0].textContent.trim();
-        const notes = [...h.querySelectorAll('.notes-options input:checked')]
-                      .map(cb=>cb.value);
         s[name] = {
-          active: h.classList.contains('active'),
+          active:    h.classList.contains('active'),
           showNotes: h.querySelector('.toggle-notes').checked,
-          notes
+          notes:     Array.from(
+                       h.querySelectorAll('.notes-options input:checked')
+                     ).map(i=>i.value)
         };
       });
+      // On pourrait aussi persister les feedbacks ici si besoin.
       return s;
     }
     function applyState(s){
       Object.entries(s).forEach(([name,st])=>{
         const h = [...document.querySelectorAll('.half')]
-                  .find(xx=>xx.childNodes[0].textContent.trim()===name);
+                  .find(x=>x.childNodes[0].textContent.trim()===name);
         if(!h) return;
         h.classList.toggle('active', st.active);
-        const cbNotes = h.querySelector('.toggle-notes');
-        cbNotes.checked = st.showNotes;
-        const no = h.querySelector('.notes-options');
-        no.style.display = st.showNotes ? 'block':'none';
+        const cb = h.querySelector('.toggle-notes');
+        cb.checked = st.showNotes;
+        h.querySelector('.notes-options')
+         .style.display = st.showNotes ? 'block':'none';
         h.querySelectorAll('.notes-options input').forEach(i=>{
           i.checked = st.notes.includes(i.value);
         });
       });
     }
-    function exportState(){
-      const data = JSON.stringify(getState(), null, 2);
-      const blob = new Blob([data],{type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'etat_plan.json'; a.click();
-      URL.revokeObjectURL(url);
+    function updateURL(){
+      const json = JSON.stringify(getState());
+      const b64  = btoa(json);
+      history.replaceState(null,'', '#'+b64);
     }
-    function importState(evt){
-      const f = evt.target.files[0];
-      if(!f) return;
-      const rdr = new FileReader();
-      rdr.onload = e=>{
-        try{
-          const obj = JSON.parse(e.target.result);
-          applyState(obj);
-          saveState();
-          alert('État importé avec succès');
-        }catch{
-          alert('Fichier JSON invalide');
-        }
-      };
-      rdr.readAsText(f);
+    function loadFromHash(){
+      if(!location.hash) return;
+      try{
+        const json = atob(location.hash.slice(1));
+        applyState(JSON.parse(json));
+      }catch{}
+    }
+    function copyLink(){
+      navigator.clipboard.writeText(location.href)
+        .then(()=>alert('Lien copié !'))
+        .catch(()=>alert('Échec du copié'));
     }
 
-    // ----- persistence auto via localStorage
-    function saveState(){
-      localStorage.setItem('plan403', JSON.stringify(getState()));
-    }
-    function loadState(){
-      const txt = localStorage.getItem('plan403');
-      if(txt) {
-        try { applyState(JSON.parse(txt)); }
-        catch{}
-      }
-    }
-    window.addEventListener('load', loadState);
-    window.addEventListener('beforeunload', saveState);
+    // on start
+    window.addEventListener('load', loadFromHash);
   </script>
 </body>
 </html>
