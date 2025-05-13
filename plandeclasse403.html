@@ -16,7 +16,9 @@
       gap: 20px 50px;
       justify-content: center;
     }
-    .cell { position: relative; }
+    .cell {
+      position: relative;
+    }
     .half {
       position: relative;
       width: 160px;
@@ -24,7 +26,7 @@
       background-color: #ffffff;
       border: 1px solid #ccc;
       border-radius: 6px;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -34,8 +36,11 @@
       user-select: none;
       transition: background-color 0.2s;
       overflow: visible;
+      margin-bottom: 10px;
     }
-    .half.active { background-color: #c8facc; }
+    .half.active {
+      background-color: #c8facc;
+    }
     .toggle-notes {
       position: absolute;
       top: 4px;
@@ -43,7 +48,7 @@
       width: 14px;
       height: 14px;
       cursor: pointer;
-      display: none;
+      z-index: 10;
     }
     .notes-options {
       display: none;
@@ -56,10 +61,30 @@
       box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
       padding: 4px 8px;
       font-size: 12px;
-      text-align: left;
       z-index: 9;
+      text-align: left;
     }
-    .notes-options label { display: block; margin-bottom: 2px; cursor: pointer; }
+    .notes-options label {
+      display: block;
+      margin-bottom: 2px;
+      cursor: pointer;
+    }
+    .context-menu {
+      position: absolute;
+      display: none;
+      background-color: #fff;
+      border: 1px solid #aaa;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 13px;
+    }
+    .context-menu .menu-option {
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .context-menu .menu-option.selected {
+      background-color: #d0ebff;
+    }
     .footer-layout {
       display: flex;
       justify-content: center;
@@ -67,7 +92,12 @@
       margin-top: 50px;
       position: relative;
     }
-    .left-button { position: absolute; left: 20px; top: 100px; text-align: left; }
+    .left-button {
+      position: absolute;
+      left: 20px;
+      top: 100px;
+      text-align: left;
+    }
     .bouton, .tableau {
       width: 200px;
       height: 40px;
@@ -92,12 +122,21 @@
       color: #222;
       width: 200px;
     }
+    #feedback {
+      position: absolute;
+      right: 20px;
+      top: 100px;
+      text-align: left;
+      font-size: 14px;
+      color: #222;
+      width: 200px;
+    }
   </style>
 </head>
 <body>
   <h1>Plan de classe 403</h1>
   <div class="grid">
-    <!-- 15 cellules, 30 moitiés -->
+    <!-- 15 cellules, 30 moitiés au total -->
     <div class="cell">
       <div class="half">
         case 1
@@ -118,7 +157,6 @@
         </div>
       </div>
     </div>
-    <!-- Répéter pour chaque paire jusqu'à case 30 -->
     <div class="cell">
       <div class="half">
         case 3
@@ -139,7 +177,247 @@
         </div>
       </div>
     </div>
-    <!-- … continue jusqu’à -->
+    <div class="cell">
+      <div class="half">
+        case 5
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 6
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 7
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 8
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 9
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 10
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 11
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 12
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 13
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 14
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 15
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 16
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 17
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 18
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 19
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 20
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 21
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 22
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 23
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 24
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell">
+      <div class="half">
+        case 25
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 26
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
+    <div class="cell"> 
+
+      <div class="half">
+        case 27
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+      <div class="half">
+        case 28
+        <input type="checkbox" class="toggle-notes">
+        <div class="notes-options">
+          <label><input type="checkbox" value="Comportement"> Comportement</label>
+          <label><input type="checkbox" value="Travail non fait"> Travail non fait</label>
+          <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
+        </div>
+      </div>
+    </div>
     <div class="cell">
       <div class="half">
         case 29
@@ -169,48 +447,101 @@
     <div class="tableau">Tableau</div>
   </div>
 
+  <div id="context-menu" class="context-menu">
+    <div class="menu-option">Comportement</div>
+    <div class="menu-option">Travail non fait</div>
+    <div class="menu-option">Oubli de matériel</div>
+  </div>
+
   <div id="presence-result"></div>
+  <div id="feedback"></div>
 
   <script>
-    // Masquer toutes les toggles de notes
-    document.querySelectorAll('.toggle-notes')
-            .forEach(cb => cb.style.display = 'none');
+    let caseCible = null;
+    const menu = document.getElementById("context-menu");
+    const options = menu.querySelectorAll(".menu-option");
+    let selectedIndex = 0;
 
-    // Gestion de la présence et des notes
-    document.querySelectorAll('.half').forEach(half => {
-      const cbNotes   = half.querySelector('.toggle-notes');
-      const notesOpts = half.querySelector('.notes-options');
+    function selectOption(index) {
+      options.forEach((opt, i) => opt.classList.toggle('selected', i === index));
+      selectedIndex = index;
+    }
 
-      half.addEventListener('click', () => {
-        half.classList.toggle('active');
-        if (half.classList.contains('active')) {
-          cbNotes.style.display = 'block';
-        } else {
-          cbNotes.checked = false;
-          cbNotes.style.display = 'none';
-          notesOpts.style.display = 'none';
-          notesOpts.querySelectorAll('input[type="checkbox"]')
-                   .forEach(i => i.checked = false);
-        }
-      });
+    function openContextMenu(target) {
+      caseCible = target;
+      const rect = target.getBoundingClientRect();
+      menu.style.left = `${rect.right + window.scrollX + 5}px`;
+      menu.style.top = `${rect.top + window.scrollY}px`;
+      menu.style.display = 'block';
+      selectOption(0);
+    }
 
-      cbNotes.addEventListener('change', () => {
-        notesOpts.style.display = cbNotes.checked ? 'block' : 'none';
+    document.body.addEventListener('click', e => {
+      if (!menu.contains(e.target)) menu.style.display = 'none';
+    });
+
+    // Feedback contextuel
+    options.forEach((opt, i) => {
+      opt.addEventListener('click', () => {
+        if (!caseCible) return;
+        afficherFeedback(caseCible, opt.textContent);
+        menu.style.display = 'none';
       });
     });
 
-    // Fonction Appel terminé
+    function afficherFeedback(elementHalf, remarque) {
+      const seatName = elementHalf.childNodes[0].textContent.trim();
+      const div = document.getElementById("feedback");
+      const ligne = document.createElement("div");
+      ligne.innerHTML = `<strong>${seatName}</strong> : ${remarque}`;
+      div.appendChild(ligne);
+    }
+
+    // Affichage des absents
     function afficherAppel() {
-      const halves   = Array.from(document.querySelectorAll('.half'));
-      const pres     = halves.filter(h => h.classList.contains('active'));
-      const abs      = halves.filter(h => !h.classList.contains('active'));
-      const presNames= [...new Set(pres.map(h => h.textContent.trim()))];
-      const absNames = [...new Set(abs.map(h => h.textContent.trim()))];
-      document.getElementById('presence-result').innerHTML = `
-        <div><strong>Présents (${presNames.length}) :</strong> ${presNames.join(', ')}</div>
-        <div style="margin-top:8px;"><strong>Absents (${absNames.length}) :</strong> ${absNames.join(', ')}</div>
+      const allHalves = Array.from(document.querySelectorAll('.half'));
+      const absents = allHalves.filter(h => !h.classList.contains('active'));
+      const absNames = [...new Set(absents.map(h => h.childNodes[0].textContent.trim()))];
+      const out = document.getElementById('presence-result');
+      out.innerHTML = `
+        <div><strong>Absents (${absNames.length}) :</strong> ${absNames.join(', ')}</div>
       `;
     }
+
+    document.querySelectorAll('.toggle-notes').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const opts = cb.parentElement.querySelector('.notes-options');
+        opts.style.display = cb.checked ? 'block' : 'none';
+      });
+    });
+
+    document.querySelectorAll('.half').forEach(half => {
+      let timer, isLongPress = false;
+      half.addEventListener('mousedown', () => {
+        isLongPress = false;
+        timer = setTimeout(() => {
+          isLongPress = true;
+          openContextMenu(half);
+        }, 500);
+      });
+      half.addEventListener('touchstart', e => {
+        e.preventDefault();
+        isLongPress = false;
+        timer = setTimeout(() => {
+          isLongPress = true;
+          openContextMenu(half);
+        }, 500);
+      });
+      half.addEventListener('mouseup', () => {
+        clearTimeout(timer);
+        if (!isLongPress) half.classList.toggle('active');
+      });
+      half.addEventListener('touchend', () => {
+        clearTimeout(timer);
+        if (!isLongPress) half.classList.toggle('active');
+      });
+      half.addEventListener('mouseleave', () => clearTimeout(timer));
+    });
   </script>
 </body>
 </html>
