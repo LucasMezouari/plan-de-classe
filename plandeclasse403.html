@@ -15,14 +15,12 @@
     }
     .lien-box:hover { background-color: #00bfff; }
 
-    /* Grille : 3 conteneurs × 5 lignes */
+    /* Grille : 3 colonnes × 5 lignes */
     .cases {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
-
-    /* Chaque conteneur regroupe deux sous-cases */
     .case-container {
       display: flex;
       background-color: #87CEEB;
@@ -30,7 +28,6 @@
       overflow: hidden;
     }
 
-    /* Une vraie sous-case (maintenant sans toggle au clic) */
     .subcase {
       flex: 1;
       padding: 8px;
@@ -41,34 +38,24 @@
       border-right: none;
     }
 
-    /* Checkbox de bascule + titre inline */
-    .subcase .header {
+    /* Header contenant la toggle et le titre */
+    .header {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .subcase .header .toggle {
+    .toggle {
       cursor: pointer;
     }
-    .subcase .header .title {
+    .title {
       font-weight: bold;
     }
 
-    /* Options cachées, affichées si la toggle est cochée */
-    .subcase .options {
+    /* Les options sont masquées par défaut */
+    .options {
       margin-top: 8px;
       display: none;
       padding-left: 4px;
-    }
-    .subcase .toggle:checked ~ .options {
-      display: block;
-    }
-
-    /* Souligne la sous-case lorsque toggle est cochée */
-    .subcase .toggle:checked + .title,
-    .subcase .toggle:checked { 
-      background-color: #006400;
-      color: #fff;
     }
 
     /* Zone des résultats */
@@ -89,7 +76,7 @@
     <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- 2) Grille vide -->
+    <!-- 2) Grille : 3×5 containers → 30 sous-cases -->
     <div class="cases" id="cases"></div>
 
     <!-- 3) Zone de résultats -->
@@ -99,19 +86,19 @@
   </div>
 
   <script>
-    // Génération dynamique de 3×5 containers → 30 sous-cases
+    // --- 1) Génération dynamique des 30 sous-cases ---
     const casesContainer = document.getElementById('cases');
     let num = 1;
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col < 3; col++) {
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 3; c++) {
         const container = document.createElement('div');
         container.className = 'case-container';
-        for (let half = 0; half < 2; half++) {
+        for (let h = 0; h < 2; h++) {
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
 
-          // Header : toggle + titre
+          // header : toggle + titre
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -121,35 +108,52 @@
           const title = document.createElement('span');
           title.className = 'title';
           title.textContent = `Case ${num}`;
-          header.appendChild(toggle);
-          header.appendChild(title);
-          sc.appendChild(header);
+          header.append(toggle, title);
+          sc.append(header);
 
-          // Bloc des options
+          // options masquées
           const opts = document.createElement('div');
           opts.className = 'options';
-          ['Comportement','Travail non fait','Oubli de matériel']
+          ['Comportement', 'Travail non fait', 'Oubli de matériel']
             .forEach(val => {
               const lbl = document.createElement('label');
               const inp = document.createElement('input');
               inp.type = 'checkbox';
               inp.dataset.case = num;
               inp.value = val;
-              lbl.appendChild(inp);
-              lbl.appendChild(document.createTextNode(' ' + val));
-              opts.appendChild(lbl);
-              opts.appendChild(document.createElement('br'));
+              lbl.append(inp, ' ' + val);
+              opts.append(lbl, document.createElement('br'));
             });
-          sc.appendChild(opts);
+          sc.append(opts);
 
-          container.appendChild(sc);
+          container.append(sc);
           num++;
         }
-        casesContainer.appendChild(container);
+        casesContainer.append(container);
       }
     }
 
-    // 1) Gestion des options à l’intérieur des sous-cases
+    // --- 2) Quand on coche la toggle, on affiche/masque ses options ---
+    document.querySelectorAll('.toggle').forEach(toggle => {
+      toggle.addEventListener('change', function() {
+        const sc = this.closest('.subcase');
+        const opts = sc.querySelector('.options');
+        if (this.checked) {
+          opts.style.display = 'block';
+        } else {
+          opts.style.display = 'none';
+          // décocher et retirer de la liste les anciennes infractions
+          opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
+            if (cb.checked) {
+              cb.checked = false;
+              removeResult(cb.dataset.case, cb.value);
+            }
+          });
+        }
+      });
+    });
+
+    // --- 3) Gestion des infractions cochées ---
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
@@ -157,7 +161,7 @@
       });
     });
 
-    // 2) Fonctions d’ajout / suppression dans la zone Résultats
+    // Fonctions résultat
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -165,7 +169,7 @@
         const li = document.createElement('li');
         li.id = id;
         li.textContent = `case n°${c} : ${v}`;
-        resultList.appendChild(li);
+        resultList.append(li);
       }
     }
     function removeResult(c, v) {
@@ -173,13 +177,13 @@
       if (el) el.remove();
     }
 
-    // 3) Clic sur “Lien” → collecte, JSON & téléchargement/fallback
+    // --- 4) Clic sur “Lien” → collecte + JSON + download/fallback ---
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      // date Paris JJ-MM-HHhMM
+      // date Paris au format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:   'numeric', month: '2-digit',
@@ -187,12 +191,12 @@
         minute: '2-digit'
       }).format(new Date());
       const [dp, tp] = lok.split(' ');
-      const [jj,MM] = dp.split('/');
-      const [hh,mm] = tp.split(':');
+      const [jj, MM] = dp.split('/');
+      const [hh, mm] = tp.split(':');
       const now = `${jj}-${MM}-${hh}h${mm}`;
 
       const payload = { date: now + ' (Europe/Paris)', infractions };
-      const data    = JSON.stringify(payload, null, 2);
+      const data = JSON.stringify(payload, null, 2);
 
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
@@ -201,9 +205,9 @@
       if ('download' in a) {
         a.href     = url;
         a.download = `infractions_${now}.json`;
-        document.body.appendChild(a);
+        document.body.append(a);
         a.click();
-        document.body.removeChild(a);
+        a.remove();
         URL.revokeObjectURL(url);
       } else {
         window.open(url);
