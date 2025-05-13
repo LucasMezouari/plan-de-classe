@@ -86,23 +86,16 @@
       background-color: #d0ebff;
     }
     .footer-layout {
-      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       margin-top: 50px;
-      height: 160px; /* pour laisser de la place aux éléments absolus */
-    }
-    #present-count {
-      position: absolute;
-      left: 20px;
-      top: 10px;
-      text-align: left;
-      font-size: 14px;
-      color: #222;
-      width: 200px;
+      position: relative;
     }
     .left-button {
       position: absolute;
       left: 20px;
-      top: 50px;
+      top: 80px;
       text-align: left;
     }
     .bouton, .tableau {
@@ -120,15 +113,16 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    .tableau {
-      position: absolute;
-      right: 20px;
-      top: 50px;
+    #presence-count {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #222;
     }
     #presence-result {
       position: absolute;
       left: 20px;
-      top: 110px;
+      top: 140px;
       text-align: left;
       font-size: 14px;
       color: #222;
@@ -137,7 +131,7 @@
     #feedback {
       position: absolute;
       right: 20px;
-      top: 110px;
+      top: 100px;
       text-align: left;
       font-size: 14px;
       color: #222;
@@ -147,13 +141,12 @@
 </head>
 <body>
   <h1>Plan de classe 403</h1>
-
   <div class="grid">
-    <!-- 15 cellules, 30 moitiés -->
-    <!-- Générer de case 1 à case 30 -->
-    <!-- Exemple pour case 1 et 2 : -->
+    <!-- 15 cellules, 30 moitiés au total -->
+    <!-- Exemple pour les deux premières cases, à dupliquer pour les autres -->
     <div class="cell">
-      <div class="half">case 1
+      <div class="half">
+        case 1
         <input type="checkbox" class="toggle-notes">
         <div class="notes-options">
           <label><input type="checkbox" value="Comportement"> Comportement</label>
@@ -161,7 +154,8 @@
           <label><input type="checkbox" value="Oubli de matériel"> Oubli de matériel</label>
         </div>
       </div>
-      <div class="half">case 2
+      <div class="half">
+        case 2
         <input type="checkbox" class="toggle-notes">
         <div class="notes-options">
           <label><input type="checkbox" value="Comportement"> Comportement</label>
@@ -170,16 +164,15 @@
         </div>
       </div>
     </div>
-    <!-- ... répétez jusqu'à case 30 ... -->
+    <!-- ... Répétez pour les cases 3 à 30 ... -->
   </div>
 
   <div class="footer-layout">
-    <div id="present-count">Présents : 0</div>
-
     <div class="left-button">
+      <!-- compteur de présents -->
+      <div id="presence-count"></div>
       <div class="bouton" onclick="afficherAppel()">Appel terminé</div>
     </div>
-
     <div class="tableau">Tableau</div>
   </div>
 
@@ -199,7 +192,7 @@
     let selectedIndex = 0;
 
     function selectOption(index) {
-      options.forEach((opt,i) => opt.classList.toggle('selected', i===index));
+      options.forEach((opt, i) => opt.classList.toggle('selected', i === index));
       selectedIndex = index;
     }
 
@@ -207,7 +200,7 @@
       caseCible = target;
       const rect = target.getBoundingClientRect();
       menu.style.left = `${rect.right + window.scrollX + 5}px`;
-      menu.style.top  = `${rect.top   + window.scrollY}px`;
+      menu.style.top = `${rect.top + window.scrollY}px`;
       menu.style.display = 'block';
       selectOption(0);
     }
@@ -216,8 +209,7 @@
       if (!menu.contains(e.target)) menu.style.display = 'none';
     });
 
-    // Feedback contextuel
-    options.forEach((opt,i) => {
+    options.forEach((opt, i) => {
       opt.addEventListener('click', () => {
         if (!caseCible) return;
         afficherFeedback(caseCible, opt.textContent);
@@ -233,27 +225,28 @@
       div.appendChild(ligne);
     }
 
-    // Met à jour le compteur de présents
-    function updatePresentCount() {
-      const count = document.querySelectorAll('.half.active').length;
-      document.getElementById('present-count').textContent = `Présents : ${count}`;
-    }
-
-    // Affichage des absents
     function afficherAppel() {
       const allHalves = Array.from(document.querySelectorAll('.half'));
-      const absents   = allHalves.filter(h => !h.classList.contains('active'));
-      const absNames  = [...new Set(absents.map(h => h.childNodes[0].textContent.trim()))];
+      // Compte des présents (cases actives)
+      const presentCount = allHalves.filter(h => h.classList.contains('active')).length;
+      document.getElementById('presence-count').textContent = `Présents : ${presentCount}`;
+
+      // Affichage des absents si besoin
+      const absents = allHalves.filter(h => !h.classList.contains('active'));
+      const absNames = [...new Set(absents.map(h => h.childNodes[0].textContent.trim()))];
       const out = document.getElementById('presence-result');
-      out.innerHTML = `
-        <div><strong>Absents (${absNames.length}) :</strong> ${absNames.join(', ')}</div>
-      `;
+      out.innerHTML = `<div><strong>Absents (${absNames.length}) :</strong> ${absNames.join(', ')}</div>`;
     }
 
-    // Gestion des clics et long-press sur chaque case
+    document.querySelectorAll('.toggle-notes').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const opts = cb.parentElement.querySelector('.notes-options');
+        opts.style.display = cb.checked ? 'block' : 'none';
+      });
+    });
+
     document.querySelectorAll('.half').forEach(half => {
       let timer, isLongPress = false;
-
       half.addEventListener('mousedown', () => {
         isLongPress = false;
         timer = setTimeout(() => {
@@ -261,7 +254,6 @@
           openContextMenu(half);
         }, 500);
       });
-
       half.addEventListener('touchstart', e => {
         e.preventDefault();
         isLongPress = false;
@@ -270,36 +262,16 @@
           openContextMenu(half);
         }, 500);
       });
-
       half.addEventListener('mouseup', () => {
         clearTimeout(timer);
-        if (!isLongPress) {
-          half.classList.toggle('active');
-          updatePresentCount();
-        }
+        if (!isLongPress) half.classList.toggle('active');
       });
-
       half.addEventListener('touchend', () => {
         clearTimeout(timer);
-        if (!isLongPress) {
-          half.classList.toggle('active');
-          updatePresentCount();
-        }
+        if (!isLongPress) half.classList.toggle('active');
       });
-
       half.addEventListener('mouseleave', () => clearTimeout(timer));
     });
-
-    // Toggle notes
-    document.querySelectorAll('.toggle-notes').forEach(cb => {
-      cb.addEventListener('change', () => {
-        const opts = cb.parentElement.querySelector('.notes-options');
-        opts.style.display = cb.checked ? 'block' : 'none';
-      });
-    });
-
-    // Initialisation
-    updatePresentCount();
   </script>
 </body>
 </html>
