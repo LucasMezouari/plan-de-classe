@@ -6,14 +6,12 @@
   <style>
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
-    /* Boîte “Lien” */
     .lien-box {
       flex: none; width: 80px; padding: 10px;
       background-color: #87CEEB; border-radius: 5px;
       text-align: center; cursor: pointer; user-select: none;
     }
     .lien-box:hover { background-color: #00bfff; }
-    /* Vos cases */
     .cases { display: flex; flex-direction: column; gap: 20px; }
     .case-box {
       background-color: #87CEEB; padding: 10px;
@@ -24,28 +22,21 @@
       margin-top: 10px; display: none; padding-left: 10px;
     }
     .case-box.selected .options { display: block; }
-    /* Zone résultats */
     .result {
       flex: 1; padding: 10px; border: 1px solid #ccc;
       border-radius: 5px; min-width: 200px;
     }
     #result-list { list-style: none; padding: 0; margin: 0; }
     #result-list li { margin-bottom: 5px; }
-    /* Affichage JSON */
-    #json-output {
-      margin-top: 30px; padding: 10px;
-      background: #f4f4f4; border: 1px solid #ddd;
-      white-space: pre-wrap; display: none;
-    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- 1) Boîte “Lien” -->
+    <!-- Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- 2) Vos deux cases -->
+    <!-- Vos deux cases -->
     <div class="cases">
       <div class="case-box" data-case="1">
         <div class="case-title">Case 1</div>
@@ -65,21 +56,18 @@
       </div>
     </div>
 
-    <!-- 3) Zone de résultats -->
+    <!-- Zone de résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
-  <!-- 4) Le <pre> qui affichera le JSON -->
-  <pre id="json-output"></pre>
-
   <script>
-    // Gère le toggle des cases & options + mise à jour de la liste des résultats
+    // 1) Gestion des cases/options et de la liste de résultats
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
-        if (e.target.closest('.options')) return;  // ignore les clics sur les checkboxes
+        if (e.target.closest('.options')) return;
         box.classList.toggle('selected');
         const opts = box.querySelector('.options');
         if (box.classList.contains('selected')) {
@@ -118,14 +106,13 @@
       if (el) el.remove();
     }
 
-    // Gère le clic sur “Lien” → calcul de la date en Europe/Paris, JSON, affichage + download
+    // 2) Clic sur “Lien” → génération du JSON + download ou fallback nouvel onglet
     document.getElementById('lien-box').addEventListener('click', () => {
-      // 1) Récupère la liste courante des infractions
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      // 2) Récupère la date/heure Paris au format DD-MM-HHhMM
+      // Heure de Paris au format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:   'numeric',
@@ -139,22 +126,17 @@
       const [hour, minute]      = timePart.split(':');
       const now = `${day}-${month}-${hour}h${minute}`;
 
-      // 3) Prépare le payload JSON
       const payload = {
         date: now + ' (Europe/Paris)',
-        infractions: infractions
+        infractions
       };
       const data = JSON.stringify(payload, null, 2);
 
-      // 4) Affiche-le dans le <pre>
-      const pre = document.getElementById('json-output');
-      pre.textContent = data;
-      pre.style.display = 'block';
-
-      // 5) Propose le téléchargement
+      // création et tentative de téléchargement
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
+
       if ('download' in a) {
         a.href     = url;
         a.download = `infractions_${now}.json`;
@@ -162,8 +144,21 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+      } else {
+        // fallback : ouvre le JSON dans un nouvel onglet
+        URL.revokeObjectURL(url);
+        const w = window.open();
+        w.document.open();
+        w.document.write(
+          '<pre>' +
+          data
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;') +
+          '</pre>'
+        );
+        w.document.close();
       }
-      // Sinon vous avez déjà le JSON dans le <pre> pour copier/coller
     });
   </script>
 </body>
