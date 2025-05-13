@@ -21,6 +21,15 @@
       border-radius: 4px;
       padding: 10px;
       margin-bottom: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .case-box.checked {
+      background-color: #006400; /* vert foncé */
+      color: #fff;
+    }
+    .case-box.checked input[type="checkbox"] + span,
+    .case-box.checked label {
+      color: #fff;
     }
     .options {
       margin-top: 10px;
@@ -44,10 +53,10 @@
   <div class="container">
     <!-- Colonne des cases -->
     <div class="cases">
-      <div class="case-box">
+      <div class="case-box" id="box-1">
         <label>
           <input type="checkbox" id="main-case-1">
-          case 1
+          <span>case 1</span>
         </label>
         <div class="options" id="options-1" style="display: none;">
           <label><input type="checkbox" data-case="1" value="Comportement"> Comportement</label><br>
@@ -56,10 +65,10 @@
         </div>
       </div>
 
-      <div class="case-box">
+      <div class="case-box" id="box-2">
         <label>
           <input type="checkbox" id="main-case-2">
-          case 2
+          <span>case 2</span>
         </label>
         <div class="options" id="options-2" style="display: none;">
           <label><input type="checkbox" data-case="2" value="Comportement"> Comportement</label><br>
@@ -76,15 +85,18 @@
   </div>
 
   <script>
-    // Affiche/masque les options quand on coche/décoche la case principale
+    // Gère l'affichage des options et la couleur de la case
     ['1','2'].forEach(function(n) {
       const mainCb = document.getElementById('main-case-' + n);
+      const box = document.getElementById('box-' + n);
       const optDiv = document.getElementById('options-' + n);
 
       mainCb.addEventListener('change', function() {
-        optDiv.style.display = this.checked ? 'block' : 'none';
+        const checked = this.checked;
+        optDiv.style.display = checked ? 'block' : 'none';
+        box.classList.toggle('checked', checked);
         // si on décoche la case principale, on décoche aussi toutes ses options
-        if (!this.checked) {
+        if (!checked) {
           optDiv.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
             if (cb.checked) {
               cb.checked = false;
