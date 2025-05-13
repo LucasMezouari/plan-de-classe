@@ -6,12 +6,16 @@
   <style>
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
+
+    /* Boîte “Lien” */
     .lien-box {
       flex: none; width: 80px; padding: 10px;
       background-color: #87CEEB; border-radius: 5px;
       text-align: center; cursor: pointer; user-select: none;
     }
     .lien-box:hover { background-color: #00bfff; }
+
+    /* Cases */
     .cases { display: flex; flex-direction: column; gap: 20px; }
     .case-box {
       background-color: #87CEEB; padding: 10px;
@@ -22,6 +26,8 @@
       margin-top: 10px; display: none; padding-left: 10px;
     }
     .case-box.selected .options { display: block; }
+
+    /* Résultats */
     .result {
       flex: 1; padding: 10px; border: 1px solid #ccc;
       border-radius: 5px; min-width: 200px;
@@ -33,10 +39,10 @@
 <body>
 
   <div class="container">
-    <!-- Boîte “Lien” -->
+    <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- Vos deux cases -->
+    <!-- 2) Vos deux cases -->
     <div class="cases">
       <div class="case-box" data-case="1">
         <div class="case-title">Case 1</div>
@@ -56,18 +62,18 @@
       </div>
     </div>
 
-    <!-- Zone de résultats -->
+    <!-- 3) Zone de résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
   <script>
-    // 1) Gestion des cases/options et de la liste de résultats
+    // ---------- Gestion des cases et options ----------
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
-        if (e.target.closest('.options')) return;
+        if (e.target.closest('.options')) return; // ignore les clics sur les checkbox
         box.classList.toggle('selected');
         const opts = box.querySelector('.options');
         if (box.classList.contains('selected')) {
@@ -106,13 +112,14 @@
       if (el) el.remove();
     }
 
-    // 2) Clic sur “Lien” → génération du JSON + download ou fallback nouvel onglet
+    // ---------- Gestion du clic sur “Lien” ----------
     document.getElementById('lien-box').addEventListener('click', () => {
+      // 1) Récupérer les infractions
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      // Heure de Paris au format JJ-MM-HHhMM
+      // 2) Calculer la date/heure de Paris au format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:   'numeric',
@@ -126,18 +133,20 @@
       const [hour, minute]      = timePart.split(':');
       const now = `${day}-${month}-${hour}h${minute}`;
 
+      // 3) Préparer le JSON
       const payload = {
         date: now + ' (Europe/Paris)',
         infractions
       };
       const data = JSON.stringify(payload, null, 2);
 
-      // création et tentative de téléchargement
+      // 4) Générer le blob et tenter le download
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
 
       if ('download' in a) {
+        // téléchargement direct
         a.href     = url;
         a.download = `infractions_${now}.json`;
         document.body.appendChild(a);
@@ -145,19 +154,10 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       } else {
-        // fallback : ouvre le JSON dans un nouvel onglet
-        URL.revokeObjectURL(url);
-        const w = window.open();
-        w.document.open();
-        w.document.write(
-          '<pre>' +
-          data
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;') +
-          '</pre>'
-        );
-        w.document.close();
+        // fallback : ouverture dans un nouvel onglet
+        window.open(url);
+        // on peut révoquer après un petit délai si on veut :
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
     });
   </script>
