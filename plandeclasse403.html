@@ -78,14 +78,22 @@
     }
     #result-list li {
       margin-bottom: 5px;
-      cursor: pointer;
     }
-    /* Style des détails */
+    /* détail statique */
     #result-list li.detail {
       font-style: italic;
       padding-left: 20px;
       margin-bottom: 10px;
       cursor: default;
+    }
+    /* sélection dropdown */
+    #result-list li.detail-select {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    #result-list li.detail-select select,
+    #result-list li.detail-select button {
+      margin-right: 5px;
     }
   </style>
 </head>
@@ -109,6 +117,13 @@
   </div>
 
   <script>
+    // Options de détail possibles
+    const detailsOptions = {
+      "Travail non fait": ["Copie blanche", "Ne sort pas ses affaires"],
+      "Comportement":     ["Intervention verbale"],
+      "Oubli de matériel": ["Crayon oublié"]
+    };
+
     // 1) Génération dynamique des 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
@@ -173,6 +188,7 @@
           opts.style.display = 'block';
         } else {
           opts.style.display = 'none';
+          // décocher et nettoyer
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
               cb.checked = false;
@@ -187,8 +203,7 @@
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
-        if (this.checked) addResult(c, this.value);
-        else removeResult(c, this.value);
+        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
       });
     });
 
@@ -206,42 +221,68 @@
     function removeResult(c, v) {
       const el = document.getElementById(`result-${c}-${v}`);
       if (el) {
-        // aussi retirer détail si présent
+        // supprimer détail ou select éventuel
         const next = el.nextElementSibling;
-        if (next && next.classList.contains('detail')) next.remove();
+        if (next && (next.classList.contains('detail') || next.classList.contains('detail-select'))) {
+          next.remove();
+        }
         el.remove();
       }
     }
 
     // 5) Détail au clic sur une infraction
-    const detailsMap = {
-      "Travail non fait": "Copie blanche",
-      "Comportement":     "Intervention verbale",
-      "Oubli de matériel": "Crayon oublié"
-    };
     resultList.addEventListener('click', e => {
-      if (e.target.tagName !== 'LI' || e.target.classList.contains('detail')) return;
-      // retirer un éventuel autre détail ouvert
-      const existing = resultList.querySelector('li.detail');
-      if (existing) existing.remove();
-      // insérer détail juste après
-      const text = e.target.textContent.split(' : ')[1];
-      const detailText = detailsMap[text] || "Aucune précision";
-      const detail = document.createElement('li');
-      detail.className = 'detail';
-      detail.textContent = detailText;
-      e.target.insertAdjacentElement('afterend', detail);
+      const li = e.target;
+      if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
+
+      // supprimer anciens détails
+      const prevDetail = resultList.querySelector('li.detail, li.detail-select');
+      if (prevDetail) prevDetail.remove();
+
+      const inf = li.textContent.split(' : ')[1];
+      const opts = detailsOptions[inf] || ["Aucune précision"];
+
+      if (opts.length > 1) {
+        // créer un <li> équipé d'un select + bouton
+        const selLi = document.createElement('li');
+        selLi.className = 'detail-select';
+        const sel = document.createElement('select');
+        opts.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt; o.text = opt;
+          sel.appendChild(o);
+        });
+        const btn = document.createElement('button');
+        btn.textContent = 'OK';
+        selLi.append(sel, btn);
+        li.insertAdjacentElement('afterend', selLi);
+
+        btn.addEventListener('click', () => {
+          const chosen = sel.value;
+          selLi.remove();
+          const detLi = document.createElement('li');
+          detLi.className = 'detail';
+          detLi.textContent = chosen;
+          li.insertAdjacentElement('afterend', detLi);
+        });
+
+      } else {
+        // un seul choix : afficher directement
+        const detLi = document.createElement('li');
+        detLi.className = 'detail';
+        detLi.textContent = opts[0];
+        li.insertAdjacentElement('afterend', detLi);
+      }
     });
 
     // 6) “Lien” → collecte + JSON + téléchargement/fallback
     document.getElementById('lien-box').addEventListener('click', () => {
+      // infractions (sans les détails)
       const infractions = Array.from(
-        document.querySelectorAll('#result-list li')
-      )
-      .filter(li => !li.classList.contains('detail'))
-      .map(li => li.textContent);
+        resultList.querySelectorAll('li:not(.detail):not(.detail-select)')
+      ).map(li => li.textContent);
 
-      // Date Europe/Paris format JJ-MM-HHhMM
+      // date Europe/Paris format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:'numeric',month:'2-digit',
@@ -253,7 +294,7 @@
       const [hh,mm] = tp.split(':');
       const now = `${jj}-${MM}-${hh}h${mm}`;
 
-      // Présents et absents
+      // présences
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const presCount = subs.filter(sc => sc.classList.contains('selected')).length;
       const absList   = subs.filter(sc => !sc.classList.contains('selected'))
@@ -266,7 +307,6 @@
         absents: absList
       };
       const data = JSON.stringify(payload, null, 2);
-
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
