@@ -81,9 +81,15 @@
     // Précisions possibles par rubrique
     const detailsOptions = {
       "Comportement": [
-        "Insultes envers le professeur",
+        "Insulte envers le professeur",
         "Insulte envers un camarade",
-        "Insolence"
+        "Insolence",
+        "Langage familier",
+        "Refus de se taire",
+        "Refus de s'asseoir",
+        "Bavardages",
+        "Imitation de bruitages",
+        "Usage du téléphone"
       ],
       "Travail non fait": [
         "Copie blanche",
@@ -210,14 +216,12 @@
       const prev = resultList.querySelector('li.detail-select, li.detail');
       if (prev) prev.remove();
 
-      // Récupérer rubrique
       const [_, rubric] = li.textContent.split(' : ');
       const opts = detailsOptions[rubric];
       if (!opts) return;
-
       const cse = li.id.split('-')[1];
 
-      // Créer les cases à cocher de détail
+      // Créer cases à cocher de détail
       const selLi = document.createElement('li');
       selLi.className = 'detail-select';
       opts.forEach(opt => {
@@ -231,9 +235,8 @@
 
         cb.addEventListener('change', () => {
           if (cb.checked) {
-            // Mettre à jour la ligne principale
+            // Mettre à jour la ligne principale et retirer le bloc
             li.textContent = `case n°${cse} : ${rubric} : ${opt}`;
-            // Retirer le bloc de détails
             selLi.remove();
           }
         });
@@ -248,7 +251,6 @@
         resultList.querySelectorAll('li:not(.detail):not(.detail-select)')
       ).map(li => li.textContent);
 
-      // Date/heure Europe/Paris
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:'numeric', month:'2-digit',
@@ -260,7 +262,6 @@
       const [hh, mm] = tp.split(':');
       const now = `${jj}-${MM}-${hh}h${mm}`;
 
-      // Présents / absents
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const presCount = subs.filter(sc => sc.classList.contains('selected')).length;
       const absList = subs.filter(sc => !sc.classList.contains('selected'))
