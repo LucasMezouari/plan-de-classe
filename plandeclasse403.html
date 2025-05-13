@@ -4,70 +4,30 @@
   <meta charset="UTF-8">
   <title>Plan de classe 403</title>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-    }
-    .container {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-    /* Boîte “Lien” */
+    body { font-family: sans-serif; margin: 20px; }
+    .container { display: flex; gap: 20px; align-items: flex-start; }
     .lien-box {
-      flex: none;
-      width: 80px;
-      padding: 10px;
-      background-color: #87CEEB;
-      border-radius: 5px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
+      flex: none; width: 80px; padding: 10px;
+      background-color: #87CEEB; border-radius: 5px;
+      text-align: center; cursor: pointer; user-select: none;
     }
-    .lien-box:hover {
-      background-color: #00bfff;
-    }
-    /* Vos cases habituelles */
-    .cases {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+    .lien-box:hover { background-color: #00bfff; }
+    .cases { display: flex; flex-direction: column; gap: 20px; }
     .case-box {
-      background-color: #87CEEB;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      position: relative;
+      background-color: #87CEEB; padding: 10px;
+      border-radius: 5px; cursor: pointer; position: relative;
     }
-    .case-box.selected {
-      background-color: #006400;
-      color: white;
-    }
+    .case-box.selected { background-color: #006400; color: #fff; }
     .case-box .options {
-      margin-top: 10px;
-      display: none;
-      padding-left: 10px;
+      margin-top: 10px; display: none; padding-left: 10px;
     }
-    .case-box.selected .options {
-      display: block;
-    }
-    /* Colonne résultats */
+    .case-box.selected .options { display: block; }
     .result {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      min-width: 200px;
+      flex: 1; padding: 10px; border: 1px solid #ccc;
+      border-radius: 5px; min-width: 200px;
     }
-    #result-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    #result-list li {
-      margin-bottom: 5px;
-    }
+    #result-list { list-style: none; padding: 0; margin: 0; }
+    #result-list li { margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -76,7 +36,7 @@
     <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- 2) Cases · comme avant -->
+    <!-- 2) Cases habituelles -->
     <div class="cases">
       <div class="case-box" data-case="1" id="case-box-1">
         <div class="case-title">Case 1</div>
@@ -103,7 +63,7 @@
   </div>
 
   <script>
-    // GESTION DES CASES + OPTIONS
+    // --- gestion cases/options + résultat ---
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
@@ -114,61 +74,67 @@
         else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) {
-              cb.checked = false;
-              removeResult(caseNum, cb.value);
-            }
+            if (cb.checked) { cb.checked = false; removeResult(caseNum, cb.value); }
           });
         }
       });
     });
-
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
-        const caseNum = this.dataset.case;
-        if (this.checked) addResult(caseNum, this.value);
-        else removeResult(caseNum, this.value);
+        const c = this.dataset.case;
+        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
       });
     });
-
-    const resultList = document.getElementById('result-list');
-    function addResult(caseNum, val) {
-      const id = `result-${caseNum}-${val}`;
+    const rl = document.getElementById('result-list');
+    function addResult(c, v) {
+      const id = `result-${c}-${v}`;
       if (!document.getElementById(id)) {
         const li = document.createElement('li');
         li.id = id;
-        li.textContent = `case n°${caseNum} : ${val}`;
-        resultList.appendChild(li);
+        li.textContent = `case n°${c} : ${v}`;
+        rl.appendChild(li);
       }
     }
-    function removeResult(caseNum, val) {
-      const el = document.getElementById(`result-${caseNum}-${val}`);
-      if (el) el.remove();
+    function removeResult(c, v) {
+      const e = document.getElementById(`result-${c}-${v}`);
+      if (e) e.remove();
     }
 
-    // GESTION DU LIEN → GÉNÉRATION + TÉLÉCHARGEMENT DU JSON
+    // --- gestion du clic sur "Lien" + génération JSON ---
     document.getElementById('lien-box').addEventListener('click', () => {
-      // Récupère tous les items de la liste de résultats
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
+      const data = JSON.stringify({ infractions }, null, 2);
 
-      // Construit l'objet JSON
-      const data = { infractions: infractions };
+      // tentative de download
+      const blob = new Blob([data], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
 
-      // Crée un blob et déclenche le téléchargement
-      const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
-        { type: 'application/json' }
-      );
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'infractions.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      if ('download' in a) {
+        // navigateur supporte l'attribut download
+        a.href = url;
+        a.download = 'infractions.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        // fallback : on ouvre le JSON dans un nouvel onglet
+        URL.revokeObjectURL(url);
+        const w = window.open();
+        w.document.open();
+        w.document.write(
+          '<pre>' +
+          data
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;') +
+          '</pre>'
+        );
+        w.document.close();
+      }
     });
   </script>
 </body>
