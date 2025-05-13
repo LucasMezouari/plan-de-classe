@@ -78,30 +78,31 @@
 </head>
 <body>
 
-  <!-- Titre centré en haut de page -->
   <h1>Plan de classe</h1>
 
   <div class="container">
+    <!-- Actions gauche -->
     <div class="left-panel">
       <div class="lien-box" id="lien-box">Lien</div>
       <div class="lien-box" id="appel-box">Appel terminé</div>
       <div id="appel-result"></div>
     </div>
 
+    <!-- Grille de 30 sous-cases -->
     <div class="cases" id="cases"></div>
 
+    <!-- Zone infractions -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
-  <!-- "Tableau" dans une boîte rectangulaire, centré en bas -->
   <div class="footer-container">
     <div class="footer-box">Tableau</div>
   </div>
 
   <script>
-    // Précisions possibles par rubrique
+    // Détails possibles par rubrique
     const detailsOptions = {
       "Comportement": [
         "Insulte envers le professeur",
@@ -112,7 +113,9 @@
         "Refus de s'asseoir",
         "Bavardages",
         "Imitation de bruitages",
-        "Usage du téléphone"
+        "Usage du téléphone",
+        "Retard",
+        "Insiste pour aller aux toilettes"
       ],
       "Travail non fait": [
         "Exercice maison non rendu",
@@ -135,19 +138,19 @@
       ]
     };
 
-    // Génération dynamique des 30 sous-cases
+    // Génération des 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
-    for (let r = 0; r < 5; r++) {
-      for (let c = 0; c < 3; c++) {
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 3; col++) {
         const cont = document.createElement('div');
         cont.className = 'case-container';
-        for (let h = 0; h < 2; h++) {
+        for (let half = 0; half < 2; half++) {
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
 
-          // En-tête : toggle + titre
+          // Entête : toggle + titre
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -181,7 +184,7 @@
       }
     }
 
-    // Sélection verte sur sous-case (clic hors checkbox)
+    // Clic sur sous-case pour la sélectionner en vert
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
@@ -215,7 +218,7 @@
       });
     });
 
-    // Fonctions ajout/suppression dans la liste
+    // Fonctions pour la liste
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -241,7 +244,7 @@
       const li = e.target;
       if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
 
-      // Supprimer ancien détail
+      // Supprimer ancien bloc de détail
       const prev = resultList.querySelector('li.detail-select, li.detail');
       if (prev) prev.remove();
 
@@ -250,7 +253,7 @@
       if (!opts) return;
       const cse = li.id.split('-')[1];
 
-      // Créer cases à cocher de détail
+      // Créer bloc de cases à cocher
       const selLi = document.createElement('li');
       selLi.className = 'detail-select';
       opts.forEach(opt => {
@@ -264,7 +267,6 @@
 
         cb.addEventListener('change', () => {
           if (cb.checked) {
-            // Mettre à jour la ligne principale et retirer le bloc
             li.textContent = `case n°${cse} : ${rubric} : ${opt}`;
             selLi.remove();
           }
