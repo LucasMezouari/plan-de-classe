@@ -76,7 +76,17 @@
       padding: 0;
       margin: 0;
     }
-    #result-list li { margin-bottom: 5px; }
+    #result-list li {
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+    /* Style des détails */
+    #result-list li.detail {
+      font-style: italic;
+      padding-left: 20px;
+      margin-bottom: 10px;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
@@ -195,14 +205,41 @@
     }
     function removeResult(c, v) {
       const el = document.getElementById(`result-${c}-${v}`);
-      if (el) el.remove();
+      if (el) {
+        // aussi retirer détail si présent
+        const next = el.nextElementSibling;
+        if (next && next.classList.contains('detail')) next.remove();
+        el.remove();
+      }
     }
 
-    // 5) “Lien” → collecte + JSON + téléchargement/fallback
+    // 5) Détail au clic sur une infraction
+    const detailsMap = {
+      "Travail non fait": "Copie blanche",
+      "Comportement":     "Intervention verbale",
+      "Oubli de matériel": "Crayon oublié"
+    };
+    resultList.addEventListener('click', e => {
+      if (e.target.tagName !== 'LI' || e.target.classList.contains('detail')) return;
+      // retirer un éventuel autre détail ouvert
+      const existing = resultList.querySelector('li.detail');
+      if (existing) existing.remove();
+      // insérer détail juste après
+      const text = e.target.textContent.split(' : ')[1];
+      const detailText = detailsMap[text] || "Aucune précision";
+      const detail = document.createElement('li');
+      detail.className = 'detail';
+      detail.textContent = detailText;
+      e.target.insertAdjacentElement('afterend', detail);
+    });
+
+    // 6) “Lien” → collecte + JSON + téléchargement/fallback
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
-      ).map(li => li.textContent);
+      )
+      .filter(li => !li.classList.contains('detail'))
+      .map(li => li.textContent);
 
       // Date Europe/Paris format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
@@ -246,7 +283,7 @@
       }
     });
 
-    // 6) “Appel terminé” → affichage Présents / Absents
+    // 7) “Appel terminé” → affichage Présents / Absents
     document.getElementById('appel-box').addEventListener('click', () => {
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const pres = subs.filter(sc => sc.classList.contains('selected'));
