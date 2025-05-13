@@ -54,11 +54,11 @@
       z-index: 1000;
       font-size: 13px;
     }
-    .context-menu div {
+    .context-menu .menu-option {
       padding: 6px 12px;
       cursor: pointer;
     }
-    .context-menu div.selected {
+    .context-menu .menu-option.selected {
       background-color: #d0ebff;
     }
     .footer-layout {
@@ -70,7 +70,8 @@
     }
     .left-button {
       position: absolute;
-      left: 0;
+      left: 20px;
+      top: 100px;
       text-align: left;
     }
     .bouton, .tableau {
@@ -88,19 +89,18 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    #feedback {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #222;
-      text-align: left;
-      position: absolute;
-      right: 20px;
-      top: 100px;
-      width: 200px;
-    }
     #presence-result {
       position: absolute;
       left: 20px;
+      top: 140px;
+      text-align: left;
+      font-size: 14px;
+      color: #222;
+      width: 200px;
+    }
+    #feedback {
+      position: absolute;
+      right: 20px;
       top: 100px;
       text-align: left;
       font-size: 14px;
@@ -161,30 +161,32 @@
 
     document.querySelectorAll('.half').forEach(half => {
       let timer;
-      let isTouch = false;
-
-      half.addEventListener('click', () => {
-        half.classList.toggle('active');
-      });
-        isTouch = false;
-      });
+      let isLongPress = false;
 
       half.addEventListener('mousedown', () => {
+        isLongPress = false;
         timer = setTimeout(() => {
+          isLongPress = true;
           openContextMenu(half);
         }, 500);
       });
-
-      half.addEventListener('touchstart', (e) => {
-        isTouch = true;
+      half.addEventListener('touchstart', e => {
+        e.preventDefault();
+        isLongPress = false;
         timer = setTimeout(() => {
+          isLongPress = true;
           openContextMenu(half);
         }, 500);
       });
-
-      half.addEventListener('mouseup', () => clearTimeout(timer));
+      half.addEventListener('mouseup', () => {
+        clearTimeout(timer);
+        if (!isLongPress) half.classList.toggle('active');
+      });
+      half.addEventListener('touchend', () => {
+        clearTimeout(timer);
+        if (!isLongPress) half.classList.toggle('active');
+      });
       half.addEventListener('mouseleave', () => clearTimeout(timer));
-      half.addEventListener('touchend', () => clearTimeout(timer));
     });
 
     function openContextMenu(target) {
@@ -211,15 +213,13 @@
       });
     });
 
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (menu.style.display === 'block') {
         if (e.key === 'ArrowDown') {
-          selectedIndex = (selectedIndex + 1) % options.length;
-          selectOption(selectedIndex);
+          selectOption((selectedIndex + 1) % options.length);
           e.preventDefault();
         } else if (e.key === 'ArrowUp') {
-          selectedIndex = (selectedIndex - 1 + options.length) % options.length;
-          selectOption(selectedIndex);
+          selectOption((selectedIndex - 1 + options.length) % options.length);
           e.preventDefault();
         } else if (e.key === 'Enter') {
           const text = options[selectedIndex].textContent;
@@ -241,14 +241,3 @@
     function afficherAppel() {
       const all = document.querySelectorAll(".half");
       const presents = document.querySelectorAll(".half.active");
-      const absents = Array.from(all).filter(e => !e.classList.contains("active"));
-
-      const resultDiv = document.getElementById("presence-result");
-      resultDiv.innerHTML = `<div><strong>Présents :</strong> ${presents.length}</div><br><strong>Absents :</strong><br>`;
-      absents.forEach(el => {
-        resultDiv.innerHTML += `${el.textContent.trim()}<br>`;
-      });
-    }
-  </script>
-</body>
-</html>
