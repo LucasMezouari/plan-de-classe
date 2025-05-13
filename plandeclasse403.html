@@ -15,25 +15,48 @@
     }
     .lien-box:hover { background-color: #00bfff; }
 
-    /* Cases */
-    .cases { display: flex; flex-direction: column; gap: 20px; }
+    /* Grille de cases : 3 colonnes x 5 lignes */
+    .cases {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
     .case-box {
-      background-color: #87CEEB; padding: 10px;
-      border-radius: 5px; cursor: pointer; position: relative;
+      background-color: #87CEEB;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      position: relative;
     }
-    .case-box.selected { background-color: #006400; color: #fff; }
+    .case-box.selected {
+      background-color: #006400;
+      color: #fff;
+    }
     .case-box .options {
-      margin-top: 10px; display: none; padding-left: 10px;
+      margin-top: 10px;
+      display: none;
+      padding-left: 10px;
     }
-    .case-box.selected .options { display: block; }
+    .case-box.selected .options {
+      display: block;
+    }
 
-    /* Résultats */
+    /* Zone des résultats */
     .result {
-      flex: 1; padding: 10px; border: 1px solid #ccc;
-      border-radius: 5px; min-width: 200px;
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-width: 200px;
     }
-    #result-list { list-style: none; padding: 0; margin: 0; }
-    #result-list li { margin-bottom: 5px; }
+    #result-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #result-list li {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -42,24 +65,21 @@
     <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- 2) Vos deux cases -->
+    <!-- 2) Grille 3×5 de cases -->
     <div class="cases">
-      <div class="case-box" data-case="1">
-        <div class="case-title">Case 1</div>
+      <!-- Généré de 1 à 15 -->
+      ${[...Array(15)].map((_, i) => {
+        const n = i + 1;
+        return `
+      <div class="case-box" data-case="${n}">
+        <div class="case-title">Case ${n}</div>
         <div class="options">
-          <label><input type="checkbox" data-case="1" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="1" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="1" value="Oubli de matériel"> Oubli de matériel</label>
+          <label><input type="checkbox" data-case="${n}" value="Comportement"> Comportement</label><br>
+          <label><input type="checkbox" data-case="${n}" value="Travail non fait"> Travail non fait</label><br>
+          <label><input type="checkbox" data-case="${n}" value="Oubli de matériel"> Oubli de matériel</label>
         </div>
-      </div>
-      <div class="case-box" data-case="2">
-        <div class="case-title">Case 2</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="2" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="2" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="2" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
+      </div>`;
+      }).join('')}
     </div>
 
     <!-- 3) Zone de résultats -->
@@ -69,11 +89,11 @@
   </div>
 
   <script>
-    // ---------- Gestion des cases et options ----------
+    // 1) Gestion du toggle des cases et des options
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
-        if (e.target.closest('.options')) return; // ignore les clics sur les checkbox
+        if (e.target.closest('.options')) return;
         box.classList.toggle('selected');
         const opts = box.querySelector('.options');
         if (box.classList.contains('selected')) {
@@ -90,6 +110,7 @@
       });
     });
 
+    // 2) Gestion des checkboxes
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
@@ -97,6 +118,7 @@
       });
     });
 
+    // Fonctions d'ajout/suppression dans la zone Résultats
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -112,14 +134,13 @@
       if (el) el.remove();
     }
 
-    // ---------- Gestion du clic sur “Lien” ----------
+    // 3) Clic sur “Lien” → génération JSON + téléchargement / fallback
     document.getElementById('lien-box').addEventListener('click', () => {
-      // 1) Récupérer les infractions
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      // 2) Calculer la date/heure de Paris au format JJ-MM-HHhMM
+      // Date/heure de Paris au format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:   'numeric',
@@ -127,26 +148,23 @@
         day:    '2-digit',
         hour:   '2-digit',
         minute: '2-digit'
-      }).format(new Date()); // ex. "13/05/2025 17:45"
+      }).format(new Date());
       const [datePart, timePart] = lok.split(' ');
       const [day, month]        = datePart.split('/');
       const [hour, minute]      = timePart.split(':');
       const now = `${day}-${month}-${hour}h${minute}`;
 
-      // 3) Préparer le JSON
       const payload = {
         date: now + ' (Europe/Paris)',
         infractions
       };
       const data = JSON.stringify(payload, null, 2);
 
-      // 4) Générer le blob et tenter le download
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
 
       if ('download' in a) {
-        // téléchargement direct
         a.href     = url;
         a.download = `infractions_${now}.json`;
         document.body.appendChild(a);
@@ -154,9 +172,7 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       } else {
-        // fallback : ouverture dans un nouvel onglet
         window.open(url);
-        // on peut révoquer après un petit délai si on veut :
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
     });
