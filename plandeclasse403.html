@@ -21,14 +21,11 @@
       border-radius: 4px;
       padding: 10px;
       margin-bottom: 20px;
+      cursor: pointer;
       transition: background-color 0.3s, color 0.3s;
     }
     .case-box.checked {
       background-color: #006400; /* vert foncé */
-      color: #fff;
-    }
-    .case-box.checked input[type="checkbox"] + span,
-    .case-box.checked label {
       color: #fff;
     }
     .options {
@@ -54,10 +51,8 @@
     <!-- Colonne des cases -->
     <div class="cases">
       <div class="case-box" id="box-1">
-        <label>
-          <input type="checkbox" id="main-case-1">
-          <span>case 1</span>
-        </label>
+        <input type="checkbox" id="main-case-1" style="display:none;">
+        <span>case 1</span>
         <div class="options" id="options-1" style="display: none;">
           <label><input type="checkbox" data-case="1" value="Comportement"> Comportement</label><br>
           <label><input type="checkbox" data-case="1" value="Travail non fait"> Travail non fait</label><br>
@@ -66,10 +61,8 @@
       </div>
 
       <div class="case-box" id="box-2">
-        <label>
-          <input type="checkbox" id="main-case-2">
-          <span>case 2</span>
-        </label>
+        <input type="checkbox" id="main-case-2" style="display:none;">
+        <span>case 2</span>
         <div class="options" id="options-2" style="display: none;">
           <label><input type="checkbox" data-case="2" value="Comportement"> Comportement</label><br>
           <label><input type="checkbox" data-case="2" value="Travail non fait"> Travail non fait</label><br>
@@ -85,17 +78,24 @@
   </div>
 
   <script>
-    // Gère l'affichage des options et la couleur de la case
     ['1','2'].forEach(function(n) {
-      const mainCb = document.getElementById('main-case-' + n);
       const box = document.getElementById('box-' + n);
+      const mainCb = document.getElementById('main-case-' + n);
       const optDiv = document.getElementById('options-' + n);
 
+      // Toggle when clicking the box
+      box.addEventListener('click', function(e) {
+        if (e.target !== mainCb && !e.target.closest('.options')) {
+          mainCb.checked = !mainCb.checked;
+          mainCb.dispatchEvent(new Event('change'));
+        }
+      });
+
+      // Change event on checkbox
       mainCb.addEventListener('change', function() {
         const checked = this.checked;
         optDiv.style.display = checked ? 'block' : 'none';
         box.classList.toggle('checked', checked);
-        // si on décoche la case principale, on décoche aussi toutes ses options
         if (!checked) {
           optDiv.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
             if (cb.checked) {
@@ -107,7 +107,6 @@
       });
     });
 
-    // Quand on coche/décoche une option, on ajoute/enlève la ligne correspondante
     document.querySelectorAll('.options input[type="checkbox"]').forEach(function(cb) {
       cb.addEventListener('change', function() {
         const caseNum = this.dataset.case;
