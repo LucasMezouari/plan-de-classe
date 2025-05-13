@@ -15,14 +15,14 @@
     }
     .lien-box:hover { background-color: #00bfff; }
 
-    /* Grille : 3 conteneurs par ligne, 5 lignes */
+    /* Grille : 3 conteneurs × 5 lignes */
     .cases {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
 
-    /* Chaque conteneur contient 2 sous-cases */
+    /* Chaque conteneur regroupe deux sous-cases */
     .case-container {
       display: flex;
       background-color: #87CEEB;
@@ -30,48 +30,57 @@
       overflow: hidden;
     }
 
-    /* Sous-case */
+    /* Une vraie sous-case (maintenant sans toggle au clic) */
     .subcase {
       flex: 1;
-      padding: 10px;
+      padding: 8px;
       position: relative;
+      border-right: 1px solid rgba(255,255,255,0.7);
+    }
+    .subcase:last-child {
+      border-right: none;
+    }
+
+    /* Checkbox de bascule + titre inline */
+    .subcase .header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .subcase .header .toggle {
       cursor: pointer;
     }
-    /* Trait de séparation */
-    .subcase + .subcase {
-      border-left: 1px solid rgba(255,255,255,0.7);
+    .subcase .header .title {
+      font-weight: bold;
     }
 
-    /* Sous-case sélectionnée */
-    .subcase.selected {
+    /* Options cachées, affichées si la toggle est cochée */
+    .subcase .options {
+      margin-top: 8px;
+      display: none;
+      padding-left: 4px;
+    }
+    .subcase .toggle:checked ~ .options {
+      display: block;
+    }
+
+    /* Souligne la sous-case lorsque toggle est cochée */
+    .subcase .toggle:checked + .title,
+    .subcase .toggle:checked { 
       background-color: #006400;
       color: #fff;
-    }
-
-    /* Options à l’intérieur de chaque sous-case */
-    .subcase .options {
-      margin-top: 10px;
-      display: none;
-      padding-left: 5px;
-    }
-    .subcase.selected .options {
-      display: block;
     }
 
     /* Zone des résultats */
     .result {
       flex: 1; padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      border: 1px solid #ccc; border-radius: 5px;
       min-width: 200px;
     }
     #result-list {
-      list-style: none;
-      padding: 0; margin: 0;
+      list-style: none; padding: 0; margin: 0;
     }
-    #result-list li {
-      margin-bottom: 5px;
-    }
+    #result-list li { margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -80,7 +89,7 @@
     <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- 2) Grille vide, on la remplira en JS -->
+    <!-- 2) Grille vide -->
     <div class="cases" id="cases"></div>
 
     <!-- 3) Zone de résultats -->
@@ -90,24 +99,33 @@
   </div>
 
   <script>
-    // 1) Génère 3 colonnes × 5 lignes de containers, chacun avec 2 sous-cases
+    // Génération dynamique de 3×5 containers → 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 3; col++) {
         const container = document.createElement('div');
         container.className = 'case-container';
-        // deux sous-cases
         for (let half = 0; half < 2; half++) {
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
-          // titre
-          const title = document.createElement('div');
-          title.className = 'case-title';
+
+          // Header : toggle + titre
+          const header = document.createElement('div');
+          header.className = 'header';
+          const toggle = document.createElement('input');
+          toggle.type = 'checkbox';
+          toggle.className = 'toggle';
+          toggle.dataset.case = num;
+          const title = document.createElement('span');
+          title.className = 'title';
           title.textContent = `Case ${num}`;
-          sc.appendChild(title);
-          // options
+          header.appendChild(toggle);
+          header.appendChild(title);
+          sc.appendChild(header);
+
+          // Bloc des options
           const opts = document.createElement('div');
           opts.className = 'options';
           ['Comportement','Travail non fait','Oubli de matériel']
@@ -123,6 +141,7 @@
               opts.appendChild(document.createElement('br'));
             });
           sc.appendChild(opts);
+
           container.appendChild(sc);
           num++;
         }
@@ -130,34 +149,15 @@
       }
     }
 
-    // 2) Gestion des clics sur chaque sous-case
-    document.querySelectorAll('.subcase').forEach(sc => {
-      sc.addEventListener('click', e => {
-        // si on a cliqué sur une checkbox, on ne toggle pas la sous-case
-        if (e.target.tagName === 'INPUT') return;
-        sc.classList.toggle('selected');
-        // si désélection, on décoche tout et on retire des résultats
-        if (!sc.classList.contains('selected')) {
-          sc.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) {
-              cb.checked = false;
-              removeResult(sc.dataset.case, cb.value);
-            }
-          });
-        }
-      });
-    });
-
-    // 3) Gestion des options à l’intérieur des sous-cases
+    // 1) Gestion des options à l’intérieur des sous-cases
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
-        if (this.checked) addResult(c, this.value);
-        else removeResult(c, this.value);
+        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
       });
     });
 
-    // 4) Fonctions Résultats
+    // 2) Fonctions d’ajout / suppression dans la zone Résultats
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -173,13 +173,13 @@
       if (el) el.remove();
     }
 
-    // 5) Clic sur “Lien” → collecte, JSON & download/fallback
+    // 3) Clic sur “Lien” → collecte, JSON & téléchargement/fallback
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      // date Paris au format JJ-MM-HHhMM
+      // date Paris JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:   'numeric', month: '2-digit',
@@ -187,12 +187,12 @@
         minute: '2-digit'
       }).format(new Date());
       const [dp, tp] = lok.split(' ');
-      const [jj,MM]  = dp.split('/');
-      const [hh,mm]  = tp.split(':');
+      const [jj,MM] = dp.split('/');
+      const [hh,mm] = tp.split(':');
       const now = `${jj}-${MM}-${hh}h${mm}`;
 
       const payload = { date: now + ' (Europe/Paris)', infractions };
-      const data = JSON.stringify(payload, null, 2);
+      const data    = JSON.stringify(payload, null, 2);
 
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
