@@ -6,12 +6,14 @@
   <style>
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
+    /* Boîte “Lien” */
     .lien-box {
       flex: none; width: 80px; padding: 10px;
       background-color: #87CEEB; border-radius: 5px;
       text-align: center; cursor: pointer; user-select: none;
     }
     .lien-box:hover { background-color: #00bfff; }
+    /* Vos cases */
     .cases { display: flex; flex-direction: column; gap: 20px; }
     .case-box {
       background-color: #87CEEB; padding: 10px;
@@ -22,27 +24,28 @@
       margin-top: 10px; display: none; padding-left: 10px;
     }
     .case-box.selected .options { display: block; }
+    /* Zone résultats */
     .result {
       flex: 1; padding: 10px; border: 1px solid #ccc;
       border-radius: 5px; min-width: 200px;
     }
     #result-list { list-style: none; padding: 0; margin: 0; }
     #result-list li { margin-bottom: 5px; }
-    /* nouveau bloc pre */
+    /* Affichage JSON */
     #json-output {
-      margin-top: 30px;
-      padding: 10px;
-      background: #f4f4f4;
-      border: 1px solid #ddd;
-      white-space: pre-wrap;
+      margin-top: 30px; padding: 10px;
+      background: #f4f4f4; border: 1px solid #ddd;
+      white-space: pre-wrap; display: none;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
+    <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
+    <!-- 2) Vos deux cases -->
     <div class="cases">
       <div class="case-box" data-case="1">
         <div class="case-title">Case 1</div>
@@ -62,24 +65,26 @@
       </div>
     </div>
 
+    <!-- 3) Zone de résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
-  <!-- le <pre> pour voir le JSON directement -->
-  <pre id="json-output" style="display:none;"></pre>
+  <!-- 4) Le <pre> qui affichera le JSON -->
+  <pre id="json-output"></pre>
 
   <script>
-    // cases / options
+    // Gère le toggle des cases & options + mise à jour de la liste des résultats
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
-        if (e.target.closest('.options')) return;
+        if (e.target.closest('.options')) return;  // ignore les clics sur les checkboxes
         box.classList.toggle('selected');
         const opts = box.querySelector('.options');
-        if (box.classList.contains('selected')) opts.style.display = 'block';
-        else {
+        if (box.classList.contains('selected')) {
+          opts.style.display = 'block';
+        } else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
@@ -90,20 +95,22 @@
         }
       });
     });
+
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
         this.checked ? addResult(c, this.value) : removeResult(c, this.value);
       });
     });
-    const rl = document.getElementById('result-list');
+
+    const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
       if (!document.getElementById(id)) {
         const li = document.createElement('li');
         li.id = id;
         li.textContent = `case n°${c} : ${v}`;
-        rl.appendChild(li);
+        resultList.appendChild(li);
       }
     }
     function removeResult(c, v) {
@@ -111,34 +118,52 @@
       if (el) el.remove();
     }
 
-    // clic sur Lien
+    // Gère le clic sur “Lien” → calcul de la date en Europe/Paris, JSON, affichage + download
     document.getElementById('lien-box').addEventListener('click', () => {
+      // 1) Récupère la liste courante des infractions
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      const now = new Date().toISOString();
-      const payload = { date: now, infractions };
-      const data    = JSON.stringify(payload, null, 2);
+      // 2) Récupère la date/heure Paris au format DD-MM-HHhMM
+      const lok = new Intl.DateTimeFormat('fr-FR', {
+        timeZone: 'Europe/Paris',
+        year:   'numeric',
+        month:  '2-digit',
+        day:    '2-digit',
+        hour:   '2-digit',
+        minute: '2-digit'
+      }).format(new Date()); // ex. "13/05/2025 17:45"
+      const [datePart, timePart] = lok.split(' ');
+      const [day, month]        = datePart.split('/');
+      const [hour, minute]      = timePart.split(':');
+      const now = `${day}-${month}-${hour}h${minute}`;
 
-      // 1) on affiche dans le <pre>
+      // 3) Prépare le payload JSON
+      const payload = {
+        date: now + ' (Europe/Paris)',
+        infractions: infractions
+      };
+      const data = JSON.stringify(payload, null, 2);
+
+      // 4) Affiche-le dans le <pre>
       const pre = document.getElementById('json-output');
       pre.textContent = data;
       pre.style.display = 'block';
 
-      // 2) on essaie toujours de proposer le download…
+      // 5) Propose le téléchargement
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       if ('download' in a) {
-        a.href = url;
-        a.download = `infractions_${now.substring(0,10)}.json`;
+        a.href     = url;
+        a.download = `infractions_${now}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }
-      // sinon on laisse juste le <pre> visible pour copier/coller
+      // Sinon vous avez déjà le JSON dans le <pre> pour copier/coller
     });
   </script>
 </body>
