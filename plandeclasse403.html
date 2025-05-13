@@ -7,11 +7,20 @@
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
 
-    /* Boîte “Lien” */
+    /* Colonne de gauche (Lien + Appel) */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     .lien-box {
-      flex: none; width: 80px; padding: 10px;
-      background-color: #87CEEB; border-radius: 5px;
-      text-align: center; cursor: pointer; user-select: none;
+      width: 120px;
+      padding: 10px;
+      background-color: #87CEEB;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
     }
     .lien-box:hover { background-color: #00bfff; }
 
@@ -31,48 +40,41 @@
     .subcase {
       flex: 1;
       padding: 8px;
-      position: relative;
       border-right: 1px solid rgba(255,255,255,0.7);
+      position: relative;
       cursor: pointer;
     }
-    .subcase:last-child {
-      border-right: none;
-    }
-
-    /* État sélectionné : vert foncé */
+    .subcase:last-child { border-right: none; }
     .subcase.selected {
       background-color: #006400;
       color: #fff;
     }
 
-    /* Header contenant la toggle et le titre */
     .header {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .toggle {
-      cursor: pointer;
-    }
-    .title {
-      font-weight: bold;
-    }
+    .toggle { cursor: pointer; }
+    .title { font-weight: bold; }
 
-    /* Les options sont masquées par défaut */
     .options {
       margin-top: 8px;
       display: none;
       padding-left: 4px;
     }
 
-    /* Zone des résultats */
     .result {
-      flex: 1; padding: 10px;
-      border: 1px solid #ccc; border-radius: 5px;
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       min-width: 200px;
     }
     #result-list {
-      list-style: none; padding: 0; margin: 0;
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
     #result-list li { margin-bottom: 5px; }
   </style>
@@ -80,20 +82,24 @@
 <body>
 
   <div class="container">
-    <!-- 1) Boîte “Lien” -->
-    <div class="lien-box" id="lien-box">Lien</div>
+    <!-- Colonne de gauche : Lien + Appel terminé + affichage appel -->
+    <div class="left-panel">
+      <div class="lien-box" id="lien-box">Lien</div>
+      <div class="lien-box" id="appel-box">Appel terminé</div>
+      <div id="appel-result"></div>
+    </div>
 
-    <!-- 2) Grille : 3×5 containers → 30 sous-cases -->
+    <!-- Grille des cases -->
     <div class="cases" id="cases"></div>
 
-    <!-- 3) Zone de résultats -->
+    <!-- Zone des infractions cochées -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
   <script>
-    // --- 1) Génération dynamique des 30 sous-cases ---
+    // 1) Génération dynamique des 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
     for (let r = 0; r < 5; r++) {
@@ -105,7 +111,7 @@
           sc.className = 'subcase';
           sc.dataset.case = num;
 
-          // header : toggle + titre
+          // header (toggle + titre)
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -118,19 +124,18 @@
           header.append(toggle, title);
           sc.append(header);
 
-          // options masquées
+          // options cachées
           const opts = document.createElement('div');
           opts.className = 'options';
-          ['Comportement', 'Travail non fait', 'Oubli de matériel']
-            .forEach(val => {
-              const lbl = document.createElement('label');
-              const inp = document.createElement('input');
-              inp.type = 'checkbox';
-              inp.dataset.case = num;
-              inp.value = val;
-              lbl.append(inp, ' ' + val);
-              opts.append(lbl, document.createElement('br'));
-            });
+          ['Comportement','Travail non fait','Oubli de matériel'].forEach(val => {
+            const lbl = document.createElement('label');
+            const inp = document.createElement('input');
+            inp.type = 'checkbox';
+            inp.dataset.case = num;
+            inp.value = val;
+            lbl.append(inp, ' ' + val);
+            opts.append(lbl, document.createElement('br'));
+          });
           sc.append(opts);
 
           container.append(sc);
@@ -140,15 +145,15 @@
       }
     }
 
-    // --- 2) Clic sur sous-case (hors input) → bascule état sélectionné (vert) ---
+    // 2) Cliquer sur la sous-case (hors checkbox) la rend verte / bascule selected
     document.querySelectorAll('.subcase').forEach(sc => {
-      sc.addEventListener('click', function(e) {
+      sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
-        this.classList.toggle('selected');
+        sc.classList.toggle('selected');
       });
     });
 
-    // --- 3) Toggle: affiche/masque les options ---
+    // 3) Afficher/masquer les options au toggle
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
@@ -157,7 +162,7 @@
           opts.style.display = 'block';
         } else {
           opts.style.display = 'none';
-          // décocher et retirer des résultats les anciennes infractions
+          // décocher et retirer anciennes infractions
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
               cb.checked = false;
@@ -168,16 +173,15 @@
       });
     });
 
-    // --- 4) Gestion des infractions cochées ---
+    // 4) Gestion des infractions cochées
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
-        if (this.checked) addResult(c, this.value);
-        else removeResult(c, this.value);
+        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
       });
     });
 
-    // Fonctions résultat
+    // Fonctions ajout/suppression dans la liste des infractions
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -193,42 +197,46 @@
       if (el) el.remove();
     }
 
-    // --- 5) Clic sur “Lien” → collecte + JSON + download/fallback ---
+    // 5) “Lien” → export JSON comme avant
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
-
-      // date Paris au format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
-        year:   'numeric', month: '2-digit',
-        day:    '2-digit', hour:  '2-digit',
-        minute: '2-digit'
+        year:'numeric',month:'2-digit',
+        day:'2-digit',hour:'2-digit',
+        minute:'2-digit'
       }).format(new Date());
-      const [dp, tp] = lok.split(' ');
-      const [jj, MM] = dp.split('/');
-      const [hh, mm] = tp.split(':');
+      const [dp,tp] = lok.split(' ');
+      const [jj,MM] = dp.split('/');
+      const [hh,mm] = tp.split(':');
       const now = `${jj}-${MM}-${hh}h${mm}`;
-
-      const payload = { date: now + ' (Europe/Paris)', infractions };
-      const data = JSON.stringify(payload, null, 2);
-
-      const blob = new Blob([data], { type: 'application/json' });
+      const payload = { date: now+' (Europe/Paris)', infractions };
+      const data = JSON.stringify(payload,null,2);
+      const blob = new Blob([data],{type:'application/json'});
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-
       if ('download' in a) {
-        a.href     = url;
-        a.download = `infractions_${now}.json`;
-        document.body.append(a);
-        a.click();
-        a.remove();
+        a.href = url; a.download = `infractions_${now}.json`;
+        document.body.append(a); a.click(); a.remove();
         URL.revokeObjectURL(url);
       } else {
         window.open(url);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
       }
+    });
+
+    // 6) “Appel terminé” → affichage des présents / absents
+    document.getElementById('appel-box').addEventListener('click', () => {
+      const subs = Array.from(document.querySelectorAll('.subcase'));
+      const pres = subs.filter(sc => sc.classList.contains('selected'));
+      const abs  = subs.filter(sc => !sc.classList.contains('selected'));
+      const appel = document.getElementById('appel-result');
+      appel.innerHTML = `
+        <p>Élèves présents : ${pres.length}</p>
+        <p>Élèves absents : ${abs.map(sc => 'case n°'+sc.dataset.case).join(', ')|| '—'}</p>
+      `;
     });
   </script>
 </body>
