@@ -5,7 +5,8 @@
   <title>Plan de classe</title>
   <style>
     body { font-family: sans-serif; margin: 20px; }
-    h1, h2 { text-align: center; margin: 20px 0; }
+    h1 { text-align: center; margin-bottom: 30px; }
+
     .container { display: flex; gap: 20px; align-items: flex-start; }
 
     /* Colonne de gauche */
@@ -60,6 +61,19 @@
     li.detail-select { padding-left: 20px; margin-bottom: 10px; }
     li.detail-select label { display: block; cursor: pointer; }
     li.detail { font-style: italic; padding-left: 20px; margin-bottom: 10px; cursor: default; }
+
+    /* Pied de page */
+    .footer-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .footer-box {
+      display: inline-block;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 5px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -81,8 +95,10 @@
     </div>
   </div>
 
-  <!-- Titre centré en bas de page -->
-  <h2>Tableau</h2>
+  <!-- "Tableau" dans une boîte rectangulaire, centré en bas -->
+  <div class="footer-container">
+    <div class="footer-box">Tableau</div>
+  </div>
 
   <script>
     // Précisions possibles par rubrique
