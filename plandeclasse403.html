@@ -6,28 +6,54 @@
   <style>
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
+
+    /* Boîte “Lien” */
     .lien-box {
-      flex: none; width: 80px; padding: 10px;
-      background-color: #87CEEB; border-radius: 5px;
-      text-align: center; cursor: pointer; user-select: none;
+      flex: none;
+      width: 80px;
+      padding: 10px;
+      background-color: #87CEEB;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
     }
     .lien-box:hover { background-color: #00bfff; }
+
+    /* Grille de cases : 3 colonnes × 5 lignes */
     .cases {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
+
     .case-box {
       background-color: #87CEEB;
       padding: 10px;
       border-radius: 5px;
       cursor: pointer;
-      position: relative;
+      position: relative; /* nécessaire pour le trait vertical */
+      overflow: hidden;
     }
+
+    /* Trait vertical au milieu de chaque case */
+    .case-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      border-left: 1px solid rgba(255,255,255,0.7);
+    }
+
     .case-box.selected {
       background-color: #006400;
       color: #fff;
     }
+    .case-box.selected::before {
+      border-left-color: rgba(255,255,255,0.9);
+    }
+
     .case-box .options {
       margin-top: 10px;
       display: none;
@@ -36,6 +62,8 @@
     .case-box.selected .options {
       display: block;
     }
+
+    /* Zone de résultats */
     .result {
       flex: 1;
       padding: 10px;
@@ -43,18 +71,25 @@
       border-radius: 5px;
       min-width: 200px;
     }
-    #result-list { list-style: none; padding: 0; margin: 0; }
-    #result-list li { margin-bottom: 5px; }
+    #result-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #result-list li {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Boîte “Lien” -->
+    <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- Grille 3×5 de cases -->
+    <!-- 2) Grille 3×5 de cases -->
     <div class="cases">
+      <!-- Cases 1 à 15 -->
       <div class="case-box" data-case="1">
         <div class="case-title">Case 1</div>
         <div class="options">
@@ -179,22 +214,23 @@
       </div>
     </div>
 
-    <!-- Zone de résultats -->
+    <!-- 3) Zone de résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
   <script>
-    // Toggle des cases & des options
+    // Toggle des cases et options
     document.querySelectorAll('.case-box').forEach(box => {
       const num = box.dataset.case;
       box.addEventListener('click', e => {
         if (e.target.closest('.options')) return;
         box.classList.toggle('selected');
         const opts = box.querySelector('.options');
-        if (box.classList.contains('selected')) opts.style.display = 'block';
-        else {
+        if (box.classList.contains('selected')) {
+          opts.style.display = 'block';
+        } else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
@@ -214,7 +250,7 @@
       });
     });
 
-    // Ajout / suppression dans la liste de résultats
+    // Fonctions pour la zone Résultats
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -230,12 +266,13 @@
       if (el) el.remove();
     }
 
-    // Clic sur “Lien” → JSON + téléchargement / fallback
+    // Clic sur “Lien” → génération JSON + téléchargement / fallback
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
+      // Date/heure Paris → JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:   'numeric',
@@ -245,8 +282,8 @@
         minute: '2-digit'
       }).format(new Date());
       const [datePart, timePart] = lok.split(' ');
-      const [day, month]        = datePart.split('/');
-      const [hour, minute]      = timePart.split(':');
+      const [day, month]         = datePart.split('/');
+      const [hour, minute]       = timePart.split(':');
       const now = `${day}-${month}-${hour}h${minute}`;
 
       const payload = { date: now + ' (Europe/Paris)', infractions };
