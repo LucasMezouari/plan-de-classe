@@ -10,137 +10,166 @@
     }
     .container {
       display: flex;
-      gap: 40px;
+      gap: 20px;
     }
+    /* Boîte “Lien” */
+    .lien-box {
+      background-color: #87CEEB;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 120px;
+      text-align: center;
+    }
+    .lien-box.selected {
+      background-color: #006400;
+      color: white;
+    }
+    .infractions {
+      margin-top: 10px;
+      display: none;
+      text-align: left;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .infractions ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+    /* Les autres cases et résultats restent inchangés */
     .cases {
-      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
     .case-box {
-      background-color: #87CEEB; /* bleu ciel */
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      background-color: #87CEEB;
       padding: 10px;
-      margin-bottom: 20px;
-      transition: background-color 0.3s, color 0.3s;
+      border-radius: 5px;
       cursor: pointer;
+      position: relative;
     }
-    .case-box.checked {
-      background-color: #006400; /* vert foncé */
-      color: #fff;
+    .case-box.selected {
+      background-color: #006400;
+      color: white;
     }
-    .options {
+    .case-box .options {
       margin-top: 10px;
-      margin-left: 20px;
+      display: none;
+      padding-left: 10px;
+    }
+    .case-box.selected .options {
+      display: block;
     }
     .result {
       flex: 1;
-      padding-left: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-width: 200px;
     }
     #result-list {
       list-style: none;
       padding: 0;
+      margin: 0;
     }
     #result-list li {
       margin-bottom: 5px;
     }
-    .case-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none; /* ignore label clicks, handled on box */
-    }
-    .case-box input {
-      pointer-events: none; /* disable default checkbox clicking */
-    }
   </style>
 </head>
 <body>
-
   <div class="container">
+    <!-- Boîte “Lien” -->
+    <div class="lien-box" id="lien-box">
+      Lien
+      <div class="infractions" id="infractions">
+        <ul id="infractions-list"></ul>
+      </div>
+    </div>
+    <!-- Vos cases habituelles -->
     <div class="cases">
-      <div class="case-box" id="box-1">
-        <label class="case-label">
-          <input type="checkbox" id="main-case-1">
-          <span>case 1</span>
-        </label>
-        <div class="options" id="options-1" style="display: none;">
-          <label><input type="checkbox" data-case="1" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="1" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="1" value="Oubli de matériel"> Oubli de matériel</label>
+      <div class="case-box" data-case="1" id="case-box-1">
+        <div class="case-title">Case 1</div>
+        <div class="options" id="options-1">
+          <label><input type="checkbox" id="opt-1-Comportement" data-case="1" value="Comportement"> Comportement</label><br>
+          <label><input type="checkbox" id="opt-1-Travail-non-fait" data-case="1" value="Travail non fait"> Travail non fait</label><br>
+          <label><input type="checkbox" id="opt-1-Oubli-de-materiel" data-case="1" value="Oubli de matériel"> Oubli de matériel</label>
         </div>
       </div>
-
-      <div class="case-box" id="box-2">
-        <label class="case-label">
-          <input type="checkbox" id="main-case-2">
-          <span>case 2</span>
-        </label>
-        <div class="options" id="options-2" style="display: none;">
-          <label><input type="checkbox" data-case="2" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="2" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="2" value="Oubli de matériel"> Oubli de matériel</label>
+      <div class="case-box" data-case="2" id="case-box-2">
+        <div class="case-title">Case 2</div>
+        <div class="options" id="options-2">
+          <label><input type="checkbox" id="opt-2-Comportement" data-case="2" value="Comportement"> Comportement</label><br>
+          <label><input type="checkbox" id="opt-2-Travail-non-fait" data-case="2" value="Travail non fait"> Travail non fait</label><br>
+          <label><input type="checkbox" id="opt-2-Oubli-de-materiel" data-case="2" value="Oubli de matériel"> Oubli de matériel</label>
         </div>
       </div>
     </div>
-
+    <!-- Colonne résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
   <script>
-    ['1','2'].forEach(function(n) {
-      const mainCb = document.getElementById('main-case-' + n);
-      const box = document.getElementById('box-' + n);
-      const optDiv = document.getElementById('options-' + n);
-
-      // Update on checkbox change
-      mainCb.addEventListener('change', function() {
-        const checked = this.checked;
-        optDiv.style.display = checked ? 'block' : 'none';
-        box.classList.toggle('checked', checked);
-        if (!checked) {
-          optDiv.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
-            if (cb.checked) {
-              cb.checked = false;
-              removeResult(n, cb.value);
-            }
-          });
-        }
-      });
-
-      // Toggle when clicking on the box (excluding options area)
-      box.addEventListener('click', function(e) {
-        // Ignore clicks inside the options div
-        if (e.target.closest('#options-' + n)) return;
-        // Toggle the main checkbox
-        mainCb.checked = !mainCb.checked;
-        mainCb.dispatchEvent(new Event('change'));
-      });
+    // --- Boîte “Lien” ---
+    const lienBox = document.getElementById('lien-box');
+    const infraDiv = document.getElementById('infractions');
+    lienBox.addEventListener('click', () => {
+      const open = infraDiv.style.display === 'block';
+      infraDiv.style.display = open ? 'none' : 'block';
+      lienBox.classList.toggle('selected', !open);
     });
 
-    document.querySelectorAll('.options input[type="checkbox"]').forEach(function(cb) {
-      cb.addEventListener('change', function() {
-        const caseNum = this.dataset.case;
-        const val = this.value;
-        if (this.checked) addResult(caseNum, val);
-        else removeResult(caseNum, val);
-      });
-    });
-
-    function addResult(caseNum, value) {
-      const ul = document.getElementById('result-list');
+    // Fonction pour ajouter une infraction
+    // à appeler depuis la console ou depuis votre code JS
+    function addInfraction(caseNum, texte) {
+      const ul = document.getElementById('infractions-list');
       const li = document.createElement('li');
-      li.id = `result-${caseNum}-${value}`;
-      li.textContent = `case n°${caseNum} : ${value}`;
+      li.textContent = `case n°${caseNum} : ${texte}`;
       ul.appendChild(li);
     }
 
+    // --- Reste de votre code (cases + options + résultats) ---
+    document.querySelectorAll('.case-box').forEach(box => {
+      const caseNum = box.dataset.case;
+      box.addEventListener('click', e => {
+        if (e.target.closest('.options')) return;
+        box.classList.toggle('selected');
+        const opts = box.querySelector('.options');
+        if (box.classList.contains('selected')) opts.style.display = 'block';
+        else {
+          opts.style.display = 'none';
+          opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
+            if (cb.checked) cb.checked = false, removeResult(caseNum, cb.value);
+          });
+        }
+      });
+    });
+
+    document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', function() {
+        const caseNum = this.dataset.case;
+        if (this.checked) addResult(caseNum, this.value);
+        else removeResult(caseNum, this.value);
+      });
+    });
+
+    const resultList = document.getElementById('result-list');
+    function addResult(caseNum, value) {
+      const id = `result-${caseNum}-${value}`;
+      if (!document.getElementById(id)) {
+        const li = document.createElement('li');
+        li.id = id;
+        li.textContent = `case n°${caseNum} : ${value}`;
+        resultList.appendChild(li);
+      }
+    }
     function removeResult(caseNum, value) {
-      const li = document.getElementById(`result-${caseNum}-${value}`);
-      if (li) li.remove();
+      const el = document.getElementById(`result-${caseNum}-${value}`);
+      if (el) el.remove();
     }
   </script>
-
 </body>
 </html>
