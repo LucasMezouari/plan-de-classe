@@ -33,10 +33,10 @@
 <body>
 
   <div class="container">
-    <!-- 1) Boîte “Lien” -->
+    <!-- Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- 2) Cases habituelles -->
+    <!-- Cases -->
     <div class="cases">
       <div class="case-box" data-case="1" id="case-box-1">
         <div class="case-title">Case 1</div>
@@ -56,14 +56,14 @@
       </div>
     </div>
 
-    <!-- 3) Résultats -->
+    <!-- Résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
   <script>
-    // --- gestion cases/options + résultat ---
+    // Gestion des cases/options
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
@@ -74,7 +74,10 @@
         else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) { cb.checked = false; removeResult(caseNum, cb.value); }
+            if (cb.checked) {
+              cb.checked = false;
+              removeResult(caseNum, cb.value);
+            }
           });
         }
       });
@@ -100,28 +103,35 @@
       if (e) e.remove();
     }
 
-    // --- gestion du clic sur "Lien" + génération JSON ---
+    // Gestion du clic sur “Lien” → JSON avec date + infractions
     document.getElementById('lien-box').addEventListener('click', () => {
+      // 1) Récupère les infractions
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
-      const data = JSON.stringify({ infractions }, null, 2);
 
-      // tentative de download
+      // 2) Prépare l’objet avec la date ISO
+      const now = new Date().toISOString();
+      const payload = {
+        date: now,
+        infractions: infractions
+      };
+      const data = JSON.stringify(payload, null, 2);
+
+      // 3) Tente le téléchargement
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
 
       if ('download' in a) {
-        // navigateur supporte l'attribut download
         a.href = url;
-        a.download = 'infractions.json';
+        a.download = `infractions_${now.substring(0,10)}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       } else {
-        // fallback : on ouvre le JSON dans un nouvel onglet
+        // Fallback : affiche le JSON dans un nouvel onglet
         URL.revokeObjectURL(url);
         const w = window.open();
         w.document.open();
