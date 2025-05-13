@@ -78,15 +78,14 @@
     }
     #result-list li {
       margin-bottom: 5px;
+      cursor: pointer;
     }
-    /* détail statique */
     #result-list li.detail {
       font-style: italic;
       padding-left: 20px;
       margin-bottom: 10px;
       cursor: default;
     }
-    /* sélection dropdown */
     #result-list li.detail-select {
       padding-left: 20px;
       margin-bottom: 10px;
@@ -100,31 +99,40 @@
 <body>
 
   <div class="container">
-    <!-- Colonne de gauche -->
     <div class="left-panel">
       <div class="lien-box" id="lien-box">Lien</div>
       <div class="lien-box" id="appel-box">Appel terminé</div>
       <div id="appel-result"></div>
     </div>
 
-    <!-- Grille des sous-cases -->
     <div class="cases" id="cases"></div>
 
-    <!-- Zone des infractions cochées -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
   <script>
-    // Options de détail possibles
+    // Détail des sous-options
     const detailsOptions = {
-      "Travail non fait": ["Copie blanche", "Ne sort pas ses affaires"],
-      "Comportement":     ["Intervention verbale"],
-      "Oubli de matériel": ["Crayon oublié"]
+      "Comportement": [
+        "Insultes envers le professeur",
+        "Insulte envers un camarade",
+        "Insolence"
+      ],
+      "Travail non fait": [
+        "Copie blanche",
+        "Ne sors aucune affaire"
+      ],
+      "Oubli de matériel": [
+        "Oubli de calculatrice",
+        "Oubli de cahier",
+        "Oubli de matériel géométrique",
+        "Oubli de feuille"
+      ]
     };
 
-    // 1) Génération dynamique des 30 sous-cases
+    // 1) Génération des 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
     for (let r = 0; r < 5; r++) {
@@ -136,7 +144,7 @@
           sc.className = 'subcase';
           sc.dataset.case = num;
 
-          // En-tête : toggle + titre
+          // Header (toggle + titre)
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -149,21 +157,35 @@
           header.append(toggle, title);
           sc.append(header);
 
-          // Options cachées
+          // Options
           const opts = document.createElement('div');
           opts.className = 'options';
-          ['Comportement','Travail non fait','Oubli de matériel']
-            .forEach(val => {
+
+          // Rubriques
+          ["Comportement","Travail non fait","Oubli de matériel"].forEach(cat => {
+            if (cat === "Comportement") {
+              // trois sous-coches directement
+              detailsOptions.Comportement.forEach(label => {
+                const lbl = document.createElement('label');
+                const inp = document.createElement('input');
+                inp.type = 'checkbox';
+                inp.dataset.case = num;
+                inp.value = label;
+                lbl.append(inp, ' ' + label);
+                opts.append(lbl, document.createElement('br'));
+              });
+            } else {
               const lbl = document.createElement('label');
               const inp = document.createElement('input');
               inp.type = 'checkbox';
               inp.dataset.case = num;
-              inp.value = val;
-              lbl.append(inp, ' ' + val);
+              inp.value = cat;
+              lbl.append(inp, ' ' + cat);
               opts.append(lbl, document.createElement('br'));
-            });
-          sc.append(opts);
+            }
+          });
 
+          sc.append(opts);
           container.append(sc);
           num++;
         }
@@ -171,7 +193,7 @@
       }
     }
 
-    // 2) Clic sur sous-case (hors input) → bascule selected (vert)
+    // 2) Toggle sélection verte sur sous-case
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
@@ -179,35 +201,30 @@
       });
     });
 
-    // 3) Toggle : affiche/masque les options
+    // 3) Affiche/masque options
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
         const opts = sc.querySelector('.options');
-        if (this.checked) {
-          opts.style.display = 'block';
-        } else {
+        if (this.checked) opts.style.display = 'block';
+        else {
           opts.style.display = 'none';
-          // décocher et nettoyer
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) {
-              cb.checked = false;
-              removeResult(cb.dataset.case, cb.value);
-            }
+            if (cb.checked) removeResult(cb.dataset.case, cb.value), cb.checked = false;
           });
         }
       });
     });
 
-    // 4) Gestion des infractions cochées
+    // 4) Enregistrement des infractions cochées
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
-        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
+        this.checked ? addResult(c,this.value) : removeResult(c,this.value);
       });
     });
 
-    // Fonctions pour la liste d’infractions
+    // Fonctions Résultat
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -221,124 +238,73 @@
     function removeResult(c, v) {
       const el = document.getElementById(`result-${c}-${v}`);
       if (el) {
-        // supprimer détail ou select éventuel
         const next = el.nextElementSibling;
-        if (next && (next.classList.contains('detail') || next.classList.contains('detail-select'))) {
-          next.remove();
-        }
+        if (next && (next.classList.contains('detail')||next.classList.contains('detail-select'))) next.remove();
         el.remove();
       }
     }
 
-    // 5) Détail au clic sur une infraction
+    // 5) Détail au clic sur infraction
     resultList.addEventListener('click', e => {
       const li = e.target;
-      if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
-
-      // supprimer anciens détails
-      const prevDetail = resultList.querySelector('li.detail, li.detail-select');
-      if (prevDetail) prevDetail.remove();
-
+      if (li.tagName!=='LI' || li.classList.contains('detail')||li.classList.contains('detail-select')) return;
+      const prev = resultList.querySelector('li.detail, li.detail-select');
+      if (prev) prev.remove();
       const inf = li.textContent.split(' : ')[1];
       const opts = detailsOptions[inf] || ["Aucune précision"];
-
-      if (opts.length > 1) {
-        // créer un <li> équipé d'un select + bouton
+      if (opts.length>1) {
         const selLi = document.createElement('li');
         selLi.className = 'detail-select';
         const sel = document.createElement('select');
-        opts.forEach(opt => {
-          const o = document.createElement('option');
-          o.value = opt; o.text = opt;
-          sel.appendChild(o);
+        opts.forEach(o=>{ const opt=document.createElement('option'); opt.value=o; opt.text=o; sel.append(opt); });
+        const btn=document.createElement('button'); btn.textContent='OK';
+        selLi.append(sel,btn);
+        li.insertAdjacentElement('afterend',selLi);
+        btn.addEventListener('click',()=>{
+          const chosen=sel.value; selLi.remove();
+          const det=document.createElement('li');
+          det.className='detail'; det.textContent=chosen;
+          li.insertAdjacentElement('afterend',det);
         });
-        const btn = document.createElement('button');
-        btn.textContent = 'OK';
-        selLi.append(sel, btn);
-        li.insertAdjacentElement('afterend', selLi);
-
-        btn.addEventListener('click', () => {
-          const chosen = sel.value;
-          selLi.remove();
-          const detLi = document.createElement('li');
-          detLi.className = 'detail';
-          detLi.textContent = chosen;
-          li.insertAdjacentElement('afterend', detLi);
-        });
-
       } else {
-        // un seul choix : afficher directement
-        const detLi = document.createElement('li');
-        detLi.className = 'detail';
-        detLi.textContent = opts[0];
-        li.insertAdjacentElement('afterend', detLi);
+        const det=document.createElement('li');
+        det.className='detail'; det.textContent=opts[0];
+        li.insertAdjacentElement('afterend',det);
       }
     });
 
-    // 6) “Lien” → collecte + JSON + téléchargement/fallback
-    document.getElementById('lien-box').addEventListener('click', () => {
-      // infractions (sans les détails)
-      const infractions = Array.from(
-        resultList.querySelectorAll('li:not(.detail):not(.detail-select)')
-      ).map(li => li.textContent);
-
-      // date Europe/Paris format JJ-MM-HHhMM
-      const lok = new Intl.DateTimeFormat('fr-FR', {
-        timeZone: 'Europe/Paris',
-        year:'numeric',month:'2-digit',
-        day:'2-digit',hour:'2-digit',
-        minute:'2-digit'
-      }).format(new Date());
-      const [dp,tp] = lok.split(' ');
-      const [jj,MM] = dp.split('/');
-      const [hh,mm] = tp.split(':');
-      const now = `${jj}-${MM}-${hh}h${mm}`;
-
-      // présences
-      const subs = Array.from(document.querySelectorAll('.subcase'));
-      const presCount = subs.filter(sc => sc.classList.contains('selected')).length;
-      const absList   = subs.filter(sc => !sc.classList.contains('selected'))
-                            .map(sc => `case n°${sc.dataset.case}`);
-
-      const payload = {
-        date: now + ' (Europe/Paris)',
-        infractions,
-        presents: presCount,
-        absents: absList
-      };
-      const data = JSON.stringify(payload, null, 2);
-      const blob = new Blob([data], { type: 'application/json' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      if ('download' in a) {
-        a.href     = url;
-        a.download = `infractions_${now}.json`;
-        document.body.append(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      } else {
-        window.open(url);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      }
+    // 6) Export JSON
+    document.getElementById('lien-box').addEventListener('click',()=>{
+      const infractions = Array.from(resultList.querySelectorAll('li:not(.detail):not(.detail-select)'))
+        .map(li=>li.textContent);
+      const lok=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date());
+      const [dp,tp]=lok.split(' ');
+      const [jj,MM]=dp.split('/');
+      const [hh,mm]=tp.split(':');
+      const now=`${jj}-${MM}-${hh}h${mm}`;
+      const subs=Array.from(document.querySelectorAll('.subcase'));
+      const presCount=subs.filter(sc=>sc.classList.contains('selected')).length;
+      const absList=subs.filter(sc=>!sc.classList.contains('selected')).map(sc=>`case n°${sc.dataset.case}`);
+      const payload={date:now+' (Europe/Paris)',infractions,presents:presCount,absents:absList};
+      const data=JSON.stringify(payload,null,2);
+      const blob=new Blob([data],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      if('download'in a){
+        a.href=url; a.download=`infractions_${now}.json`;
+        document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      } else { window.open(url); setTimeout(()=>URL.revokeObjectURL(url),1000); }
     });
 
-    // 7) “Appel terminé” → affichage Présents / Absents
-    document.getElementById('appel-box').addEventListener('click', () => {
-      const subs = Array.from(document.querySelectorAll('.subcase'));
-      const pres = subs.filter(sc => sc.classList.contains('selected'));
-      const abs  = subs.filter(sc => !sc.classList.contains('selected'));
-      const appel = document.getElementById('appel-result');
-      let html = `<p>Élèves présents : ${pres.length}</p>`;
-      html += `<p>Élèves absents :</p>`;
-      if (abs.length) {
-        abs.forEach(sc => {
-          html += `<p>case n°${sc.dataset.case}</p>`;
-        });
-      } else {
-        html += `<p>—</p>`;
-      }
-      appel.innerHTML = html;
+    // 7) Appel terminé
+    document.getElementById('appel-box').addEventListener('click',()=>{
+      const subs=Array.from(document.querySelectorAll('.subcase'));
+      const pres=subs.filter(sc=>sc.classList.contains('selected'));
+      const abs=subs.filter(sc=>!sc.classList.contains('selected'));
+      let html=`<p>Élèves présents : ${pres.length}</p><p>Élèves absents :</p>`;
+      if(abs.length) abs.forEach(sc=>html+=`<p>case n°${sc.dataset.case}</p>`);
+      else html+='<p>—</p>';
+      document.getElementById('appel-result').innerHTML=html;
     });
   </script>
 </body>
