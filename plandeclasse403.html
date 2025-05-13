@@ -9,72 +9,65 @@
 
     /* Boîte “Lien” */
     .lien-box {
-      flex: none;
-      width: 80px;
-      padding: 10px;
-      background-color: #87CEEB;
-      border-radius: 5px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
+      flex: none; width: 80px; padding: 10px;
+      background-color: #87CEEB; border-radius: 5px;
+      text-align: center; cursor: pointer; user-select: none;
     }
     .lien-box:hover { background-color: #00bfff; }
 
-    /* Grille de cases : 3 colonnes × 5 lignes */
+    /* Grille : 3 conteneurs par ligne, 5 lignes */
     .cases {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
 
-    .case-box {
+    /* Chaque conteneur contient 2 sous-cases */
+    .case-container {
+      display: flex;
       background-color: #87CEEB;
-      padding: 10px;
       border-radius: 5px;
-      cursor: pointer;
-      position: relative; /* nécessaire pour le trait vertical */
       overflow: hidden;
     }
 
-    /* Trait vertical au milieu de chaque case */
-    .case-box::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 50%;
+    /* Sous-case */
+    .subcase {
+      flex: 1;
+      padding: 10px;
+      position: relative;
+      cursor: pointer;
+    }
+    /* Trait de séparation */
+    .subcase + .subcase {
       border-left: 1px solid rgba(255,255,255,0.7);
     }
 
-    .case-box.selected {
+    /* Sous-case sélectionnée */
+    .subcase.selected {
       background-color: #006400;
       color: #fff;
     }
-    .case-box.selected::before {
-      border-left-color: rgba(255,255,255,0.9);
-    }
 
-    .case-box .options {
+    /* Options à l’intérieur de chaque sous-case */
+    .subcase .options {
       margin-top: 10px;
       display: none;
-      padding-left: 10px;
+      padding-left: 5px;
     }
-    .case-box.selected .options {
+    .subcase.selected .options {
       display: block;
     }
 
-    /* Zone de résultats */
+    /* Zone des résultats */
     .result {
-      flex: 1;
-      padding: 10px;
+      flex: 1; padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
       min-width: 200px;
     }
     #result-list {
       list-style: none;
-      padding: 0;
-      margin: 0;
+      padding: 0; margin: 0;
     }
     #result-list li {
       margin-bottom: 5px;
@@ -87,132 +80,8 @@
     <!-- 1) Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- 2) Grille 3×5 de cases -->
-    <div class="cases">
-      <!-- Cases 1 à 15 -->
-      <div class="case-box" data-case="1">
-        <div class="case-title">Case 1</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="1" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="1" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="1" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="2">
-        <div class="case-title">Case 2</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="2" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="2" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="2" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="3">
-        <div class="case-title">Case 3</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="3" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="3" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="3" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="4">
-        <div class="case-title">Case 4</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="4" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="4" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="4" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="5">
-        <div class="case-title">Case 5</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="5" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="5" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="5" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-
-      <div class="case-box" data-case="6">
-        <div class="case-title">Case 6</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="6" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="6" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="6" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="7">
-        <div class="case-title">Case 7</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="7" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="7" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="7" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="8">
-        <div class="case-title">Case 8</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="8" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="8" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="8" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="9">
-        <div class="case-title">Case 9</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="9" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="9" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="9" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="10">
-        <div class="case-title">Case 10</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="10" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="10" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="10" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-
-      <div class="case-box" data-case="11">
-        <div class="case-title">Case 11</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="11" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="11" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="11" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="12">
-        <div class="case-title">Case 12</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="12" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="12" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="12" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="13">
-        <div class="case-title">Case 13</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="13" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="13" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="13" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="14">
-        <div class="case-title">Case 14</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="14" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="14" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="14" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-      <div class="case-box" data-case="15">
-        <div class="case-title">Case 15</div>
-        <div class="options">
-          <label><input type="checkbox" data-case="15" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" data-case="15" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" data-case="15" value="Oubli de matériel"> Oubli de matériel</label>
-        </div>
-      </div>
-    </div>
+    <!-- 2) Grille vide, on la remplira en JS -->
+    <div class="cases" id="cases"></div>
 
     <!-- 3) Zone de résultats -->
     <div class="result">
@@ -221,36 +90,74 @@
   </div>
 
   <script>
-    // Toggle des cases et options
-    document.querySelectorAll('.case-box').forEach(box => {
-      const num = box.dataset.case;
-      box.addEventListener('click', e => {
-        if (e.target.closest('.options')) return;
-        box.classList.toggle('selected');
-        const opts = box.querySelector('.options');
-        if (box.classList.contains('selected')) {
-          opts.style.display = 'block';
-        } else {
-          opts.style.display = 'none';
-          opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    // 1) Génère 3 colonnes × 5 lignes de containers, chacun avec 2 sous-cases
+    const casesContainer = document.getElementById('cases');
+    let num = 1;
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 3; col++) {
+        const container = document.createElement('div');
+        container.className = 'case-container';
+        // deux sous-cases
+        for (let half = 0; half < 2; half++) {
+          const sc = document.createElement('div');
+          sc.className = 'subcase';
+          sc.dataset.case = num;
+          // titre
+          const title = document.createElement('div');
+          title.className = 'case-title';
+          title.textContent = `Case ${num}`;
+          sc.appendChild(title);
+          // options
+          const opts = document.createElement('div');
+          opts.className = 'options';
+          ['Comportement','Travail non fait','Oubli de matériel']
+            .forEach(val => {
+              const lbl = document.createElement('label');
+              const inp = document.createElement('input');
+              inp.type = 'checkbox';
+              inp.dataset.case = num;
+              inp.value = val;
+              lbl.appendChild(inp);
+              lbl.appendChild(document.createTextNode(' ' + val));
+              opts.appendChild(lbl);
+              opts.appendChild(document.createElement('br'));
+            });
+          sc.appendChild(opts);
+          container.appendChild(sc);
+          num++;
+        }
+        casesContainer.appendChild(container);
+      }
+    }
+
+    // 2) Gestion des clics sur chaque sous-case
+    document.querySelectorAll('.subcase').forEach(sc => {
+      sc.addEventListener('click', e => {
+        // si on a cliqué sur une checkbox, on ne toggle pas la sous-case
+        if (e.target.tagName === 'INPUT') return;
+        sc.classList.toggle('selected');
+        // si désélection, on décoche tout et on retire des résultats
+        if (!sc.classList.contains('selected')) {
+          sc.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
               cb.checked = false;
-              removeResult(num, cb.value);
+              removeResult(sc.dataset.case, cb.value);
             }
           });
         }
       });
     });
 
-    // Gestion des checkboxes
+    // 3) Gestion des options à l’intérieur des sous-cases
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
-        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
+        if (this.checked) addResult(c, this.value);
+        else removeResult(c, this.value);
       });
     });
 
-    // Fonctions pour la zone Résultats
+    // 4) Fonctions Résultats
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -266,28 +173,26 @@
       if (el) el.remove();
     }
 
-    // Clic sur “Lien” → génération JSON + téléchargement / fallback
+    // 5) Clic sur “Lien” → collecte, JSON & download/fallback
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      // Date/heure Paris → JJ-MM-HHhMM
+      // date Paris au format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
-        year:   'numeric',
-        month:  '2-digit',
-        day:    '2-digit',
-        hour:   '2-digit',
+        year:   'numeric', month: '2-digit',
+        day:    '2-digit', hour:  '2-digit',
         minute: '2-digit'
       }).format(new Date());
-      const [datePart, timePart] = lok.split(' ');
-      const [day, month]         = datePart.split('/');
-      const [hour, minute]       = timePart.split(':');
-      const now = `${day}-${month}-${hour}h${minute}`;
+      const [dp, tp] = lok.split(' ');
+      const [jj,MM]  = dp.split('/');
+      const [hh,mm]  = tp.split(':');
+      const now = `${jj}-${MM}-${hh}h${mm}`;
 
       const payload = { date: now + ' (Europe/Paris)', infractions };
-      const data    = JSON.stringify(payload, null, 2);
+      const data = JSON.stringify(payload, null, 2);
 
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
