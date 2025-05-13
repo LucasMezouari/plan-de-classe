@@ -7,7 +7,6 @@
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
 
-    /* Colonne de gauche */
     .left-panel {
       display: flex; flex-direction: column; gap: 10px;
     }
@@ -19,17 +18,14 @@
     }
     .lien-box:hover { background-color: #00bfff; }
 
-    /* Grille : 3×5 sous-cases */
     .cases {
       display: grid;
       grid-template-columns: repeat(3,1fr);
       gap: 20px;
     }
     .case-container {
-      display: flex;
-      background: #87CEEB;
-      border-radius: 5px;
-      overflow: hidden;
+      display: flex; background-color: #87CEEB;
+      border-radius: 5px; overflow: hidden;
     }
     .subcase {
       flex: 1; padding: 8px;
@@ -58,17 +54,9 @@
     }
     #result-list { list-style: none; padding: 0; margin: 0; }
     #result-list li { margin-bottom: 5px; cursor: pointer; }
-    #result-list li.detail-select {
-      padding-left: 20px; margin-bottom: 10px;
-    }
-    #result-list li.detail-select select,
-    #result-list li.detail-select button {
-      margin-right: 5px;
-    }
-    #result-list li.detail {
-      font-style: italic; padding-left: 20px;
-      margin-bottom: 10px; cursor: default;
-    }
+    li.detail-select { padding-left: 20px; margin-bottom: 10px; }
+    li.detail-select select, li.detail-select button { margin-right: 5px; }
+    li.detail { font-style: italic; padding-left: 20px; margin-bottom: 10px; cursor: default; }
   </style>
 </head>
 <body>
@@ -88,7 +76,7 @@
   </div>
 
   <script>
-    // 1. Précisions possibles
+    // précisions par rubrique
     const detailsOptions = {
       "Comportement": [
         "Insultes envers le professeur",
@@ -107,14 +95,14 @@
       ]
     };
 
-    // 2. Génération des 30 sous-cases
+    // Génération 3×5 ×2 = 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
-    for (let r = 0; r < 5; r++) {
-      for (let c = 0; c < 3; c++) {
+    for (let r=0; r<5; r++){
+      for (let c=0; c<3; c++){
         const cont = document.createElement('div');
         cont.className = 'case-container';
-        for (let h = 0; h < 2; h++) {
+        for (let h=0; h<2; h++){
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
@@ -130,19 +118,18 @@
           title.textContent = `Case ${num}`;
           header.append(toggle, title);
           sc.append(header);
-          // options
+          // options principales
           const opts = document.createElement('div');
           opts.className = 'options';
-          ["Comportement","Travail non fait","Oubli de matériel"]
-            .forEach(cat => {
-              const lbl = document.createElement('label');
-              const inp = document.createElement('input');
-              inp.type = 'checkbox';
-              inp.dataset.case = num;
-              inp.value = cat;
-              lbl.append(inp, ' ' + cat);
-              opts.append(lbl, document.createElement('br'));
-            });
+          ["Comportement","Travail non fait","Oubli de matériel"].forEach(cat=>{
+            const lbl = document.createElement('label');
+            const inp = document.createElement('input');
+            inp.type = 'checkbox';
+            inp.dataset.case = num;
+            inp.value = cat;
+            lbl.append(inp,' '+cat);
+            opts.append(lbl, document.createElement('br'));
+          });
           sc.append(opts);
           cont.append(sc);
           num++;
@@ -151,178 +138,157 @@
       }
     }
 
-    // 3. Sélection verte sur sous-case
-    document.querySelectorAll('.subcase').forEach(sc => {
-      sc.addEventListener('click', e => {
-        if (e.target.tagName === 'INPUT') return;
+    // sélection vert sur case
+    document.querySelectorAll('.subcase').forEach(sc=>{
+      sc.addEventListener('click', e=>{
+        if(e.target.tagName==='INPUT') return;
         sc.classList.toggle('selected');
       });
     });
 
-    // 4. Toggle options
-    document.querySelectorAll('.toggle').forEach(toggle => {
-      toggle.addEventListener('change', function() {
+    // toggle options
+    document.querySelectorAll('.toggle').forEach(toggle=>{
+      toggle.addEventListener('change', function(){
         const sc = this.closest('.subcase');
         const opts = sc.querySelector('.options');
-        if (this.checked) opts.style.display = 'block';
-        else {
-          opts.style.display = 'none';
-          opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) {
+        if(this.checked) opts.style.display='block';
+        else{
+          opts.style.display='none';
+          opts.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+            if(cb.checked){
               removeResult(cb.dataset.case, cb.value);
-              cb.checked = false;
+              cb.checked=false;
             }
           });
         }
       });
     });
 
-    // 5. Infractions cochées
-    document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
-      cb.addEventListener('change', function() {
+    // infractions cochées
+    document.querySelectorAll('.options input[type="checkbox"]').forEach(cb=>{
+      cb.addEventListener('change', function(){
         const c = this.dataset.case;
-        if (this.checked) addResult(c, this.value);
-        else removeResult(c, this.value);
+        this.checked ? addResult(c,this.value) : removeResult(c,this.value);
       });
     });
 
-    // 6. Fonctions résultat
+    // fonctions résultat
     const resultList = document.getElementById('result-list');
-    function addResult(c, v) {
+    function addResult(c,v){
       const id = `result-${c}-${v}`;
-      if (!document.getElementById(id)) {
+      if(!document.getElementById(id)){
         const li = document.createElement('li');
-        li.id = id;
-        li.textContent = `case n°${c} : ${v}`;
+        li.id=id; li.textContent=`case n°${c} : ${v}`;
         resultList.append(li);
       }
     }
-    function removeResult(c, v) {
+    function removeResult(c,v){
       const el = document.getElementById(`result-${c}-${v}`);
-      if (!el) return;
-      // enlever détail-select ou détail
-      const next = el.nextElementSibling;
-      if (next && (next.classList.contains('detail-select') || next.classList.contains('detail'))) {
-        next.remove();
-      }
+      if(!el) return;
+      const nxt=el.nextElementSibling;
+      if(nxt&& (nxt.classList.contains('detail-select')||nxt.classList.contains('detail'))) nxt.remove();
       el.remove();
     }
 
-    // 7. Clic sur infraction → précisions
-    resultList.addEventListener('click', e => {
+    // clic sur infraction → précisions
+    resultList.addEventListener('click', e=>{
       const li = e.target;
-      if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
-      // effacer ancien détail
-      const prev = resultList.querySelector('li.detail-select, li.detail');
-      if (prev) prev.remove();
-      const [_, text] = li.textContent.split(' : ');
-      const opts = detailsOptions[text] || ["Aucune précision"];
-      const cse   = li.id.split('-')[1];
+      if(li.tagName!=='LI'||li.classList.contains('detail')||li.classList.contains('detail-select')) return;
+      // supprimer ancien détail
+      const prev = resultList.querySelector('li.detail-select,li.detail');
+      if(prev) prev.remove();
 
-      if (text === "Comportement") {
-        // trois sous-coches
+      const [_, text] = li.textContent.split(' : ');
+      const opts = detailsOptions[text]||["Aucune précision"];
+      const cse = li.id.split('-')[1];
+
+      if(text==="Comportement"){
+        // trois coches, puis on les efface dès qu'on coche
         const selLi = document.createElement('li');
-        selLi.className = 'detail-select';
-        opts.forEach(opt => {
-          const lbl = document.createElement('label');
-          const cb  = document.createElement('input');
-          cb.type        = 'checkbox';
-          cb.dataset.case= cse;
-          cb.value       = opt;
-          lbl.append(cb, ' ' + opt, document.createElement('br'));
-          selLi.append(lbl);
-          cb.addEventListener('change', () => {
-            // recalcule tous les détails cochés
-            const checked = Array.from(selLi.querySelectorAll('input[type=checkbox]'))
-                                 .filter(x => x.checked)
-                                 .map(x => x.value);
-            if (checked.length) {
-              li.textContent = `case n°${cse} : Comportement : ${checked.join(', ')}`;
-            } else {
-              li.textContent = `case n°${cse} : Comportement`;
+        selLi.className='detail-select';
+        opts.forEach(opt=>{
+          const lbl=document.createElement('label');
+          const cb=document.createElement('input');
+          cb.type='checkbox'; cb.value=opt;
+          lbl.append(cb,' '+opt);
+          selLi.append(lbl,document.createElement('br'));
+          cb.addEventListener('change',()=>{
+            if(cb.checked){
+              // update du texte principal
+              li.textContent = `case n°${cse} : Comportement : ${opt}`;
+              // on retire tout le bloc de coches
+              selLi.remove();
             }
           });
         });
         li.insertAdjacentElement('afterend', selLi);
 
-      } else if (opts.length > 1) {
-        // select + OK
+      } else if(opts.length>1){
+        // select + bouton OK pour les autres cas
         const selLi = document.createElement('li');
-        selLi.className = 'detail-select';
-        const sel = document.createElement('select');
-        opts.forEach(o => {
-          const op = document.createElement('option');
-          op.value = op.text = o;
+        selLi.className='detail-select';
+        const sel=document.createElement('select');
+        opts.forEach(o=>{
+          const op=document.createElement('option');
+          op.value=op.text=o;
           sel.append(op);
         });
-        const btn = document.createElement('button');
-        btn.textContent = 'OK';
-        selLi.append(sel, btn);
+        const btn=document.createElement('button');
+        btn.textContent='OK';
+        selLi.append(sel,btn);
         li.insertAdjacentElement('afterend', selLi);
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click',()=>{
           li.textContent = `case n°${cse} : ${text} : ${sel.value}`;
           selLi.remove();
         });
-
       } else {
-        const detLi = document.createElement('li');
-        detLi.className = 'detail';
-        detLi.textContent = opts[0];
-        li.insertAdjacentElement('afterend', detLi);
+        // un seul choix
+        const det=document.createElement('li');
+        det.className='detail';
+        det.textContent=opts[0];
+        li.insertAdjacentElement('afterend', det);
       }
     });
 
-    // 8. Export JSON
-    document.getElementById('lien-box').addEventListener('click', () => {
-      const infractions = Array.from(
-        resultList.querySelectorAll('li:not(.detail):not(.detail-select)')
-      ).map(li => li.textContent);
-      const lok = new Intl.DateTimeFormat('fr-FR', {
-        timeZone: 'Europe/Paris',
-        year:'numeric',month:'2-digit',
-        day:'2-digit',hour:'2-digit',
-        minute:'2-digit'
+    // export JSON
+    document.getElementById('lien-box').addEventListener('click',()=>{
+      const infractions = Array.from(resultList.querySelectorAll('li:not(.detail):not(.detail-select)'))
+        .map(li=>li.textContent);
+      const lok=new Intl.DateTimeFormat('fr-FR',{
+        timeZone:'Europe/Paris',year:'numeric',month:'2-digit',
+        day:'2-digit',hour:'2-digit',minute:'2-digit'
       }).format(new Date());
-      const [dp,tp] = lok.split(' ');
-      const [jj,MM]= dp.split('/');
-      const [hh,mm]= tp.split(':');
-      const now = `${jj}-${MM}-${hh}h${mm}`;
-      const subs = Array.from(document.querySelectorAll('.subcase'));
-      const presCount = subs.filter(sc=>sc.classList.contains('selected')).length;
-      const absList   = subs.filter(sc=>!sc.classList.contains('selected'))
-                            .map(sc=>`case n°${sc.dataset.case}`);
-      const payload = {
-        date: now + ' (Europe/Paris)',
-        infractions,
-        presents: presCount,
-        absents: absList
-      };
-      const data = JSON.stringify(payload, null, 2);
-      const blob = new Blob([data], { type: 'application/json' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      if ('download' in a) {
-        a.href     = url;
-        a.download = `infractions_${now}.json`;
-        document.body.append(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
+      const [dp,tp]=lok.split(' ');
+      const [jj,MM]=dp.split('/');
+      const [hh,mm]=tp.split(':');
+      const now=`${jj}-${MM}-${hh}h${mm}`;
+      const subs=Array.from(document.querySelectorAll('.subcase'));
+      const presCount=subs.filter(sc=>sc.classList.contains('selected')).length;
+      const absList=subs.filter(sc=>!sc.classList.contains('selected'))
+                        .map(sc=>`case n°${sc.dataset.case}`);
+      const payload={ date: now+' (Europe/Paris)',
+                      infractions, presents: presCount, absents: absList };
+      const data=JSON.stringify(payload,null,2);
+      const blob=new Blob([data],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      if('download'in a){
+        a.href=url; a.download=`infractions_${now}.json`;
+        document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
       } else {
-        window.open(url);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        window.open(url); setTimeout(()=>URL.revokeObjectURL(url),1000);
       }
     });
 
-    // 9. Appel terminé
-    document.getElementById('appel-box').addEventListener('click', () => {
-      const subs = Array.from(document.querySelectorAll('.subcase'));
-      const pres = subs.filter(sc=>sc.classList.contains('selected'));
-      const abs  = subs.filter(sc=>!sc.classList.contains('selected'));
-      let html = `<p>Élèves présents : ${pres.length}</p><p>Élèves absents :</p>`;
-      if (abs.length) abs.forEach(sc=> html += `<p>case n°${sc.dataset.case}</p>`);
-      else html += `<p>—</p>`;
-      document.getElementById('appel-result').innerHTML = html;
+    // appel terminé
+    document.getElementById('appel-box').addEventListener('click',()=>{
+      const subs=Array.from(document.querySelectorAll('.subcase'));
+      const pres=subs.filter(sc=>sc.classList.contains('selected'));
+      const abs=subs.filter(sc=>!sc.classList.contains('selected'));
+      let html=`<p>Élèves présents : ${pres.length}</p><p>Élèves absents :</p>`;
+      if(abs.length) abs.forEach(sc=>html+=`<p>case n°${sc.dataset.case}</p>`);
+      else html+='<p>—</p>';
+      document.getElementById('appel-result').innerHTML=html;
     });
   </script>
 </body>
