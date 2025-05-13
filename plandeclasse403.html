@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Plan de classe 403</title>
   <style>
-    /* — inchangé — */
     body { font-family:sans-serif; background:#f8f8f8; padding:20px; text-align:center }
     .grid { display:grid; grid-template-columns:repeat(3,160px); gap:20px 50px; justify-content:center }
     .cell{position:relative}
@@ -49,7 +48,7 @@
   <h1>Plan de classe 403</h1>
 
   <div class="grid">
-    <!-- … vos 30 demi-cases … -->
+    <!-- Répétez ce bloc jusqu'à case 30 -->
     <div class="cell">
       <div class="half">case 1
         <input type="checkbox" class="toggle-notes">
@@ -75,7 +74,6 @@
     <div class="left-button">
       <div id="presence-count"></div>
       <div class="bouton" onclick="afficherAppel()">Appel terminé</div>
-      <div class="bouton" onclick="copyLink()">Copier le lien</div>
     </div>
     <div class="tableau">Tableau</div>
   </div>
@@ -89,7 +87,7 @@
   <div id="feedback"></div>
 
   <script>
-    // — MENU CONTEXTUEL & FEEDBACK — (inchangé sauf appel à updateURL)
+    // --- MENU CONTEXTUEL & FEEDBACK ---
     let caseCible = null;
     const menu = document.getElementById("context-menu"),
           opts = menu.querySelectorAll(".menu-option");
@@ -109,7 +107,7 @@
       if(!caseCible) return;
       afficherFeedback(caseCible, opt.textContent);
       menu.style.display='none';
-      updateURL();
+      saveState();
     }));
     function afficherFeedback(el, remark){
       const name = el.childNodes[0].textContent.trim();
@@ -118,12 +116,12 @@
       document.getElementById('feedback').appendChild(d);
     }
 
-    // — TOGGLE NOTES & PRÉSENCE — (ajout d’updateURL à chaque action)
+    // --- TOGGLE NOTES & PRÉSENCE ---
     document.querySelectorAll('.toggle-notes').forEach(cb=>{
       cb.addEventListener('change', ()=>{
-        cb.parentElement.querySelector('.notes-options')
-          .style.display = cb.checked ? 'block':'none';
-        updateURL();
+        const no = cb.parentElement.querySelector('.notes-options');
+        no.style.display = cb.checked ? 'block':'none';
+        saveState();
       });
     });
     document.querySelectorAll('.half').forEach(half=>{
@@ -134,17 +132,17 @@
           longPress=true; openContextMenu(half);
         }, 500);
       });
-      half.addEventListener('touchstart',e=>{
+      half.addEventListener('touchstart', e=>{
         e.preventDefault(); longPress=false;
         timer = setTimeout(()=>{
           longPress=true; openContextMenu(half);
-        },500);
+        }, 500);
       });
       function fin(){
         clearTimeout(timer);
         if(!longPress){
           half.classList.toggle('active');
-          updateURL();
+          saveState();
         }
       }
       half.addEventListener('mouseup', fin);
@@ -152,7 +150,7 @@
       half.addEventListener('mouseleave', ()=>clearTimeout(timer));
     });
 
-    // — FONCTION APPEL — (inchangé + updateURL)
+    // --- APPEL & COMPTEUR ---
     function afficherAppel(){
       const all = Array.from(document.querySelectorAll('.half'));
       const pres = all.filter(h=>h.classList.contains('active')).length;
@@ -162,10 +160,10 @@
       const uniq = [...new Set(abs)];
       document.getElementById('presence-result').innerHTML =
         `<div><strong>Absents (${uniq.length}) :</strong> ${uniq.join(', ')}</div>`;
-      updateURL();
+      saveState();
     }
 
-    // — GESTION DE L’ÉTAT DANS L’URL (PRÉSENCE, NOTES & FEEDBACK) —
+    // --- PERSISTENCE via localStorage ---
     function getState(){
       const s = {};
       document.querySelectorAll('.half').forEach(h=>{
@@ -175,60 +173,48 @@
           showNotes: h.querySelector('.toggle-notes').checked,
           notes:     Array.from(
                        h.querySelectorAll('.notes-options input:checked')
-                     ).map(i=>i.value)
+                     ).map(i=>i.value),
+          feedback:  Array.from(
+                       document.getElementById('feedback').children
+                     ).map(d=>d.innerHTML)
         };
       });
-      // on stocke aussi les lignes de feedback sous forme de HTML
-      s._feedback = Array.from(
-        document.getElementById('feedback').children
-      ).map(div=>div.innerHTML);
       return s;
     }
     function applyState(s){
-      // 1) présence + notes
+      // on efface d'abord tout feedback
+      document.getElementById('feedback').innerHTML = '';
+      // on parcourt chaque case
       Object.entries(s).forEach(([name,st])=>{
-        if(name === '_feedback') return;
-        const h = [...document.querySelectorAll('.half')]
-                  .find(x=>x.childNodes[0].textContent.trim()===name);
-        if(!h) return;
-        h.classList.toggle('active', st.active);
-        const cb = h.querySelector('.toggle-notes');
+        const half = [...document.querySelectorAll('.half')]
+          .find(h=>h.childNodes[0].textContent.trim()===name);
+        if(!half) return;
+        half.classList.toggle('active', st.active);
+        const cb = half.querySelector('.toggle-notes');
         cb.checked = st.showNotes;
-        h.querySelector('.notes-options')
-         .style.display = st.showNotes?'block':'none';
-        h.querySelectorAll('.notes-options input')
-         .forEach(i=>i.checked = st.notes.includes(i.value));
-      });
-      // 2) feedback
-      const cont = document.getElementById('feedback');
-      cont.innerHTML = '';
-      (s._feedback||[]).forEach(html=>{
-        const d = document.createElement('div');
-        d.innerHTML = html;
-        cont.appendChild(d);
+        half.querySelector('.notes-options')
+            .style.display = st.showNotes?'block':'none';
+        half.querySelectorAll('.notes-options input')
+            .forEach(i=> i.checked = st.notes.includes(i.value));
+        // on restaure le feedback (on prend la même liste pour chaque case)
+        st.feedback?.forEach(html=>{
+          const d = document.createElement('div');
+          d.innerHTML = html;
+          document.getElementById('feedback').appendChild(d);
+        });
       });
     }
-
-    function updateURL(){
-      const json = JSON.stringify(getState());
-      history.replaceState(null, '', '#' + btoa(json));
+    function saveState(){
+      localStorage.setItem('plan403', JSON.stringify(getState()));
     }
-    function loadFromHash(){
-      if(!location.hash) return;
-      try{
-        const state = JSON.parse(atob(location.hash.slice(1)));
-        applyState(state);
-        // enfin, on affiche aussi le compteur/absents
-        afficherAppel();
-      }catch{}
+    function loadState(){
+      const txt = localStorage.getItem('plan403');
+      if(!txt) return;
+      try{ applyState(JSON.parse(txt)); afficherAppel(); }
+      catch{}
     }
-    function copyLink(){
-      navigator.clipboard.writeText(location.href)
-        .then(()=>alert('Lien copié !'))
-        .catch(()=>alert('Échec du copié'));
-    }
-
-    window.addEventListener('load', loadFromHash);
+    window.addEventListener('load', loadState);
+    window.addEventListener('beforeunload', saveState);
   </script>
 </body>
 </html>
