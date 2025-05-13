@@ -96,10 +96,16 @@
         "Ne sors aucune affaire"
       ],
       "Oubli de matériel": [
-        "Oubli de calculatrice",
-        "Oubli de cahier",
-        "Oubli de matériel géométrique",
-        "Oubli de feuille"
+        "Pas de stylo",
+        "Pas de trousse",
+        "Pas de rapporteur",
+        "Pas de compas",
+        "Pas ses codes",
+        "Pas de carnet",
+        "Pas de cahier",
+        "Pas de calculatrice",
+        "Pas de mouchoirs",
+        "Pas de copie"
       ]
     };
 
@@ -115,7 +121,7 @@
           sc.className = 'subcase';
           sc.dataset.case = num;
 
-          // Entête : toggle + titre
+          // En-tête : toggle + titre
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -207,10 +213,7 @@
     // Détails au clic sur une infraction
     resultList.addEventListener('click', e => {
       const li = e.target;
-      if (li.tagName !== 'LI'
-          || li.classList.contains('detail')
-          || li.classList.contains('detail-select')
-      ) return;
+      if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
 
       // Supprimer ancien détail
       const prev = resultList.querySelector('li.detail-select, li.detail');
