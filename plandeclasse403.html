@@ -33,9 +33,16 @@
       padding: 8px;
       position: relative;
       border-right: 1px solid rgba(255,255,255,0.7);
+      cursor: pointer;
     }
     .subcase:last-child {
       border-right: none;
+    }
+
+    /* État sélectionné : vert foncé */
+    .subcase.selected {
+      background-color: #006400;
+      color: #fff;
     }
 
     /* Header contenant la toggle et le titre */
@@ -133,7 +140,15 @@
       }
     }
 
-    // --- 2) Quand on coche la toggle, on affiche/masque ses options ---
+    // --- 2) Clic sur sous-case (hors input) → bascule état sélectionné (vert) ---
+    document.querySelectorAll('.subcase').forEach(sc => {
+      sc.addEventListener('click', function(e) {
+        if (e.target.tagName === 'INPUT') return;
+        this.classList.toggle('selected');
+      });
+    });
+
+    // --- 3) Toggle: affiche/masque les options ---
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
@@ -142,7 +157,7 @@
           opts.style.display = 'block';
         } else {
           opts.style.display = 'none';
-          // décocher et retirer de la liste les anciennes infractions
+          // décocher et retirer des résultats les anciennes infractions
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
               cb.checked = false;
@@ -153,11 +168,12 @@
       });
     });
 
-    // --- 3) Gestion des infractions cochées ---
+    // --- 4) Gestion des infractions cochées ---
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
-        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
+        if (this.checked) addResult(c, this.value);
+        else removeResult(c, this.value);
       });
     });
 
@@ -177,7 +193,7 @@
       if (el) el.remove();
     }
 
-    // --- 4) Clic sur “Lien” → collecte + JSON + download/fallback ---
+    // --- 5) Clic sur “Lien” → collecte + JSON + download/fallback ---
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
