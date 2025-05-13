@@ -7,7 +7,6 @@
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
 
-    /* Colonne de gauche (Lien + Appel) */
     .left-panel {
       display: flex;
       flex-direction: column;
@@ -24,7 +23,6 @@
     }
     .lien-box:hover { background-color: #00bfff; }
 
-    /* Grille : 3 colonnes × 5 lignes */
     .cases {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -82,14 +80,14 @@
 <body>
 
   <div class="container">
-    <!-- Colonne de gauche : Lien + Appel terminé + affichage appel -->
+    <!-- Colonne de gauche -->
     <div class="left-panel">
       <div class="lien-box" id="lien-box">Lien</div>
       <div class="lien-box" id="appel-box">Appel terminé</div>
       <div id="appel-result"></div>
     </div>
 
-    <!-- Grille des cases -->
+    <!-- Grille des sous-cases -->
     <div class="cases" id="cases"></div>
 
     <!-- Zone des infractions cochées -->
@@ -111,7 +109,7 @@
           sc.className = 'subcase';
           sc.dataset.case = num;
 
-          // header (toggle + titre)
+          // En-tête : toggle + titre
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -124,18 +122,19 @@
           header.append(toggle, title);
           sc.append(header);
 
-          // options cachées
+          // Options cachées
           const opts = document.createElement('div');
           opts.className = 'options';
-          ['Comportement','Travail non fait','Oubli de matériel'].forEach(val => {
-            const lbl = document.createElement('label');
-            const inp = document.createElement('input');
-            inp.type = 'checkbox';
-            inp.dataset.case = num;
-            inp.value = val;
-            lbl.append(inp, ' ' + val);
-            opts.append(lbl, document.createElement('br'));
-          });
+          ['Comportement','Travail non fait','Oubli de matériel']
+            .forEach(val => {
+              const lbl = document.createElement('label');
+              const inp = document.createElement('input');
+              inp.type = 'checkbox';
+              inp.dataset.case = num;
+              inp.value = val;
+              lbl.append(inp, ' ' + val);
+              opts.append(lbl, document.createElement('br'));
+            });
           sc.append(opts);
 
           container.append(sc);
@@ -145,7 +144,7 @@
       }
     }
 
-    // 2) Cliquer sur la sous-case (hors checkbox) la rend verte / bascule selected
+    // 2) Clic sur sous-case (hors input) → bascule selected (vert)
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
@@ -153,7 +152,7 @@
       });
     });
 
-    // 3) Afficher/masquer les options au toggle
+    // 3) Toggle : affiche/masque les options
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
@@ -162,7 +161,6 @@
           opts.style.display = 'block';
         } else {
           opts.style.display = 'none';
-          // décocher et retirer anciennes infractions
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
               cb.checked = false;
@@ -177,11 +175,12 @@
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
-        this.checked ? addResult(c, this.value) : removeResult(c, this.value);
+        if (this.checked) addResult(c, this.value);
+        else removeResult(c, this.value);
       });
     });
 
-    // Fonctions ajout/suppression dans la liste des infractions
+    // Fonctions pour la liste d’infractions
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -197,7 +196,7 @@
       if (el) el.remove();
     }
 
-    // 5) “Lien” → export JSON comme avant
+    // 5) “Lien” → export JSON
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
@@ -227,16 +226,24 @@
       }
     });
 
-    // 6) “Appel terminé” → affichage des présents / absents
+    // 6) “Appel terminé” → affichage Présents / Absents
     document.getElementById('appel-box').addEventListener('click', () => {
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const pres = subs.filter(sc => sc.classList.contains('selected'));
       const abs  = subs.filter(sc => !sc.classList.contains('selected'));
       const appel = document.getElementById('appel-result');
-      appel.innerHTML = `
-        <p>Élèves présents : ${pres.length}</p>
-        <p>Élèves absents : ${abs.map(sc => 'case n°'+sc.dataset.case).join(', ')|| '—'}</p>
-      `;
+
+      // Construction du HTML : 1 ligne pour les présents, titre, puis 1 paragraphe par absent
+      let html = `<p>Élèves présents : ${pres.length}</p>`;
+      html += `<p>Élèves absents :</p>`;
+      if (abs.length) {
+        abs.forEach(sc => {
+          html += `<p>case n°${sc.dataset.case}</p>`;
+        });
+      } else {
+        html += `<p>—</p>`;
+      }
+      appel.innerHTML = html;
     });
   </script>
 </body>
