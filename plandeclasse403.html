@@ -28,17 +28,23 @@
     }
     #result-list { list-style: none; padding: 0; margin: 0; }
     #result-list li { margin-bottom: 5px; }
+    /* nouveau bloc pre */
+    #json-output {
+      margin-top: 30px;
+      padding: 10px;
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Boîte “Lien” -->
     <div class="lien-box" id="lien-box">Lien</div>
 
-    <!-- Cases -->
     <div class="cases">
-      <div class="case-box" data-case="1" id="case-box-1">
+      <div class="case-box" data-case="1">
         <div class="case-title">Case 1</div>
         <div class="options">
           <label><input type="checkbox" data-case="1" value="Comportement"> Comportement</label><br>
@@ -46,7 +52,7 @@
           <label><input type="checkbox" data-case="1" value="Oubli de matériel"> Oubli de matériel</label>
         </div>
       </div>
-      <div class="case-box" data-case="2" id="case-box-2">
+      <div class="case-box" data-case="2">
         <div class="case-title">Case 2</div>
         <div class="options">
           <label><input type="checkbox" data-case="2" value="Comportement"> Comportement</label><br>
@@ -56,14 +62,16 @@
       </div>
     </div>
 
-    <!-- Résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
+  <!-- le <pre> pour voir le JSON directement -->
+  <pre id="json-output" style="display:none;"></pre>
+
   <script>
-    // Gestion des cases/options
+    // cases / options
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
@@ -99,30 +107,29 @@
       }
     }
     function removeResult(c, v) {
-      const e = document.getElementById(`result-${c}-${v}`);
-      if (e) e.remove();
+      const el = document.getElementById(`result-${c}-${v}`);
+      if (el) el.remove();
     }
 
-    // Gestion du clic sur “Lien” → JSON avec date + infractions
+    // clic sur Lien
     document.getElementById('lien-box').addEventListener('click', () => {
-      // 1) Récupère les infractions
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
 
-      // 2) Prépare l’objet avec la date ISO
       const now = new Date().toISOString();
-      const payload = {
-        date: now,
-        infractions: infractions
-      };
-      const data = JSON.stringify(payload, null, 2);
+      const payload = { date: now, infractions };
+      const data    = JSON.stringify(payload, null, 2);
 
-      // 3) Tente le téléchargement
+      // 1) on affiche dans le <pre>
+      const pre = document.getElementById('json-output');
+      pre.textContent = data;
+      pre.style.display = 'block';
+
+      // 2) on essaie toujours de proposer le download…
       const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-
       if ('download' in a) {
         a.href = url;
         a.download = `infractions_${now.substring(0,10)}.json`;
@@ -130,21 +137,8 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-      } else {
-        // Fallback : affiche le JSON dans un nouvel onglet
-        URL.revokeObjectURL(url);
-        const w = window.open();
-        w.document.open();
-        w.document.write(
-          '<pre>' +
-          data
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;') +
-          '</pre>'
-        );
-        w.document.close();
       }
+      // sinon on laisse juste le <pre> visible pour copier/coller
     });
   </script>
 </body>
