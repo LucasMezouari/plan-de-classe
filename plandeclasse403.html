@@ -7,6 +7,7 @@
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; align-items: flex-start; }
 
+    /* Colonne de gauche */
     .left-panel {
       display: flex;
       flex-direction: column;
@@ -23,6 +24,7 @@
     }
     .lien-box:hover { background-color: #00bfff; }
 
+    /* Grille : 3 colonnes × 5 lignes */
     .cases {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -196,11 +198,13 @@
       if (el) el.remove();
     }
 
-    // 5) “Lien” → export JSON
+    // 5) “Lien” → collecte + JSON + téléchargement/fallback
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         document.querySelectorAll('#result-list li')
       ).map(li => li.textContent);
+
+      // Date Europe/Paris format JJ-MM-HHhMM
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
         year:'numeric',month:'2-digit',
@@ -211,18 +215,34 @@
       const [jj,MM] = dp.split('/');
       const [hh,mm] = tp.split(':');
       const now = `${jj}-${MM}-${hh}h${mm}`;
-      const payload = { date: now+' (Europe/Paris)', infractions };
-      const data = JSON.stringify(payload,null,2);
-      const blob = new Blob([data],{type:'application/json'});
+
+      // Présents et absents
+      const subs = Array.from(document.querySelectorAll('.subcase'));
+      const presCount = subs.filter(sc => sc.classList.contains('selected')).length;
+      const absList   = subs.filter(sc => !sc.classList.contains('selected'))
+                            .map(sc => `case n°${sc.dataset.case}`);
+
+      const payload = {
+        date: now + ' (Europe/Paris)',
+        infractions,
+        presents: presCount,
+        absents: absList
+      };
+      const data = JSON.stringify(payload, null, 2);
+
+      const blob = new Blob([data], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       if ('download' in a) {
-        a.href = url; a.download = `infractions_${now}.json`;
-        document.body.append(a); a.click(); a.remove();
+        a.href     = url;
+        a.download = `infractions_${now}.json`;
+        document.body.append(a);
+        a.click();
+        a.remove();
         URL.revokeObjectURL(url);
       } else {
         window.open(url);
-        setTimeout(()=>URL.revokeObjectURL(url),1000);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
     });
 
@@ -232,8 +252,6 @@
       const pres = subs.filter(sc => sc.classList.contains('selected'));
       const abs  = subs.filter(sc => !sc.classList.contains('selected'));
       const appel = document.getElementById('appel-result');
-
-      // Construction du HTML : 1 ligne pour les présents, titre, puis 1 paragraphe par absent
       let html = `<p>Élèves présents : ${pres.length}</p>`;
       html += `<p>Élèves absents :</p>`;
       if (abs.length) {
