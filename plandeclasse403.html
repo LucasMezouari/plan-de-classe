@@ -4,94 +4,52 @@
   <meta charset="UTF-8">
   <title>Plan de classe 403</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background-color: #f8f8f8;
-      padding: 20px;
-      text-align: center;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 160px);
-      gap: 20px 50px;
-      justify-content: center;
-    }
-    .cell { position: relative; }
+    /* — inchangé — */
+    body { font-family:sans-serif; background:#f8f8f8; padding:20px; text-align:center }
+    .grid { display:grid; grid-template-columns:repeat(3,160px); gap:20px 50px; justify-content:center }
+    .cell{position:relative}
     .half {
-      position: relative;
-      width: 160px; height: 60px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px; font-weight: bold;
-      cursor: pointer; user-select: none;
-      transition: background-color .2s;
-      margin-bottom: 10px;
+      position:relative; width:160px; height:60px; background:#fff;
+      border:1px solid #ccc; border-radius:6px; box-shadow:1px 1px 4px rgba(0,0,0,.1);
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; font-weight:bold; cursor:pointer; user-select:none;
+      transition:background-color .2s; margin-bottom:10px;
     }
-    .half.active { background-color: #c8facc; }
-    .toggle-notes {
-      position: absolute; top: 4px; right: 4px;
-      width: 14px; height: 14px;
-      cursor: pointer; z-index: 10;
-    }
+    .half.active{background:#c8facc}
+    .toggle-notes {position:absolute; top:4px; right:4px; width:14px; height:14px; cursor:pointer; z-index:10}
     .notes-options {
-      display: none;
-      position: absolute; top: 22px; right: 4px;
-      background: #fff; border: 1px solid #aaa;
-      border-radius: 4px; box-shadow: 2px 2px 6px rgba(0,0,0,.1);
-      padding: 4px 8px; font-size: 12px;
-      text-align: left; z-index: 9;
+      display:none; position:absolute; top:22px; right:4px; background:#fff;
+      border:1px solid #aaa; border-radius:4px; box-shadow:2px 2px 6px rgba(0,0,0,.1);
+      padding:4px 8px; font-size:12px; text-align:left; z-index:9;
     }
-    .notes-options label { display: block; margin-bottom: 2px; }
+    .notes-options label{display:block; margin-bottom:2px}
     .context-menu {
-      position: absolute; display: none;
-      background: #fff; border: 1px solid #aaa;
-      box-shadow: 2px 2px 5px rgba(0,0,0,.2);
-      z-index: 1000; font-size: 13px;
+      position:absolute; display:none; background:#fff; border:1px solid #aaa;
+      box-shadow:2px 2px 5px rgba(0,0,0,.2); z-index:1000; font-size:13px;
     }
-    .context-menu .menu-option {
-      padding: 6px 12px; cursor: pointer;
-    }
-    .context-menu .menu-option.selected {
-      background-color: #d0ebff;
-    }
-    .footer-layout {
-      display: flex; justify-content: center; align-items: center;
-      margin-top: 50px; position: relative;
-    }
-    .left-button {
-      position: absolute; left: 20px; top: 80px; text-align: left;
-    }
+    .context-menu .menu-option {padding:6px 12px; cursor:pointer}
+    .context-menu .menu-option.selected {background:#d0ebff}
+    .footer-layout {display:flex; justify-content:center; align-items:center; margin-top:50px; position:relative}
+    .left-button {position:absolute; left:20px; top:80px; text-align:left}
     .bouton, .tableau {
-      width: 200px; height: 40px;
-      background: #e0e0e0; border: 2px solid #666;
-      border-radius: 6px; display: flex;
-      align-items: center; justify-content: center;
-      font-weight: bold; font-size: 16px;
-      box-shadow: 2px 2px 6px rgba(0,0,0,.2);
-      cursor: pointer; margin-top: 10px;
+      width:200px; height:40px; background:#e0e0e0; border:2px solid #666;
+      border-radius:6px; display:flex; align-items:center; justify-content:center;
+      font-weight:bold; font-size:16px; box-shadow:2px 2px 6px rgba(0,0,0,.2);
+      cursor:pointer; margin-top:10px;
     }
-    #presence-count {
-      font-size: 14px; font-weight: bold;
-      margin-bottom: 8px; color: #222;
-    }
+    #presence-count {font-size:14px; font-weight:bold; margin-bottom:8px; color:#222}
     #presence-result, #feedback {
-      font-size: 14px; color: #222; text-align: left;
-      position: absolute; width:200px;
+      font-size:14px; color:#222; text-align:left; position:absolute; width:200px;
     }
-    #presence-result { left:20px; top:140px; }
-    #feedback         { right:20px; top:100px; }
+    #presence-result {left:20px; top:140px}
+    #feedback         {right:20px; top:100px}
   </style>
 </head>
 <body>
   <h1>Plan de classe 403</h1>
 
   <div class="grid">
-    <!-- Dupliquez ce bloc jusqu'à case 30 -->
+    <!-- … vos 30 demi-cases … -->
     <div class="cell">
       <div class="half">case 1
         <input type="checkbox" class="toggle-notes">
@@ -110,7 +68,7 @@
         </div>
       </div>
     </div>
-    <!-- … jusqu’à case 30 -->
+    <!-- … jusqu’à case 30 … -->
   </div>
 
   <div class="footer-layout">
@@ -131,20 +89,14 @@
   <div id="feedback"></div>
 
   <script>
-    // --- CONTEXT MENU & FEEDBACK (inchangé) ---
+    // — MENU CONTEXTUEL & FEEDBACK — (inchangé sauf appel à updateURL)
     let caseCible = null;
     const menu = document.getElementById("context-menu"),
           opts = menu.querySelectorAll(".menu-option");
-    opts.forEach((opt,i)=>opt.addEventListener('click', ()=>{
-      if(!caseCible) return;
-      afficherFeedback(caseCible, opt.textContent);
-      menu.style.display='none';
-      updateURL();
-    }));
     function selectOption(i){ opts.forEach((o,j)=>o.classList.toggle('selected', i===j)); }
-    function openContextMenu(target){
-      caseCible = target;
-      const r = target.getBoundingClientRect();
+    function openContextMenu(t){
+      caseCible = t;
+      const r = t.getBoundingClientRect();
       menu.style.left = `${r.right+5+window.scrollX}px`;
       menu.style.top  = `${r.top+window.scrollY}px`;
       menu.style.display = 'block';
@@ -153,6 +105,12 @@
     document.body.addEventListener('click', e=>{
       if(!menu.contains(e.target)) menu.style.display='none';
     });
+    opts.forEach((opt,i)=>opt.addEventListener('click', ()=>{
+      if(!caseCible) return;
+      afficherFeedback(caseCible, opt.textContent);
+      menu.style.display='none';
+      updateURL();
+    }));
     function afficherFeedback(el, remark){
       const name = el.childNodes[0].textContent.trim();
       const d = document.createElement('div');
@@ -160,7 +118,7 @@
       document.getElementById('feedback').appendChild(d);
     }
 
-    // --- TOGGLE NOTES & PRESENCE ---
+    // — TOGGLE NOTES & PRÉSENCE — (ajout d’updateURL à chaque action)
     document.querySelectorAll('.toggle-notes').forEach(cb=>{
       cb.addEventListener('change', ()=>{
         cb.parentElement.querySelector('.notes-options')
@@ -176,25 +134,25 @@
           longPress=true; openContextMenu(half);
         }, 500);
       });
-      half.addEventListener('touchstart', e=>{
+      half.addEventListener('touchstart',e=>{
         e.preventDefault(); longPress=false;
         timer = setTimeout(()=>{
           longPress=true; openContextMenu(half);
-        }, 500);
+        },500);
       });
-      function up(){
+      function fin(){
         clearTimeout(timer);
         if(!longPress){
           half.classList.toggle('active');
           updateURL();
         }
       }
-      half.addEventListener('mouseup', up);
-      half.addEventListener('touchend', up);
-      half.addEventListener('mouseleave', ()=> clearTimeout(timer));
+      half.addEventListener('mouseup', fin);
+      half.addEventListener('touchend', fin);
+      half.addEventListener('mouseleave', ()=>clearTimeout(timer));
     });
 
-    // --- APPEL & COMPTEUR ---
+    // — FONCTION APPEL — (inchangé + updateURL)
     function afficherAppel(){
       const all = Array.from(document.querySelectorAll('.half'));
       const pres = all.filter(h=>h.classList.contains('active')).length;
@@ -207,7 +165,7 @@
       updateURL();
     }
 
-    // --- PERMALINK VIA HASH ---
+    // — GESTION DE L’ÉTAT DANS L’URL (PRÉSENCE, NOTES & FEEDBACK) —
     function getState(){
       const s = {};
       document.querySelectorAll('.half').forEach(h=>{
@@ -220,11 +178,16 @@
                      ).map(i=>i.value)
         };
       });
-      // On pourrait aussi persister les feedbacks ici si besoin.
+      // on stocke aussi les lignes de feedback sous forme de HTML
+      s._feedback = Array.from(
+        document.getElementById('feedback').children
+      ).map(div=>div.innerHTML);
       return s;
     }
     function applyState(s){
+      // 1) présence + notes
       Object.entries(s).forEach(([name,st])=>{
+        if(name === '_feedback') return;
         const h = [...document.querySelectorAll('.half')]
                   .find(x=>x.childNodes[0].textContent.trim()===name);
         if(!h) return;
@@ -232,22 +195,31 @@
         const cb = h.querySelector('.toggle-notes');
         cb.checked = st.showNotes;
         h.querySelector('.notes-options')
-         .style.display = st.showNotes ? 'block':'none';
-        h.querySelectorAll('.notes-options input').forEach(i=>{
-          i.checked = st.notes.includes(i.value);
-        });
+         .style.display = st.showNotes?'block':'none';
+        h.querySelectorAll('.notes-options input')
+         .forEach(i=>i.checked = st.notes.includes(i.value));
+      });
+      // 2) feedback
+      const cont = document.getElementById('feedback');
+      cont.innerHTML = '';
+      (s._feedback||[]).forEach(html=>{
+        const d = document.createElement('div');
+        d.innerHTML = html;
+        cont.appendChild(d);
       });
     }
+
     function updateURL(){
       const json = JSON.stringify(getState());
-      const b64  = btoa(json);
-      history.replaceState(null,'', '#'+b64);
+      history.replaceState(null, '', '#' + btoa(json));
     }
     function loadFromHash(){
       if(!location.hash) return;
       try{
-        const json = atob(location.hash.slice(1));
-        applyState(JSON.parse(json));
+        const state = JSON.parse(atob(location.hash.slice(1)));
+        applyState(state);
+        // enfin, on affiche aussi le compteur/absents
+        afficherAppel();
       }catch{}
     }
     function copyLink(){
@@ -256,7 +228,6 @@
         .catch(()=>alert('Échec du copié'));
     }
 
-    // on start
     window.addEventListener('load', loadFromHash);
   </script>
 </body>
