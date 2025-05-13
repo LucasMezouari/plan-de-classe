@@ -11,32 +11,23 @@
     .container {
       display: flex;
       gap: 20px;
+      align-items: flex-start;
     }
     /* Boîte “Lien” */
     .lien-box {
-      background-color: #87CEEB;
+      flex: none;
+      width: 80px;
       padding: 10px;
+      background-color: #87CEEB;
       border-radius: 5px;
-      cursor: pointer;
-      width: 120px;
       text-align: center;
+      cursor: pointer;
+      user-select: none;
     }
-    .lien-box.selected {
-      background-color: #006400;
-      color: white;
+    .lien-box:hover {
+      background-color: #00bfff;
     }
-    .infractions {
-      margin-top: 10px;
-      display: none;
-      text-align: left;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    .infractions ul {
-      padding-left: 20px;
-      margin: 0;
-    }
-    /* Les autres cases et résultats restent inchangés */
+    /* Vos cases habituelles */
     .cases {
       display: flex;
       flex-direction: column;
@@ -61,6 +52,7 @@
     .case-box.selected .options {
       display: block;
     }
+    /* Colonne résultats */
     .result {
       flex: 1;
       padding: 10px;
@@ -79,59 +71,39 @@
   </style>
 </head>
 <body>
+
   <div class="container">
-    <!-- Boîte “Lien” -->
-    <div class="lien-box" id="lien-box">
-      Lien
-      <div class="infractions" id="infractions">
-        <ul id="infractions-list"></ul>
-      </div>
-    </div>
-    <!-- Vos cases habituelles -->
+    <!-- 1) Boîte “Lien” -->
+    <div class="lien-box" id="lien-box">Lien</div>
+
+    <!-- 2) Cases · comme avant -->
     <div class="cases">
       <div class="case-box" data-case="1" id="case-box-1">
         <div class="case-title">Case 1</div>
-        <div class="options" id="options-1">
-          <label><input type="checkbox" id="opt-1-Comportement" data-case="1" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" id="opt-1-Travail-non-fait" data-case="1" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" id="opt-1-Oubli-de-materiel" data-case="1" value="Oubli de matériel"> Oubli de matériel</label>
+        <div class="options">
+          <label><input type="checkbox" data-case="1" value="Comportement"> Comportement</label><br>
+          <label><input type="checkbox" data-case="1" value="Travail non fait"> Travail non fait</label><br>
+          <label><input type="checkbox" data-case="1" value="Oubli de matériel"> Oubli de matériel</label>
         </div>
       </div>
       <div class="case-box" data-case="2" id="case-box-2">
         <div class="case-title">Case 2</div>
-        <div class="options" id="options-2">
-          <label><input type="checkbox" id="opt-2-Comportement" data-case="2" value="Comportement"> Comportement</label><br>
-          <label><input type="checkbox" id="opt-2-Travail-non-fait" data-case="2" value="Travail non fait"> Travail non fait</label><br>
-          <label><input type="checkbox" id="opt-2-Oubli-de-materiel" data-case="2" value="Oubli de matériel"> Oubli de matériel</label>
+        <div class="options">
+          <label><input type="checkbox" data-case="2" value="Comportement"> Comportement</label><br>
+          <label><input type="checkbox" data-case="2" value="Travail non fait"> Travail non fait</label><br>
+          <label><input type="checkbox" data-case="2" value="Oubli de matériel"> Oubli de matériel</label>
         </div>
       </div>
     </div>
-    <!-- Colonne résultats -->
+
+    <!-- 3) Résultats -->
     <div class="result">
       <ul id="result-list"></ul>
     </div>
   </div>
 
   <script>
-    // --- Boîte “Lien” ---
-    const lienBox = document.getElementById('lien-box');
-    const infraDiv = document.getElementById('infractions');
-    lienBox.addEventListener('click', () => {
-      const open = infraDiv.style.display === 'block';
-      infraDiv.style.display = open ? 'none' : 'block';
-      lienBox.classList.toggle('selected', !open);
-    });
-
-    // Fonction pour ajouter une infraction
-    // à appeler depuis la console ou depuis votre code JS
-    function addInfraction(caseNum, texte) {
-      const ul = document.getElementById('infractions-list');
-      const li = document.createElement('li');
-      li.textContent = `case n°${caseNum} : ${texte}`;
-      ul.appendChild(li);
-    }
-
-    // --- Reste de votre code (cases + options + résultats) ---
+    // GESTION DES CASES + OPTIONS
     document.querySelectorAll('.case-box').forEach(box => {
       const caseNum = box.dataset.case;
       box.addEventListener('click', e => {
@@ -142,7 +114,10 @@
         else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) cb.checked = false, removeResult(caseNum, cb.value);
+            if (cb.checked) {
+              cb.checked = false;
+              removeResult(caseNum, cb.value);
+            }
           });
         }
       });
@@ -157,19 +132,44 @@
     });
 
     const resultList = document.getElementById('result-list');
-    function addResult(caseNum, value) {
-      const id = `result-${caseNum}-${value}`;
+    function addResult(caseNum, val) {
+      const id = `result-${caseNum}-${val}`;
       if (!document.getElementById(id)) {
         const li = document.createElement('li');
         li.id = id;
-        li.textContent = `case n°${caseNum} : ${value}`;
+        li.textContent = `case n°${caseNum} : ${val}`;
         resultList.appendChild(li);
       }
     }
-    function removeResult(caseNum, value) {
-      const el = document.getElementById(`result-${caseNum}-${value}`);
+    function removeResult(caseNum, val) {
+      const el = document.getElementById(`result-${caseNum}-${val}`);
       if (el) el.remove();
     }
+
+    // GESTION DU LIEN → GÉNÉRATION + TÉLÉCHARGEMENT DU JSON
+    document.getElementById('lien-box').addEventListener('click', () => {
+      // Récupère tous les items de la liste de résultats
+      const infractions = Array.from(
+        document.querySelectorAll('#result-list li')
+      ).map(li => li.textContent);
+
+      // Construit l'objet JSON
+      const data = { infractions: infractions };
+
+      // Crée un blob et déclenche le téléchargement
+      const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: 'application/json' }
+      );
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'infractions.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
   </script>
 </body>
 </html>
