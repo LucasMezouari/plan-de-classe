@@ -3,10 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>404 – Page non trouvée</title>
-
-  <!-- On indique ici que tous les liens relatifs partent de /plan-de-classe/ -->
-  <base href="https://lucasmezouari.github.io/plan-de-classe/">
-
   <style>
     html, body {
       margin: 0; padding: 0;
@@ -20,14 +16,17 @@
   </style>
 </head>
 <body>
+  <!-- On pointe explicitement vers l'URL absolue de votre SVG sur Github Pages -->
   <object
     id="svgDiagram"
     type="image/svg+xml"
-    data="testons2.svg">
-    <!-- Fallback si le SVG ne passe vraiment pas -->
+    data="https://lucasmezouari.github.io/plan-de-classe/testons2.svg">
+    <!-- Fallback si le SVG ne charge vraiment pas -->
     <p>
       Votre navigateur ne supporte pas les SVG.
-      <a href="testons2.svg" target="_blank">Voir le diagramme</a>
+      <a href="https://lucasmezouari.github.io/plan-de-classe/testons2.svg" target="_blank">
+        Voir le diagramme
+      </a>
     </p>
   </object>
 
@@ -35,18 +34,22 @@
     document.getElementById('svgDiagram').addEventListener('load', function () {
       var svgDoc = this.contentDocument;
       if (!svgDoc) return;
-
       svgDoc.querySelectorAll('a').forEach(function (link) {
-        // href absolu ou relatif
         var href = link.getAttribute('xlink:href') || link.getAttribute('href');
 
-        // On redirige les 2 et 3 vers le bon sous-répertoire
+        // Séance 1 (YouTube) : lien absolu dans le SVG, on ne le touche pas
+        // Séance 2 : on force l'URL absolue vers votre PDF
         if (href === 'toto.pdf') {
-          link.setAttribute('xlink:href', 'assets/toto.pdf');
-        } else if (href === 'essayons.html') {
-          link.setAttribute('xlink:href', 'essayons.html');
+          link.setAttribute('xlink:href',
+            'https://lucasmezouari.github.io/plan-de-classe/assets/toto.pdf'
+          );
         }
-        // Séance 1 : YouTube est déjà en URL absolue, on ne touche pas
+        // Séance 3 : on force l'URL absolue vers la page HTML
+        else if (href === 'essayons.html') {
+          link.setAttribute('xlink:href',
+            'https://lucasmezouari.github.io/plan-de-classe/essayons.html'
+          );
+        }
 
         link.setAttribute('target', '_blank');
       });
