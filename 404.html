@@ -17,16 +17,36 @@
       font-family: sans-serif;
       text-align: center;
       padding: 2rem;
+      margin: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      margin-bottom: 1rem;
     }
     .mermaid {
       margin: 2rem auto;
       max-width: 500px;
     }
-    a.home { color: #007acc; text-decoration: none; }
+    /* Supprime le cadre jaune (outline) sur les liens Mermaid */
+    .mermaid a:focus,
+    .mermaid a:active {
+      outline: none;
+    }
+    /* Style du lien de retour */
+    a.home {
+      color: #007acc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a.home:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <h1>404 – Oups, page introuvable</h1>
+
   <div class="mermaid">
 %%{ init: { "flowchart": { "curve": "basis" } } }%%
 flowchart TB
