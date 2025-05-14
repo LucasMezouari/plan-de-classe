@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Page introuvable – Plan de classe</title>
+  <title>Mon schéma – Plan de classe</title>
   <style>
-    /* Styles de base pour centrer le contenu */
+    /* Copié-collé de vos styles 404.html */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -33,21 +33,19 @@
 </head>
 <body>
   <div class="container">
-    <h1>404 – Page non trouvée</h1>
-    <p>Désolé, cette page n'existe pas ! Voici le plan de classe :</p>
+    <h1>Schéma interactif de ma classe</h1>
+    <p>Vous retrouvez ici exactement la même mise en page que sur la page 404 :</p>
 
-    <!-- Intégration du SVG interactif depuis le dossier assets -->
-    <object
-      type="image/svg+xml"
-      data="assets/testons.svg"
+    <!-- IFRAME Draw.io : on embed l’UI complète de diagrams.net -->
+    <iframe
+      src="https://viewer.diagrams.net/?embed=1&amp;highlight=0000ff&amp;title=testons.svg&amp;url=https://raw.githubusercontent.com/LucasMezouari/plan-de-classe/main/assets/testons.svg"
       width="100%"
       height="600"
-      aria-label="Plan de classe interactif">
-      <!-- Fallback si l'objet ne peut pas être chargé -->
-      <p>Votre navigateur ne supporte pas l’affichage SVG interactif. Vous pouvez télécharger le schéma <a href="assets/testons.svg">ici</a>.</p>
-    </object>
-    
-    <p><a href="/">Retour à l’accueil</a></p>
+      frameborder="0"
+      allowfullscreen>
+    </iframe>
+
+    <p><a href="/">← Retour à l’accueil</a></p>
   </div>
 </body>
 </html>
