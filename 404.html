@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>404 – Page non trouvée</title>
+  <title>404 – Page introuvable</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- 1) Charger Mermaid -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
@@ -28,7 +28,7 @@
 <body>
   <h1>404 – Oups, page introuvable</h1>
 
-  <!-- 2) Ton diagramme Mermaid -->
+  <!-- 2) Votre diagramme Mermaid -->
   <div class="mermaid">
 %%{ init: { "flowchart": { "curve": "basis" } } }%%
 flowchart LR
@@ -38,7 +38,8 @@ flowchart LR
 
   A --> B
   B --> C
-  A -.-> C  /* ligne pointillée courbée vers Séance 3 */
+  %% ligne pointillée (courbée) de Séance 1 vers Séance 3
+  A -.-> C
   </div>
 
   <p><a class="home" href="/">← Retour à l’accueil</a></p>
