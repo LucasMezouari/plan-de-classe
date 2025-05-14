@@ -46,22 +46,49 @@
 <body>
   <div class="container">
     <h1>404 – Page non trouvée</h1>
-    <p>Désolé, cette page n'existe pas ! Voici votre plan de classe interactif :</p>
+    <p>Désolé, cette page n'existe pas. Voici votre plan de classe interactif :</p>
+  </div>
 
-    <!-- SVG exporté depuis draw.io (Séance 2 link → PDF toto.pdf) -->
-    <object
-      type="image/svg+xml"
-      data="assets/testons2.svg"
-      aria-label="Plan de classe interactif">
-      <!-- Fallback pour les navigateurs sans support SVG -->
-      <p>
-        Votre navigateur ne supporte pas l’affichage SVG.<br>
-        Téléchargez le <a href="assets/testons2.svg" target="_blank" rel="noopener">schéma SVG</a>
-        ou le <a href="assets/toto.pdf" target="_blank" rel="noopener">PDF complet</a>.
-      </p>
-    </object>
+  <!-- Chargement du SVG vectoriel -->
+  <object
+    id="diagram"
+    type="image/svg+xml"
+    data="assets/testons2.svg"
+    aria-label="Plan de classe interactif">
+    <!-- Fallback pour les navigateurs sans support SVG -->
+    <p>
+      Votre navigateur ne supporte pas l’affichage SVG.  
+      Téléchargez le <a href="assets/testons2.svg" target="_blank" rel="noopener">schéma SVG</a>
+      ou le <a href="assets/toto.pdf" target="_blank" rel="noopener">PDF complet</a>.
+    </p>
+  </object>
 
+  <div class="container">
     <p><a href="/">← Retour à l’accueil</a></p>
   </div>
+
+  <script>
+    const obj = document.getElementById('diagram');
+
+    obj.addEventListener('load', () => {
+      try {
+        const svgDoc = obj.contentDocument;
+        svgDoc.querySelectorAll('a').forEach(a => {
+          // On force l'ouverture dans un nouvel onglet
+          a.setAttribute('target', '_blank');
+          a.setAttribute('rel', 'noopener');
+          // On intercepte le clic pour que ce soit l'onglet parent
+          a.addEventListener('click', evt => {
+            evt.preventDefault();
+            // href peut être xlink:href ou href selon l'export
+            const url = a.getAttribute('xlink:href') || a.getAttribute('href');
+            window.open(url, '_blank');
+          });
+        });
+      } catch (e) {
+        console.warn('Impossible de traiter les liens du SVG :', e);
+      }
+    });
+  </script>
 </body>
 </html>
