@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>404 – Page non trouvée</title>
   <style>
+    /* Vos styles de base */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -28,6 +29,7 @@
       width: 90%;
       max-width: 800px;
     }
+    /* Objet SVG */
     object {
       width: 100%;
       height: 600px;
@@ -41,14 +43,20 @@
     <p>Désolé, cette page n'existe pas. Voici votre schéma :</p>
   </div>
 
-  <!-- On charge votre SVG vectoriel -->
+  <!-- Chargement du SVG vectoriel -->
   <object
     id="diagram"
     type="image/svg+xml"
     data="assets/testons2.svg"
     aria-label="Schéma testons2.svg">
-    <!-- En dernier recours -->
-    <p>Votre navigateur ne supporte pas l’affichage SVG. <a href="assets/testons2.svg">Téléchargez le schéma</a>.</p>
+    <!-- Fallback si le SVG ne peut pas se charger -->
+    <p>
+      Votre navigateur ne supporte pas l’affichage SVG.  
+      Vous pouvez télécharger :
+      <a href="assets/testons2.svg" target="_blank" rel="noopener">le schéma SVG</a>
+      ou
+      <a href="assets/toto.pdf" target="_blank" rel="noopener">le PDF</a>.
+    </p>
   </object>
 
   <div class="container">
@@ -56,18 +64,16 @@
   </div>
 
   <script>
-    // Quand le SVG est chargé, on va chercher tous les <a> à l'intérieur
+    // Quand le SVG est chargé, on injecte target="_blank"+rel="noopener" sur tous ses liens
     document.getElementById('diagram').addEventListener('load', function() {
       try {
         const svgDoc = this.contentDocument;
         svgDoc.querySelectorAll('a').forEach(a => {
-          // Force l'ouverture dans un nouvel onglet
           a.setAttribute('target', '_blank');
-          // Sécurité : éviter les accès window.opener
           a.setAttribute('rel', 'noopener');
         });
       }
-      catch(e) {
+      catch (e) {
         console.warn('Impossible d’injecter target="_blank" dans le SVG', e);
       }
     });
