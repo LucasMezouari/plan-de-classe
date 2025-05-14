@@ -11,42 +11,55 @@
 </head>
 <body>
   <h2>2. Développer (3x − 4)(2x + 1).</h2>
-
-  <!-- On désactive l’autocomplétion de tout le formulaire -->
   <form id="quiz" autocomplete="off" onsubmit="return false;">
     <label for="reponse">Votre réponse :</label>
-    <!-- placeholder neutre, sans value -->
-    <input type="text" id="reponse" placeholder="Entrez votre réponse" autocomplete="off">
+    <input type="text"
+           id="reponse"
+           placeholder="Entrez votre réponse"
+           autocomplete="off">
     <button id="verifier">Vérifier</button>
   </form>
+
+  <!-- Option 1 : mettez votre MP3 ici -->
+  <audio id="sonBien" src="bien_joue.mp3" preload="auto"></audio>
 
   <div id="message"></div>
 
   <script>
-    // Au chargement, on s'assure que le champ est bien vide :
+    // On vide le champ au chargement (pour éviter tout autoremplissage)
     window.addEventListener('DOMContentLoaded', () => {
       const champ = document.getElementById('reponse');
       champ.value = '';
-      // Pour plus de sûreté (certains navigateurs ignorent l'attribut),
-      // on peut forcer la désactivation ainsi :
       champ.setAttribute('autocomplete', 'off');
     });
 
-    document.getElementById('verifier').addEventListener('click', function() {
+    document.getElementById('verifier').addEventListener('click', () => {
       const reponseUser = document.getElementById('reponse')
         .value
         .replace(/\s+/g, '')
-        .toLowerCase(); // en minuscules si on veut tolérer X^2 et x^2
-
-      // La seule trace de la bonne réponse est ici, dans le JS
+        .toLowerCase();
       const bonneReponse = '6x^2-5x-4';
 
+      const msgEl = document.getElementById('message');
       if (reponseUser === bonneReponse) {
-        document.getElementById('message').textContent = 'Bien joué !';
-        document.getElementById('message').style.color = 'green';
+        msgEl.textContent = 'Bien joué !';
+        msgEl.style.color = 'green';
+
+        // Option 1 : jouer un fichier audio si disponible
+        const audio = document.getElementById('sonBien');
+        if (audio && audio.play) {
+          audio.currentTime = 0;
+          audio.play();
+        }
+        // Option 2 : fallback sur SpeechSynthesis si pas de MP3
+        else if ('speechSynthesis' in window) {
+          const utter = new SpeechSynthesisUtterance('Bien joué !');
+          window.speechSynthesis.speak(utter);
+        }
+
       } else {
-        document.getElementById('message').textContent = 'Essaye encore !';
-        document.getElementById('message').style.color = 'red';
+        msgEl.textContent = 'Essaye encore !';
+        msgEl.style.color = 'red';
       }
     });
   </script>
