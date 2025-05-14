@@ -3,45 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <title>Diagramme Séances</title>
-  <!-- Mermaid depuis CDN -->
+  <!-- Intégration de Mermaid depuis CDN -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
+    // Démarre Mermaid et force les arêtes en lignes droites
     mermaid.initialize({
       startOnLoad: true,
       flowchart: {
-        curve: "linear"    // lignes droites
+        curve: "linear"
       }
     });
   </script>
   <style>
     body {
-      position: relative;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
       margin: 0;
-      font-family: sans-serif;
     }
-    /* Positionne tout le diagramme à 100px du haut et 50px de la gauche */
-    #diagramme {
-      position: absolute;
-      top: 100px;
-      left: 50px;
-      width: 300px;
+    .mermaid {
+      max-width: 400px;
+      width: 100%;
     }
   </style>
 </head>
 <body>
-  <h1 style="text-align:center">Organigramme des Séances</h1>
-
-  <div id="diagramme" class="mermaid">
+  <div class="mermaid">
 %%{ init: { "flowchart": { "curve": "linear" } } }%%
-flowchart TB
-  %% Ligne du haut en LR pour Séance 1 → Séance 2
-  subgraph rangée [ ]
-    direction LR
-    A["Séance 1"] --> B["Séance 2"]
+flowchart LR
+  %% Colonne de gauche : Séance 1
+  subgraph col1
+    A["Séance 1"]
   end
-  %% Séance 3 en-dessous de Séance 2
-  B --> C["Séance 3"]
+  %% Colonne de droite : Séance 2 au-dessus de Séance 3
+  subgraph col2
+    direction TB
+    B["Séance 2"]
+    C["Séance 3"]
+  end
+  %% Liens
+  A --> B     %% Séance 1 → Séance 2
+  A --> C     %% Séance 1 → Séance 3
   </div>
 </body>
 </html>
