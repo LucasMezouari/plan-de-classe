@@ -2,14 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>404 – Page introuvable</title>
+  <title>404 – Page non trouvée</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- 1) Charger Mermaid -->
+  <!-- Charger Mermaid -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
     mermaid.initialize({
       startOnLoad: true,
-      flowchart: { curve: "basis" }  /* courbes lisses */
+      flowchart: { curve: "basis" }
     });
   </script>
   <style>
@@ -27,18 +27,20 @@
 </head>
 <body>
   <h1>404 – Oups, page introuvable</h1>
-
-  <!-- 2) Votre diagramme Mermaid -->
   <div class="mermaid">
 %%{ init: { "flowchart": { "curve": "basis" } } }%%
-flowchart LR
-  A["Séance 1"]
-  B["Séance 2"]
-  C["Séance 3"]
+flowchart TB
 
-  A --> B
-  B --> C
-  %% ligne pointillée (courbée) de Séance 1 vers Séance 3
+  %%-- première rangée, en LR
+  subgraph row1 [ ]
+    direction LR
+    A["Séance 1"] --> B["Séance 2"]
+  end
+
+  %%-- Séance 3 en-dessous de Séance 2
+  B --> C["Séance 3"]
+
+  %%-- ligne pointillée courbée de Séance 1 vers Séance 3
   A -.-> C
   </div>
 
