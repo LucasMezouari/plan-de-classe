@@ -1,59 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>404 – Page non trouvée</title>
-  <style>
-    html, body {
-      margin: 0; padding: 0;
-      width: 100%; height: 100%;
-    }
-    object {
-      display: block;
-      width: 100%; height: 100%;
-      border: none;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Page 404</title>
 </head>
 <body>
-  <!-- On pointe explicitement vers l'URL absolue de votre SVG sur Github Pages -->
+  <h1>Oups, page non trouvée 😅</h1>
+
+  <!-- inclusion de votre SVG avec interactivité -->
   <object
-    id="svgDiagram"
     type="image/svg+xml"
-    data="https://lucasmezouari.github.io/plan-de-classe/testons2.svg">
-    <!-- Fallback si le SVG ne charge vraiment pas -->
-    <p>
-      Votre navigateur ne supporte pas les SVG.
-      <a href="https://lucasmezouari.github.io/plan-de-classe/testons2.svg" target="_blank">
-        Voir le diagramme
-      </a>
-    </p>
+    data="donner.svg"
+    width="600"
+    height="400"
+    aria-label="Illustration cliquable vers essayons.html">
+    <!-- contenu de repli si l’object n’est pas supporté -->
+    <p>Votre navigateur ne supporte pas les objets SVG.</p>
   </object>
 
-  <script>
-    document.getElementById('svgDiagram').addEventListener('load', function () {
-      var svgDoc = this.contentDocument;
-      if (!svgDoc) return;
-      svgDoc.querySelectorAll('a').forEach(function (link) {
-        var href = link.getAttribute('xlink:href') || link.getAttribute('href');
-
-        // Séance 1 (YouTube) : lien absolu dans le SVG, on ne le touche pas
-        // Séance 2 : on force l'URL absolue vers votre PDF
-        if (href === 'toto.pdf') {
-          link.setAttribute('xlink:href',
-            'https://lucasmezouari.github.io/plan-de-classe/assets/toto.pdf'
-          );
-        }
-        // Séance 3 : on force l'URL absolue vers la page HTML
-        else if (href === 'essayons.html') {
-          link.setAttribute('xlink:href',
-            'https://lucasmezouari.github.io/plan-de-classe/essayons.html'
-          );
-        }
-
-        link.setAttribute('target', '_blank');
-      });
-    });
-  </script>
 </body>
 </html>
