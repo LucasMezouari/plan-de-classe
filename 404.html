@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>404 – Page non trouvée</title>
   <style>
-    /* Vos styles de base */
+    /* Vos styles 404.html */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -22,61 +22,46 @@
       margin-bottom: 1rem;
     }
     p {
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       color: #555;
     }
     .container {
       width: 90%;
       max-width: 800px;
     }
-    /* Objet SVG */
     object {
       width: 100%;
       height: 600px;
       border: none;
+    }
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>404 – Page non trouvée</h1>
-    <p>Désolé, cette page n'existe pas. Voici votre schéma :</p>
-  </div>
+    <p>Désolé, cette page n'existe pas ! Voici votre plan de classe interactif :</p>
 
-  <!-- Chargement du SVG vectoriel -->
-  <object
-    id="diagram"
-    type="image/svg+xml"
-    data="assets/testons2.svg"
-    aria-label="Schéma testons2.svg">
-    <!-- Fallback si le SVG ne peut pas se charger -->
-    <p>
-      Votre navigateur ne supporte pas l’affichage SVG.  
-      Vous pouvez télécharger :
-      <a href="assets/testons2.svg" target="_blank" rel="noopener">le schéma SVG</a>
-      ou
-      <a href="assets/toto.pdf" target="_blank" rel="noopener">le PDF</a>.
-    </p>
-  </object>
+    <!-- SVG exporté depuis draw.io (Séance 2 link → PDF toto.pdf) -->
+    <object
+      type="image/svg+xml"
+      data="assets/testons2.svg"
+      aria-label="Plan de classe interactif">
+      <!-- Fallback pour les navigateurs sans support SVG -->
+      <p>
+        Votre navigateur ne supporte pas l’affichage SVG.<br>
+        Téléchargez le <a href="assets/testons2.svg" target="_blank" rel="noopener">schéma SVG</a>
+        ou le <a href="assets/toto.pdf" target="_blank" rel="noopener">PDF complet</a>.
+      </p>
+    </object>
 
-  <div class="container">
     <p><a href="/">← Retour à l’accueil</a></p>
   </div>
-
-  <script>
-    // Quand le SVG est chargé, on injecte target="_blank"+rel="noopener" sur tous ses liens
-    document.getElementById('diagram').addEventListener('load', function() {
-      try {
-        const svgDoc = this.contentDocument;
-        svgDoc.querySelectorAll('a').forEach(a => {
-          a.setAttribute('target', '_blank');
-          a.setAttribute('rel', 'noopener');
-        });
-      }
-      catch (e) {
-        console.warn('Impossible d’injecter target="_blank" dans le SVG', e);
-      }
-    });
-  </script>
 </body>
 </html>
