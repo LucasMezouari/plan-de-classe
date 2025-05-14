@@ -11,20 +11,37 @@
 </head>
 <body>
   <h2>2. Développer (3x − 4)(2x + 1).</h2>
-  <label for="reponse">Votre réponse :</label>
-  <!-- plus de placeholder révélant la réponse -->
-  <input type="text" id="reponse" placeholder="Entrez votre réponse">
-  <button id="verifier">Vérifier</button>
+
+  <!-- On désactive l’autocomplétion de tout le formulaire -->
+  <form id="quiz" autocomplete="off" onsubmit="return false;">
+    <label for="reponse">Votre réponse :</label>
+    <!-- placeholder neutre, sans value -->
+    <input type="text" id="reponse" placeholder="Entrez votre réponse" autocomplete="off">
+    <button id="verifier">Vérifier</button>
+  </form>
 
   <div id="message"></div>
 
   <script>
-    document.getElementById('verifier').addEventListener('click', function() {
-      const reponse = document.getElementById('reponse').value.replace(/\s+/g, '');
-      // la bonne réponse reste cachée dans le code JS
-      const correct = '6x^2-5x-4';
+    // Au chargement, on s'assure que le champ est bien vide :
+    window.addEventListener('DOMContentLoaded', () => {
+      const champ = document.getElementById('reponse');
+      champ.value = '';
+      // Pour plus de sûreté (certains navigateurs ignorent l'attribut),
+      // on peut forcer la désactivation ainsi :
+      champ.setAttribute('autocomplete', 'off');
+    });
 
-      if (reponse === correct) {
+    document.getElementById('verifier').addEventListener('click', function() {
+      const reponseUser = document.getElementById('reponse')
+        .value
+        .replace(/\s+/g, '')
+        .toLowerCase(); // en minuscules si on veut tolérer X^2 et x^2
+
+      // La seule trace de la bonne réponse est ici, dans le JS
+      const bonneReponse = '6x^2-5x-4';
+
+      if (reponseUser === bonneReponse) {
         document.getElementById('message').textContent = 'Bien joué !';
         document.getElementById('message').style.color = 'green';
       } else {
