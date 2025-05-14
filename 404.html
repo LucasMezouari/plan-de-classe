@@ -28,7 +28,7 @@
       width: 90%;
       max-width: 800px;
     }
-    .diagram {
+    object {
       width: 100%;
       height: 600px;
       border: none;
@@ -38,20 +38,39 @@
 <body>
   <div class="container">
     <h1>404 – Page non trouvée</h1>
-    <p>Désolé, cette page n'existe pas ! Voici votre schéma :</p>
+    <p>Désolé, cette page n'existe pas. Voici votre schéma :</p>
   </div>
 
-  <div class="container">
-    <!-- Remplacez ici par <iframe> si vous préférez -->
-    <embed
-      src="assets/testons2.svg"
-      type="image/svg+xml"
-      class="diagram"
-    >
-  </div>
+  <!-- On charge votre SVG vectoriel -->
+  <object
+    id="diagram"
+    type="image/svg+xml"
+    data="assets/testons2.svg"
+    aria-label="Schéma testons2.svg">
+    <!-- En dernier recours -->
+    <p>Votre navigateur ne supporte pas l’affichage SVG. <a href="assets/testons2.svg">Téléchargez le schéma</a>.</p>
+  </object>
 
   <div class="container">
     <p><a href="/">← Retour à l’accueil</a></p>
   </div>
+
+  <script>
+    // Quand le SVG est chargé, on va chercher tous les <a> à l'intérieur
+    document.getElementById('diagram').addEventListener('load', function() {
+      try {
+        const svgDoc = this.contentDocument;
+        svgDoc.querySelectorAll('a').forEach(a => {
+          // Force l'ouverture dans un nouvel onglet
+          a.setAttribute('target', '_blank');
+          // Sécurité : éviter les accès window.opener
+          a.setAttribute('rel', 'noopener');
+        });
+      }
+      catch(e) {
+        console.warn('Impossible d’injecter target="_blank" dans le SVG', e);
+      }
+    });
+  </script>
 </body>
 </html>
