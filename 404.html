@@ -2,58 +2,55 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Page non trouvée (404)</title>
+  <title>404 – Page non trouvée</title>
+
+  <!-- On indique ici que tous les liens relatifs partent de /plan-de-classe/ -->
+  <base href="https://lucasmezouari.github.io/plan-de-classe/">
+
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
     }
     object {
       display: block;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       border: none;
     }
   </style>
 </head>
 <body>
-  <!-- Chargement du SVG en <object> pour que les <a> restent fonctionnels -->
   <object
     id="svgDiagram"
     type="image/svg+xml"
     data="testons2.svg">
-    <!-- Fallback si le navigateur ne supporte pas les SVG -->
-    <p>Votre navigateur ne supporte pas les SVG. 
-       <a href="testons2.svg">Voir le diagramme</a>
+    <!-- Fallback si le SVG ne passe vraiment pas -->
+    <p>
+      Votre navigateur ne supporte pas les SVG.
+      <a href="testons2.svg" target="_blank">Voir le diagramme</a>
     </p>
   </object>
 
   <script>
-  // Une fois le SVG chargé, on corrige les href relatifs et on force l'ouverture en nouvel onglet
-  document.getElementById('svgDiagram').addEventListener('load', function () {
-    var svgDoc = this.contentDocument;
-    if (!svgDoc) return;
+    document.getElementById('svgDiagram').addEventListener('load', function () {
+      var svgDoc = this.contentDocument;
+      if (!svgDoc) return;
 
-    Array.prototype.slice.call(svgDoc.querySelectorAll('a')).forEach(function (link) {
-      // Récupère l'attribut href (xlink:href ou href)
-      var href = link.getAttribute('xlink:href') || link.getAttribute('href');
+      svgDoc.querySelectorAll('a').forEach(function (link) {
+        // href absolu ou relatif
+        var href = link.getAttribute('xlink:href') || link.getAttribute('href');
 
-      // Si le lien est exactement "toto.pdf", on le reroute vers assets/toto.pdf
-      if (href === 'toto.pdf') {
-        link.setAttribute('xlink:href', 'assets/toto.pdf');
-      }
-      // Si le lien est "essayons.html", on le laisse vers la page locale
-      else if (href === 'essayons.html') {
-        link.setAttribute('xlink:href', 'essayons.html');
-      }
-      // Pour tout le reste (YouTube, etc.), on suppose que l'URL est déjà absolue
+        // On redirige les 2 et 3 vers le bon sous-répertoire
+        if (href === 'toto.pdf') {
+          link.setAttribute('xlink:href', 'assets/toto.pdf');
+        } else if (href === 'essayons.html') {
+          link.setAttribute('xlink:href', 'essayons.html');
+        }
+        // Séance 1 : YouTube est déjà en URL absolue, on ne touche pas
 
-      // Ouvre toujours dans un nouvel onglet
-      link.setAttribute('target', '_blank');
+        link.setAttribute('target', '_blank');
+      });
     });
-  });
   </script>
 </body>
 </html>
