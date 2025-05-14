@@ -2,25 +2,65 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>404 – Page non trouvée</title>
+  <title>Page non trouvée (404)</title>
+  <!-- Intégration de Mermaid depuis CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    // Démarre Mermaid au chargement et utilise la courbe "basis" pour des lignes lisses
+    mermaid.initialize({
+      startOnLoad: true,
+      flowchart: { 
+        curve: "basis" 
+      }
+    });
+  </script>
+
   <style>
-    body { text-align: center; font-family: sans-serif; padding: 2rem; }
-    object { max-width: 100%; height: auto; border: none; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    .mermaid {
+      margin: 2rem auto;
+      max-width: 600px;
+    }
+    a.home-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.5rem 1rem;
+      background: #007acc;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
-  <h1>Oups ! Page non trouvée 😅</h1>
-  <p>Cliquez sur le dessin pour revenir à la page d’essai.</p>
+  <h1>404 – Oups, page introuvable !</h1>
+  <p>Voici un petit organigramme pour vous guider vers d’autres pages :</p>
 
-  <object
-    type="image/svg+xml"
-    data="donner.svg"
-    aria-label="Bouton donner — lien vers essayons.html">
-    <p>
-      Votre navigateur ne supporte pas les SVG embarqués.
-      <a href="essayons.html">Retour à la page d’essai</a>
-    </p>
-  </object>
+  <!-- Diagramme Mermaid avec liens cliquables -->
+  <div class="mermaid">
+%%{ init: { "flowchart": { "curve": "basis" } } }%%
+flowchart TD
+  Start([Accueil]) --> Help([Aide / FAQ])
+  Start --> Blog([Blog])
+  Start --> Contact([Contact])
+  Help --> Guide([Guide PDF])
+  Guide -->|Télécharger| GuideLink[/assets/docs/guide.pdf]
+  Blog -->|Visiter| BlogURL[/blog.html]
+  Contact -->|Envoyer un mail| ContactURL[mailto:contact@exemple.com]
+
+  click Start "/"            "Retour à l’accueil"
+  click Help "/aide.html"    "Voir la FAQ"
+  click Blog "/blog.html"    "Consulter le blog"
+  click Contact "mailto:contact@exemple.com" "Nous contacter"
+  click GuideLink "/assets/docs/guide.pdf" "Télécharger le guide"
+  click BlogURL "/blog.html" "Accéder au blog"
+  click ContactURL "mailto:contact@exemple.com" "Envoyer un e-mail"
+  </div>
+
+  <a class="home-link" href="/">← Retour à l’accueil</a>
 </body>
 </html>
