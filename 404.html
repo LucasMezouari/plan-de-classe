@@ -22,15 +22,15 @@
       margin-bottom: 1rem;
     }
     .diagram-container {
+      /* adapte la taille de l’espace SVG */
       width: 80%;
       max-width: 600px;
       margin-bottom: 1.5rem;
     }
-    /* L’objet SVG s’adapte à la largeur du conteneur */
-    .diagram-container object {
+    .diagram-container svg {
       width: 100%;
       height: auto;
-      border: none;
+      overflow: visible;
     }
     .home-link {
       display: inline-block;
@@ -51,11 +51,26 @@
   <h1>404 – Oups, cette page n'existe pas !</h1>
 
   <div class="diagram-container">
-    <!-- Intègre votre SVG avec ses liens cliquables -->
-    <object type="image/svg+xml" data="damn.svg">
-      <!-- Message de secours si l’objet ne s’affiche pas -->
-      Votre navigateur ne supporte pas les SVG.
-    </object>
+    <!-- Diagramme SVG inline -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">
+      <!-- Séance 1 -->
+      <rect x="10"  y="10"  width="120" height="50" fill="#e3e3e3" stroke="#333" rx="4" ry="4"/>
+      <text x="70"  y="40"  text-anchor="middle" font-size="14" fill="#000">Séance 1</text>
+
+      <!-- Séance 2 -->
+      <rect x="200" y="10"  width="120" height="50" fill="#e3e3e3" stroke="#333" rx="4" ry="4"/>
+      <text x="260" y="40"  text-anchor="middle" font-size="14" fill="#000">Séance 2</text>
+
+      <!-- Séance 3 -->
+      <rect x="200" y="100" width="120" height="50" fill="#e3e3e3" stroke="#333" rx="4" ry="4"/>
+      <text x="260" y="130" text-anchor="middle" font-size="14" fill="#000">Séance 3</text>
+
+      <!-- Lignes droites -->
+      <!-- Séance 1 → Séance 2 -->
+      <line x1="130" y1="35" x2="200" y2="35" stroke="#333" stroke-width="2"/>
+      <!-- Séance 1 → Séance 3 -->
+      <line x1="70"  y1="35" x2="260" y2="125" stroke="#333" stroke-width="2"/>
+    </svg>
   </div>
 
   <a class="home-link" href="/">← Retour à l’accueil</a>
