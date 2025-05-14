@@ -2,56 +2,25 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>404 – Page non trouvée</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 2rem;
-      color: #333;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    p {
-      margin-bottom: 2rem;
-    }
-    object {
-      max-width: 100%;
-      height: auto;
-      border: none;
-    }
-    /* Fallback link si object non supporté */
-    .fallback a {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background: #0066cc;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 4px;
-    }
-    .fallback a:hover {
-      background: #005bb5;
-    }
+    body { text-align: center; font-family: sans-serif; padding: 2rem; }
+    object { max-width: 100%; height: auto; border: none; }
   </style>
 </head>
 <body>
   <h1>Oups ! Page non trouvée 😅</h1>
-  <p>La page que vous cherchez n’existe pas ou a été déplacée.</p>
+  <p>Cliquez sur le dessin pour revenir à la page d’essai.</p>
 
-  <!-- Intégration de votre SVG interactif -->
   <object
     type="image/svg+xml"
     data="donner.svg"
-    aria-label="Cliquez pour revenir à la page d’essai">
-    <!-- Contenu de repli si ‹object› n’est pas supporté -->
-    <div class="fallback">
-      <p>Votre navigateur ne supporte pas les SVG embarqués.</p>
-      <a href="essayons.html" target="_top">Retour à la page d’essai</a>
-    </div>
+    aria-label="Bouton donner — lien vers essayons.html">
+    <p>
+      Votre navigateur ne supporte pas les SVG embarqués.
+      <a href="essayons.html">Retour à la page d’essai</a>
+    </p>
   </object>
 </body>
 </html>
