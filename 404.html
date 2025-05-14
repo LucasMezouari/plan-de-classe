@@ -2,71 +2,30 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>404 – Page non trouvée</title>
+  <title>404 – Test Mermaid</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Charger Mermaid -->
-  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <!-- 1) On charge explicitement la version 11.6.0 de Mermaid -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.min.js"></script>
+  <!-- 2) On initialise Mermaid dès que possible -->
   <script>
     mermaid.initialize({
       startOnLoad: true,
-      flowchart: { curve: "basis" }
+      flowchart: { curve: 'basis' }
     });
   </script>
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 2rem;
-      margin: 0;
-      background-color: #f9f9f9;
-      color: #333;
-    }
-    h1 {
-      margin-bottom: 1rem;
-    }
-    .mermaid {
-      margin: 2rem auto;
-      max-width: 500px;
-    }
-    /* Supprime le cadre jaune (outline) sur les liens Mermaid */
-    .mermaid a:focus,
-    .mermaid a:active {
-      outline: none;
-    }
-    /* Style du lien de retour */
-    a.home {
-      color: #007acc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a.home:hover {
-      text-decoration: underline;
-    }
+    body { font-family: sans-serif; text-align: center; padding: 2rem; }
+    .mermaid { margin: 2rem auto; max-width: 400px; }
   </style>
 </head>
 <body>
-  <h1>404 – Oups, page introuvable</h1>
-
+  <h1>🔍 Test Mermaid</h1>
   <div class="mermaid">
-%%{ init: { "flowchart": { "curve": "basis" } } }%%
-flowchart TB
-
-  %%-- première rangée, en LR
-  subgraph row1 [ ]
-    direction LR
-    A["Séance 1"] --> B["Séance 2"]
-  end
-
-  %%-- Séance 3 en-dessous de Séance 2
+flowchart LR
+  A["Séance 1"] --> B["Séance 2"]
   B --> C["Séance 3"]
-
-  %%-- ligne pointillée courbée de Séance 1 vers Séance 3
   A -.-> C
-
-  %%-- lien cliquable sur Séance 1
-  click A "essayons.html" "Aller à essayons.html"
   </div>
-
-  <p><a class="home" href="/">← Retour à l’accueil</a></p>
+  <p><a href="/">← Retour</a></p>
 </body>
 </html>
