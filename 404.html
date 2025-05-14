@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>404 – Page non trouvée</title>
   <style>
-    /* Vos styles 404.html d’origine */
+    /* Vos styles habituels */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -29,12 +29,6 @@
       width: 90%;
       max-width: 800px;
     }
-    /* S’assure que l’iframe prend la place restante */
-    .diagram-frame {
-      width: 100%;
-      height: 600px;
-      border: none;
-    }
   </style>
 </head>
 <body>
@@ -43,12 +37,20 @@
     <p>Désolé, cette page n'existe pas ! Voici votre schéma :</p>
   </div>
 
-  <!-- IFRAME Draw.io avec liens activés -->
-  <iframe
-    class="diagram-frame"
-    src="https://viewer.diagrams.net/?embed=1&amp;links=1&amp;highlight=0000ff&amp;title=testons2.svg&amp;url=https://raw.githubusercontent.com/LucasMezouari/plan-de-classe/main/assets/testons2.svg"
-    allowfullscreen>
-  </iframe>
+  <!-- OBJET SVG : garde les liens internes -->
+  <object
+    id="diagram"
+    class="container"
+    type="image/svg+xml"
+    data="assets/testons2.svg"
+    width="100%"
+    height="600"
+    aria-label="Schéma testons2.svg">
+    <!-- Fallback si l’objet ne charge pas -->
+    <p>Votre navigateur ne supporte pas l’affichage SVG. <br>
+       Téléchargez le schéma <a href="assets/testons2.svg">ici</a>.
+    </p>
+  </object>
 
   <div class="container">
     <p><a href="/">← Retour à l’accueil</a></p>
