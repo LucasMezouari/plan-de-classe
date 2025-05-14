@@ -2,44 +2,39 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Diagramme Séances</title>
-  <!-- Intégration de Mermaid depuis CDN -->
+  <title>Positionnement du diagramme</title>
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
-    // Démarre Mermaid au chargement et force les arêtes en lignes droites
     mermaid.initialize({
       startOnLoad: true,
-      flowchart: {
-        curve: "linear"
-      }
+      flowchart: { curve: "linear" }
     });
   </script>
+
   <style>
+    /* Le conteneur global en position relative */
     body {
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      position: relative;
       height: 100vh;
       margin: 0;
     }
-    .mermaid {
-      /* Ajuste la largeur si besoin */
-      max-width: 600px;
-      width: 100%;
+
+    /* On positionne notre diagramme à 150px du haut et 100px de la gauche */
+    #mon-diagramme {
+      position: absolute;
+      top: 150px;
+      left: 100px;
+      width: 300px; /* tu peux ajuster la largeur */
     }
   </style>
 </head>
 <body>
-  <h1>Organigramme des Séances</h1>
+  <h1>Page avec diagramme positionné</h1>
 
-  <!-- Diagramme Mermaid : deux cases reliées par une ligne droite -->
-  <div class="mermaid">
+  <div id="mon-diagramme" class="mermaid">
 %%{ init: { "flowchart": { "curve": "linear" } } }%%
 flowchart LR
   A["Séance 1"] --> B["Séance 2"]
   </div>
-  
 </body>
 </html>
