@@ -2,66 +2,81 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Essayons !</title>
+  <title>Calculs Numériques</title>
   <style>
-    body { font-family: sans-serif; margin: 2em; }
-    input, button { font-size: 1em; padding: 0.3em; }
-    #message { margin-top: 1em; font-weight: bold; }
+    body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+    h1 { color: red; text-align: center; }
+    h2 { color: #cc0000; }
+    a { color: blue; text-decoration: none; }
+    .box {
+      background-color: #eaf4e2;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .math {
+      font-family: 'Courier New', monospace;
+    }
+    .grid {
+      display: flex;
+      justify-content: space-between;
+    }
+    .left, .right {
+      width: 48%;
+    }
+    img {
+      max-width: 100%;
+    }
   </style>
 </head>
 <body>
-  <h2>2. Développer (3x − 4)(2x + 1).</h2>
-  <form id="quiz" autocomplete="off" onsubmit="return false;">
-    <label for="reponse">Votre réponse :</label>
-    <input type="text"
-           id="reponse"
-           placeholder="Entrez votre réponse"
-           autocomplete="off">
-    <button id="verifier">Vérifier</button>
-  </form>
 
-  <!-- Option 1 : mettez votre MP3 ici -->
-  <audio id="sonBien" src="bien_joue.mp3" preload="auto"></audio>
+  <h1>CALCULS NUMÉRIQUES</h1>
 
-  <div id="message"></div>
+  <p>▶️ Tout le cours sur les fractions en vidéo : 
+    <a href="https://youtu.be/aOQb812W75c" target="_blank">https://youtu.be/aOQb812W75c</a>
+  </p>
+  <p>▶️ Tout le cours sur les puissances en vidéo : 
+    <a href="https://youtu.be/lxCzv5FPJ3s" target="_blank">https://youtu.be/lxCzv5FPJ3s</a>
+  </p>
 
-  <script>
-    // On vide le champ au chargement (pour éviter tout autoremplissage)
-    window.addEventListener('DOMContentLoaded', () => {
-      const champ = document.getElementById('reponse');
-      champ.value = '';
-      champ.setAttribute('autocomplete', 'off');
-    });
+  <h2>Partie 1 : Nombres relatifs et priorités (Rappels)</h2>
+  <p><strong>1) Règles de calculs avec les nombres relatifs</strong></p>
 
-    document.getElementById('verifier').addEventListener('click', () => {
-      const reponseUser = document.getElementById('reponse')
-        .value
-        .replace(/\s+/g, '')
-        .toLowerCase();
-      const bonneReponse = '6x^2-5x-4';
+  <div class="grid">
+    <div class="left">
+      <h3><u>Additions et soustractions</u></h3>
+      <p class="math">− 3 − 4 = − 7</p>
+      <div class="box">
+        <p><span class="math">− 3</span> et <span class="math">− 4</span> ont le même signe :</p>
+        <ul>
+          <li>Garder le signe « − ».</li>
+          <li>Faire 3 + 4.</li>
+        </ul>
+      </div>
 
-      const msgEl = document.getElementById('message');
-      if (reponseUser === bonneReponse) {
-        msgEl.textContent = 'Bien joué !';
-        msgEl.style.color = 'green';
+      <p class="math">+ 3 − 4 = − 1</p>
+      <div class="box">
+        <p><span class="math">+ 3</span> et <span class="math">− 4</span> ont des signes contraires :</p>
+        <ul>
+          <li>Prendre le signe du plus grand « − ».</li>
+          <li>Faire 4 − 3.</li>
+        </ul>
+      </div>
+    </div>
 
-        // Option 1 : jouer un fichier audio si disponible
-        const audio = document.getElementById('sonBien');
-        if (audio && audio.play) {
-          audio.currentTime = 0;
-          audio.play();
-        }
-        // Option 2 : fallback sur SpeechSynthesis si pas de MP3
-        else if ('speechSynthesis' in window) {
-          const utter = new SpeechSynthesisUtterance('Bien joué !');
-          window.speechSynthesis.speak(utter);
-        }
+    <div class="right">
+      <h3>Multiplications et divisions<br><small>(La règle des signes)</small></h3>
+      <p class="math">
+        2 × 3 = 6<br>
+        (−2) × (−3) = 6<br>
+        2 × (−3) = −6<br>
+        −2 × 3 = −6
+      </p>
+      <img src="eaf1be1c-f899-4ea4-bf7b-6bfb83198667.png" alt="Règle des signes">
+    </div>
+  </div>
 
-      } else {
-        msgEl.textContent = 'Essaye encore !';
-        msgEl.style.color = 'red';
-      }
-    });
-  </script>
 </body>
 </html>
+
