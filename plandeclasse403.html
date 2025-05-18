@@ -184,7 +184,7 @@
     // Sélection visuelle
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
-        if (e.target.tagName==='INPUT') return;
+        if (e.target.tagName === 'INPUT') return;
         sc.classList.toggle('selected');
       });
     });
@@ -194,59 +194,64 @@
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
         const opts = sc.querySelector('.options');
-        if (this.checked) opts.style.display='block';
-        else {
-          opts.style.display='none';
-          opts.querySelectorAll('input[type=checkbox]').forEach(cb=>{
-            if(cb.checked){ removeResult(cb.dataset.case,cb.value); cb.checked=false; }
+        if (this.checked) {
+          opts.style.display = 'block';
+        } else {
+          opts.style.display = 'none';
+          opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
+            if (cb.checked) {
+              removeResult(cb.dataset.case, cb.value);
+              cb.checked = false;
+            }
           });
         }
       });
     });
 
     // Infractions
-    document.querySelectorAll('.options input[type="checkbox"]').forEach(cb=>{
+    document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function(){
-        this.checked? addResult(this.dataset.case,this.value): removeResult(this.dataset.case,this.value);
+        this.checked ? addResult(this.dataset.case, this.value) : removeResult(this.dataset.case, this.value);
       });
     });
     const resultList = document.getElementById('result-list');
-    function addResult(c,v){
-      const id=`result-${c}-${v}`;
+    function addResult(c, v){
+      const id = `result-${c}-${v}`;
       if(!document.getElementById(id)){
-        const li=document.createElement('li');
-        li.id=id; li.textContent=`case n°${c} : ${v}`;
+        const li = document.createElement('li');
+        li.id = id; li.textContent = `case n°${c} : ${v}`;
         resultList.append(li);
       }
     }
-    function removeResult(c,v){
-      const el=document.getElementById(`result-${c}-${v}`);
+    function removeResult(c, v){
+      const el = document.getElementById(`result-${c}-${v}`);
       if(!el) return;
-      const next=el.nextElementSibling;
-      if(next&&(next.classList.contains('detail-select')||next.classList.contains('detail'))) next.remove();
+      const next = el.nextElementSibling;
+      if(next && (next.classList.contains('detail-select') || next.classList.contains('detail'))) next.remove();
       el.remove();
     }
+
     // Détails infractions
-    resultList.addEventListener('click', e=>{
-      const li=e.target;
-      if(li.tagName!=='LI'||li.classList.contains('detail')||li.classList.contains('detail-select')) return;
-      const prev=resultList.querySelector('li.detail-select, li.detail');
+    resultList.addEventListener('click', e => {
+      const li = e.target;
+      if(li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
+      const prev = resultList.querySelector('li.detail-select, li.detail');
       if(prev) prev.remove();
-      const [_,rubric]=li.textContent.split(' : ');
-      const opts=detailsOptions[rubric];
+      const [_, rubric] = li.textContent.split(' : ');
+      const opts = detailsOptions[rubric];
       if(!opts) return;
-      const cse=li.id.split('-')[1];
-      const selLi=document.createElement('li');
-      selLi.className='detail-select';
-      opts.forEach(opt=>{
-        const lbl=document.createElement('label');
-        const cb=document.createElement('input');
-        cb.type='checkbox'; cb.dataset.case=cse; cb.value=opt;
-        lbl.append(cb,' '+opt);
-        selLi.append(lbl,document.createElement('br'));
-        cb.addEventListener('change',()=>{
+      const cse = li.id.split('-')[1];
+      const selLi = document.createElement('li');
+      selLi.className = 'detail-select';
+      opts.forEach(opt => {
+        const lbl = document.createElement('label');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.dataset.case = cse; cb.value = opt;
+        lbl.append(cb, ' ' + opt);
+        selLi.append(lbl, document.createElement('br'));
+        cb.addEventListener('change', () => {
           if(cb.checked){
-            li.textContent=`case n°${cse} : ${rubric} : ${opt}`;
+            li.textContent = `case n°${cse} : ${rubric} : ${opt}`;
             selLi.remove();
           }
         });
@@ -255,68 +260,94 @@
     });
 
     // Export JSON
-    document.getElementById('lien-box').addEventListener('click',()=>{
-      const infractions=Array.from(resultList.querySelectorAll('li:not(.detail):not(.detail-select)')).map(li=>li.textContent);
-      const lok=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date());
-      const [dp,tp]=lok.split(' '),[jj,MM]=dp.split('/'),[hh,mm]=tp.split(':');
-      const now=`${jj}-${MM}-${hh}h${mm}`;
-      const subs=Array.from(document.querySelectorAll('.subcase'));
-      const presCount=subs.filter(sc=>sc.classList.contains('selected')).length;
-      const absList=subs.filter(sc=>!sc.classList.contains('selected')).map(sc=>`case n°${sc.dataset.case}`);
-      const payload={date:now+' (Europe/Paris)',infractions,presents:presCount,absents:absList};
-      const data=JSON.stringify(payload,null,2), blob=new Blob([data],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-      if('download' in a){ a.href=url; a.download=`infractions_${now}.json`; document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
-      else{ window.open(url); setTimeout(()=>URL.revokeObjectURL(url),1000); }
+    document.getElementById('lien-box').addEventListener('click', () => {
+      const infractions = Array.from(
+        resultList.querySelectorAll('li:not(.detail):not(.detail-select)')
+      ).map(li => li.textContent);
+      const lok = new Intl.DateTimeFormat('fr-FR',{
+        timeZone:'Europe/Paris',year:'numeric',month:'2-digit',
+        day:'2-digit',hour:'2-digit',minute:'2-digit'
+      }).format(new Date());
+      const [dp,tp] = lok.split(' ');
+      const [jj,MM] = dp.split('/'); const [hh,mm] = tp.split(':');
+      const now = `${jj}-${MM}-${hh}h${mm}`;
+      const subs = Array.from(document.querySelectorAll('.subcase'));
+      const presCount = subs.filter(sc => sc.classList.contains('selected')).length;
+      const absList = subs.filter(sc => !sc.classList.contains('selected'))
+                          .map(sc => `case n°${sc.dataset.case}`);
+      const payload = { date: now+' (Europe/Paris)', infractions, presents: presCount, absents: absList };
+      const data = JSON.stringify(payload,null,2);
+      const blob = new Blob([data],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      if('download' in a){
+        a.href = url; a.download = `infractions_${now}.json`;
+        document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      } else {
+        window.open(url); setTimeout(()=>URL.revokeObjectURL(url),1000);
+      }
     });
 
     // Appel terminé
-    document.getElementById('appel-box').addEventListener('click',()=>{
-      const subs=Array.from(document.querySelectorAll('.subcase'));
-      const pres=subs.filter(sc=>sc.classList.contains('selected'));
-      const abs=subs.filter(sc=>!sc.classList.contains('selected'));
-      let html=`<p>Élèves présents : ${pres.length}</p><p>Élèves absents :</p>`;
-      if(abs.length) abs.forEach(sc=>html+=`<p>case n°${sc.dataset.case}</p>`);
-      else html+='<p>—</p>';
-      document.getElementById('appel-result').innerHTML=html;
+    document.getElementById('appel-box').addEventListener('click', () => {
+      const subs = Array.from(document.querySelectorAll('.subcase'));
+      const pres = subs.filter(sc => sc.classList.contains('selected'));
+      const abs  = subs.filter(sc => !sc.classList.contains('selected'));
+      let html = `<p>Élèves présents : ${pres.length}</p><p>Élèves absents :</p>`;
+      if(abs.length) abs.forEach(sc => html += `<p>case n°${sc.dataset.case}</p>`);
+      else html += `<p>—</p>`;
+      document.getElementById('appel-result').innerHTML = html;
     });
 
-    // Mode contrôle : rouge + liens "Copie n°i" + message + saisie page
-    const modeBtn=document.getElementById('mode-controle-box');
-    const controleResult=document.getElementById('controle-result');
-    let modeActive=false;
-    modeBtn.addEventListener('click',()=>{
-      modeActive=!modeActive;
-      modeBtn.classList.toggle('active',modeActive);
-      // conversion titres ↔ liens
-      document.querySelectorAll('.subcase').forEach(sc=>{
-        const c=sc.dataset.case;
-        if(modeActive){
-          const span=sc.querySelector('span.title');
-          if(!span) return;
-          const a=document.createElement('a');
-          a.href='#';
-          a.textContent=`Copie n°${c}`;
-          a.className='title-link';
-          // clic sur copie
-          a.addEventListener('click', e=>{
+    // Mode contrôle : rouge + liens "Copie n°i" + message + saisie page + Enter lock
+    const modeBtn = document.getElementById('mode-controle-box');
+    const controleResult = document.getElementById('controle-result');
+    let modeActive = false;
+    let controlDone = false;
+
+    modeBtn.addEventListener('click', () => {
+      modeActive = !modeActive;
+      controlDone = false;
+      controleResult.innerHTML = ''; // reset
+      modeBtn.classList.toggle('active', modeActive);
+      document.querySelectorAll('.subcase').forEach(sc => {
+        const c = sc.dataset.case;
+        if (modeActive) {
+          const span = sc.querySelector('span.title');
+          if (!span) return;
+          const a = document.createElement('a');
+          a.href = '#';
+          a.textContent = `Copie n°${c}`;
+          a.className = 'title-link';
+          a.addEventListener('click', e => {
             e.stopPropagation();
+            if (controlDone) return;
+            // afficher message et champ
             controleResult.innerHTML =
               '<p class="control-message">A terminé le contrôle</p>' +
-              `<p>Copie n°${c} : page : <input type="number" min="1" /></p>`;
+              `<p id="control-line">Copie n°${c} : page : <input type="number" min="1" id="page-input" /></p>`;
+            const input = controleResult.querySelector('#page-input');
+            input.focus();
+            input.addEventListener('keydown', evt => {
+              if (evt.key === 'Enter') {
+                const val = input.value;
+                const line = document.getElementById('control-line');
+                line.textContent = `Copie n°${c} : page : ${val}`;
+                controlDone = true;
+              }
+            });
           });
           span.replaceWith(a);
         } else {
-          const link=sc.querySelector('a.title-link');
-          if(!link) return;
-          const span=document.createElement('span');
-          span.className='title';
-          span.textContent=link.textContent.replace('Copie','Case');
+          const link = sc.querySelector('a.title-link');
+          if (!link) return;
+          const span = document.createElement('span');
+          span.className = 'title';
+          span.textContent = link.textContent.replace('Copie','Case');
           link.replaceWith(span);
         }
       });
-      // message initial
-      if(!modeActive) controleResult.innerHTML='';
-      modeBtn.textContent=modeActive?'Quitter contrôle':'Mode contrôle';
+      modeBtn.textContent = modeActive ? 'Quitter contrôle' : 'Mode contrôle';
     });
   </script>
 </body>
