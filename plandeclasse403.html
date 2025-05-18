@@ -42,6 +42,7 @@
       flex: 1; padding: 8px;
       border-right: 1px solid rgba(255,255,255,.7);
       cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
     }
     .subcase:last-child { border-right: none; }
     .subcase.selected {
@@ -174,7 +175,7 @@
           // Options principales
           const opts = document.createElement('div');
           opts.className = 'options';
-          ["Comportement","Travail non fait","Oubli de matériel"].forEach(cat => {
+          ["Comportement", "Travail non fait", "Oubli de matériel"].forEach(cat => {
             const lbl = document.createElement('label');
             const inp = document.createElement('input');
             inp.type = 'checkbox';
@@ -290,9 +291,9 @@
 
       const lok = new Intl.DateTimeFormat('fr-FR', {
         timeZone: 'Europe/Paris',
-        year:'numeric', month:'2-digit',
-        day:'2-digit',  hour:'2-digit',
-        minute:'2-digit'
+        year: 'numeric', month: '2-digit',
+        day: '2-digit', hour: '2-digit',
+        minute: '2-digit'
       }).format(new Date());
       const [dp, tp] = lok.split(' ');
       const [jj, MM] = dp.split('/');
@@ -351,20 +352,15 @@
       document.querySelectorAll('.subcase').forEach(sc => {
         const caseNum = sc.dataset.case;
         if (modeActive) {
-          // span → lien
           const span = sc.querySelector('span.title');
           if (!span) return;
           const a = document.createElement('a');
           a.href = '#';
-          a.textContent = `Case ${caseNum}`;
+          a.textContent = span.textContent;
           a.className = 'title-link';
-          a.addEventListener('click', e => {
-            e.stopPropagation();
-            // action éventuelle
-          });
+          a.addEventListener('click', e => e.stopPropagation());
           span.replaceWith(a);
         } else {
-          // lien → span
           const link = sc.querySelector('a.title-link');
           if (!link) return;
           const span = document.createElement('span');
