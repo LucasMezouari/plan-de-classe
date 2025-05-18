@@ -112,9 +112,38 @@
   <script>
     // Détails possibles par rubrique
     const detailsOptions = {
-      "Comportement": [ /* ... */ ],
-      "Travail non fait": [ /* ... */ ],
-      "Oubli de matériel": [ /* ... */ ]
+      "Comportement": [
+        "Insulte envers le professeur",
+        "Insulte envers un camarade",
+        "Insolence",
+        "Langage familier",
+        "Refus de se taire",
+        "Refus de s'asseoir",
+        "Bavardages",
+        "Imitation de bruitages",
+        "Usage du téléphone",
+        "Retard",
+        "Insiste pour aller aux toilettes"
+      ],
+      "Travail non fait": [
+        "Exercice maison non rendu",
+        "Copie blanche",
+        "Leçon non apprise",
+        "Refus de participer",
+        "Réponse inappropriée"
+      ],
+      "Oubli de matériel": [
+        "Pas de stylo",
+        "Pas de trousse",
+        "Pas de rapporteur",
+        "Pas de compas",
+        "Pas ses codes",
+        "Pas de carnet",
+        "Pas de cahier",
+        "Pas de calculatrice",
+        "Pas de mouchoirs",
+        "Pas de copie"
+      ]
     };
 
     // Génération des 30 sous-cases
@@ -129,10 +158,11 @@
           sc.className = 'subcase';
           sc.dataset.case = num;
 
+          // Entête : toggle + titre
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
-          toggle.type = 'checkbox'; 
+          toggle.type = 'checkbox';
           toggle.className = 'toggle';
           toggle.dataset.case = num;
           const title = document.createElement('span');
@@ -141,6 +171,7 @@
           header.append(toggle, title);
           sc.append(header);
 
+          // Options principales
           const opts = document.createElement('div');
           opts.className = 'options';
           ["Comportement","Travail non fait","Oubli de matériel"].forEach(cat => {
@@ -169,7 +200,7 @@
       });
     });
 
-    // Afficher/masquer les options
+    // Afficher/masquer les options au toggle
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
@@ -188,7 +219,7 @@
       });
     });
 
-    // Gestion des infractions
+    // Enregistrement des infractions cochées
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         const c = this.dataset.case;
@@ -196,6 +227,7 @@
       });
     });
 
+    // Fonctions pour la liste
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -216,11 +248,10 @@
       el.remove();
     }
 
+    // Détails au clic sur une infraction
     resultList.addEventListener('click', e => {
       const li = e.target;
-      if (li.tagName !== 'LI' ||
-          li.classList.contains('detail') ||
-          li.classList.contains('detail-select')) return;
+      if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
 
       const prev = resultList.querySelector('li.detail-select, li.detail');
       if (prev) prev.remove();
@@ -251,7 +282,7 @@
       li.insertAdjacentElement('afterend', selLi);
     });
 
-    // Export JSON
+    // Export JSON (bouton Lien)
     document.getElementById('lien-box').addEventListener('click', () => {
       const infractions = Array.from(
         resultList.querySelectorAll('li:not(.detail):not(.detail-select)')
@@ -318,31 +349,32 @@
       modeActive = !modeActive;
       modeBtn.classList.toggle('active', modeActive);
       document.querySelectorAll('.subcase').forEach(sc => {
-        const current = sc.querySelector(modeActive ? '.title' : 'a.title-link');
-        if (!current) return;
-        const text = sc.dataset.case;
+        const caseNum = sc.dataset.case;
         if (modeActive) {
           // span → lien
+          const span = sc.querySelector('span.title');
+          if (!span) return;
           const a = document.createElement('a');
           a.href = '#';
-          a.textContent = `Case ${text}`;
+          a.textContent = `Case ${caseNum}`;
           a.className = 'title-link';
           a.addEventListener('click', e => {
             e.stopPropagation();
             // action éventuelle
           });
-          current.replaceWith(a);
+          span.replaceWith(a);
         } else {
           // lien → span
+          const link = sc.querySelector('a.title-link');
+          if (!link) return;
           const span = document.createElement('span');
           span.className = 'title';
-          span.textContent = `Case ${text}`;
-          current.replaceWith(span);
+          span.textContent = link.textContent;
+          link.replaceWith(span);
         }
       });
       modeBtn.textContent = modeActive ? 'Quitter contrôle' : 'Mode contrôle';
     });
   </script>
-
 </body>
 </html>
