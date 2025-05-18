@@ -59,7 +59,6 @@
       text-decoration: underline; margin-top: 10px; font-weight: bold;
     }
 
-    /* Pied de page */
     .footer-container { text-align: center; margin-top: 30px; }
     .footer-box {
       display: inline-block; padding: 10px 20px;
@@ -111,7 +110,7 @@
       ]
     };
 
-    // 2) Génération des 30 sous-cases
+    // 2) Génération de la grille 3×5×2 = 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
     for (let r = 0; r < 5; r++) {
@@ -123,7 +122,7 @@
           sc.className = 'subcase';
           sc.dataset.case = num;
 
-          // Header
+          // entête
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -136,7 +135,7 @@
           header.append(toggle, title);
           sc.append(header);
 
-          // Options
+          // options infractions
           const opts = document.createElement('div');
           opts.className = 'options';
           Object.keys(detailsOptions).forEach(cat => {
@@ -157,7 +156,7 @@
       }
     }
 
-    // 3) Sélection visuelle et infractions
+    // 3) Sélection et infractions
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
@@ -290,30 +289,29 @@
       modeBtn.textContent = modeActive ? 'Quitter contrôle' : 'Mode contrôle';
     });
 
-    // 6) Export JSON pur + noms=[...] en-dehors
+    // 6) Export JSON pur + noms=[…] commenté
     document.getElementById('lien-box').addEventListener('click', () => {
-      // infractions regroupées
+      // Infractions par catégorie
       const infractionsByCat = {
         "Comportement": [], "Travail non fait": [], "Oubli de matériel": []
       };
-      document.querySelectorAll('#result-list li:not(.detail-select)')
-        .forEach(li => {
-          const [_, cat] = li.textContent.split(' : ');
-          infractionsByCat[cat].push(li.textContent);
-        });
-      // présents / absents
+      document.querySelectorAll('#result-list li:not(.detail-select)').forEach(li => {
+        const [_, cat] = li.textContent.split(' : ');
+        infractionsByCat[cat].push(li.textContent);
+      });
+      // Présents / absents
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const presents = subs.filter(sc => sc.classList.contains('selected')).length;
       const absents  = subs.filter(sc => !sc.classList.contains('selected'))
                            .map(sc => `case n°${sc.dataset.case}`);
-      // copies dans l'ordre
+      // Copies dans l'ordre
       const copiesOrdr = [];
       rendus.forEach(o => {
         for (let i = 0; i < o.pages; i++) {
           copiesOrdr.push(`Case n°${o.case}`);
         }
       });
-      // horodatage
+      // Horodatage
       const now = new Intl.DateTimeFormat('fr-FR',{
         timeZone:'Europe/Paris',year:'numeric',month:'2-digit',
         day:'2-digit',hour:'2-digit',minute:'2-digit'
@@ -321,7 +319,8 @@
       const [dp,tp] = now.split(' ');
       const [jj,MM] = dp.split('/'), [hh,mm] = tp.split(':');
       const stamp = `${jj}-${MM}-${hh}h${mm}`;
-      // objet principal
+
+      // Création du JSON
       const output = {
         date: `${stamp} (Europe/Paris)`,
         infractions: infractionsByCat,
@@ -329,12 +328,7 @@
         absents,
         "Copies dans l'ordre des rendus": copiesOrdr
       };
-      // format JSON + noms=[
-      const jsonMain = JSON.stringify(output, null, 2);
-      const nomsJson = JSON.stringify(noms, null, 2);
-      const fileContent = `${jsonMain}\n\nnoms=${nomsJson}\n`;
-      // créer et télécharger le .json
-      const blob = new Blob([fileContent], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       a.href     = url;
@@ -343,6 +337,14 @@
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
+
+      /* 
+      noms=[
+        "Case n°2",
+        "Case n°3",
+        "Case n°3"
+      ]
+      */
     });
   </script>
 
