@@ -35,6 +35,7 @@
       flex: 1; padding: 8px;
       border-right: 1px solid rgba(255,255,255,.7);
       cursor: pointer;
+      transition: opacity 0.3s;
     }
     .subcase:last-child { border-right: none; }
     .subcase.selected {
@@ -62,6 +63,11 @@
     li.detail-select label { display: block; cursor: pointer; }
     li.detail { font-style: italic; padding-left: 20px; margin-bottom: 10px; cursor: default; }
 
+    /* Style en mode contrôle */
+    body.mode-controle .subcase {
+      opacity: 0.5;
+    }
+
     /* Pied de page */
     .footer-container {
       text-align: center;
@@ -85,6 +91,7 @@
     <div class="left-panel">
       <div class="lien-box" id="lien-box">Lien</div>
       <div class="lien-box" id="appel-box">Appel terminé</div>
+      <div class="lien-box" id="mode-controle-box">Mode contrôle</div>
       <div id="appel-result"></div>
     </div>
 
@@ -244,7 +251,6 @@
       const li = e.target;
       if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
 
-      // Supprimer ancien bloc de détail
       const prev = resultList.querySelector('li.detail-select, li.detail');
       if (prev) prev.remove();
 
@@ -253,7 +259,6 @@
       if (!opts) return;
       const cse = li.id.split('-')[1];
 
-      // Créer bloc de cases à cocher
       const selLi = document.createElement('li');
       selLi.className = 'detail-select';
       opts.forEach(opt => {
@@ -334,6 +339,11 @@
         html += `<p>—</p>`;
       }
       document.getElementById('appel-result').innerHTML = html;
+    });
+
+    // Mode contrôle
+    document.getElementById('mode-controle-box').addEventListener('click', () => {
+      document.body.classList.toggle('mode-controle');
     });
   </script>
 </body>
