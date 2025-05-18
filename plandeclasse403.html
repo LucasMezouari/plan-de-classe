@@ -58,6 +58,7 @@
       margin-top: 8px; display: none; padding-left: 4px;
     }
 
+    /* Zone infractions + contrôle */
     .result {
       flex: 1; padding: 10px;
       border: 1px solid #ccc; border-radius: 5px;
@@ -65,9 +66,9 @@
     }
     #result-list { list-style: none; padding: 0; margin: 0; }
     #result-list li { margin-bottom: 5px; cursor: pointer; }
-    li.detail-select { padding-left: 20px; margin-bottom: 10px; }
-    li.detail-select label { display: block; cursor: pointer; }
-    li.detail { font-style: italic; padding-left: 20px; margin-bottom: 10px; cursor: default; }
+    .detail-select { padding-left: 20px; margin-bottom: 10px; }
+    .detail-select label { display: block; cursor: pointer; }
+    .detail { font-style: italic; padding-left: 20px; margin-bottom: 10px; cursor: default; }
 
     /* Message de contrôle */
     #controle-result .control-message {
@@ -109,7 +110,6 @@
     <!-- Zone infractions & contrôle -->
     <div class="result">
       <ul id="result-list"></ul>
-      <!-- Zone pour le message et les lignes de saisie -->
       <div id="controle-result"></div>
     </div>
   </div>
@@ -119,7 +119,7 @@
   </div>
 
   <script>
-    // Rubriques d’infractions
+    // Infractions possibles
     const detailsOptions = {
       "Comportement": [
         "Insulte envers le professeur","Insulte envers un camarade","Insolence",
@@ -138,38 +138,33 @@
       ]
     };
 
-    // Génération des sous-cases (3×5×2 = 30)
+    // Génération des 30 sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
     for (let r = 0; r < 5; r++) {
       for (let c = 0; c < 3; c++) {
         const cont = document.createElement('div');
         cont.className = 'case-container';
-        for (let half = 0; half < 2; half++) {
+        for (let h = 0; h < 2; h++) {
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
-          // En-tête
-          const header = document.createElement('div');
-          header.className = 'header';
+          // header
+          const header = document.createElement('div'); header.className = 'header';
           const toggle = document.createElement('input');
-          toggle.type = 'checkbox';
-          toggle.className = 'toggle';
+          toggle.type = 'checkbox'; toggle.className = 'toggle';
           toggle.dataset.case = num;
           const title = document.createElement('span');
           title.className = 'title';
           title.textContent = `Case ${num}`;
           header.append(toggle, title);
           sc.append(header);
-          // Options infractions
-          const opts = document.createElement('div');
-          opts.className = 'options';
+          // options d’infractions
+          const opts = document.createElement('div'); opts.className = 'options';
           ["Comportement","Travail non fait","Oubli de matériel"].forEach(cat => {
             const lbl = document.createElement('label');
             const inp = document.createElement('input');
-            inp.type = 'checkbox';
-            inp.dataset.case = num;
-            inp.value = cat;
+            inp.type = 'checkbox'; inp.dataset.case = num; inp.value = cat;
             lbl.append(inp, ' ' + cat);
             opts.append(lbl, document.createElement('br'));
           });
@@ -181,7 +176,7 @@
       }
     }
 
-    // Gestion de la sélection visuelle
+    // sélection visuelle
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
@@ -189,73 +184,64 @@
       });
     });
 
-    // Affichage/masquage des options au toggle
+    // toggle des options
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
         const opts = sc.querySelector('.options');
-        if (this.checked) {
-          opts.style.display = 'block';
-        } else {
+        if (this.checked) opts.style.display = 'block';
+        else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) {
-              removeResult(cb.dataset.case, cb.value);
-              cb.checked = false;
-            }
+            if (cb.checked) { removeResult(cb.dataset.case, cb.value); cb.checked = false; }
           });
         }
       });
     });
 
-    // Enregistrement des infractions
+    // infractions
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         this.checked ? addResult(this.dataset.case, this.value) : removeResult(this.dataset.case, this.value);
       });
     });
-
     const resultList = document.getElementById('result-list');
-    function addResult(c, v) {
+    function addResult(c,v){
       const id = `result-${c}-${v}`;
       if (!document.getElementById(id)) {
         const li = document.createElement('li');
-        li.id = id;
-        li.textContent = `case n°${c} : ${v}`;
+        li.id = id; li.textContent = `case n°${c} : ${v}`;
         resultList.append(li);
       }
     }
-    function removeResult(c, v) {
+    function removeResult(c,v){
       const el = document.getElementById(`result-${c}-${v}`);
       if (!el) return;
       const next = el.nextElementSibling;
-      if (next && (next.classList.contains('detail-select') || next.classList.contains('detail'))) {
+      if (next && (next.classList.contains('detail-select')||next.classList.contains('detail')))
         next.remove();
-      }
       el.remove();
     }
-
-    // Détails des infractions au clic
+    // détails infractions
     resultList.addEventListener('click', e => {
       const li = e.target;
-      if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
+      if (li.tagName!=='LI'||li.classList.contains('detail')||li.classList.contains('detail-select')) return;
       const prev = resultList.querySelector('li.detail-select, li.detail');
       if (prev) prev.remove();
-      const [_, rubric] = li.textContent.split(' : ');
-      const opts = detailsOptions[rubric];
+      const [_,rub] = li.textContent.split(' : ');
+      const opts = detailsOptions[rub];
       if (!opts) return;
       const cse = li.id.split('-')[1];
-      const selLi = document.createElement('li');
-      selLi.className = 'detail-select';
-      opts.forEach(opt => {
+      const selLi = document.createElement('li'); selLi.className='detail-select';
+      opts.forEach(opt=>{
         const lbl = document.createElement('label');
         const cb = document.createElement('input');
-        cb.type = 'checkbox'; cb.dataset.case = cse; cb.value = opt;
-        lbl.append(cb, ' ' + opt);
-        selLi.append(lbl, document.createElement('br'));
-        cb.addEventListener('change', () => {
-          if (cb.checked) {
-            li.textContent = `case n°${cse} : ${rubric} : ${opt}`;
+        cb.type='checkbox'; cb.dataset.case=cse; cb.value=opt;
+        lbl.append(cb,' '+opt);
+        selLi.append(lbl,document.createElement('br'));
+        cb.addEventListener('change',()=>{
+          if(cb.checked){
+            li.textContent = `case n°${cse} : ${rub} : ${opt}`;
             selLi.remove();
           }
         });
@@ -263,111 +249,86 @@
       li.insertAdjacentElement('afterend', selLi);
     });
 
-    // Export JSON
-    document.getElementById('lien-box').addEventListener('click', () => {
-      const infractions = Array.from(
-        resultList.querySelectorAll('li:not(.detail):not(.detail-select)')
-      ).map(li => li.textContent);
-      const lok = new Intl.DateTimeFormat('fr-FR', {
-        timeZone: 'Europe/Paris',
-        year: 'numeric', month: '2-digit',
-        day: '2-digit', hour: '2-digit',
-        minute: '2-digit'
+    // export JSON
+    document.getElementById('lien-box').addEventListener('click',()=>{
+      const infractions = Array.from(resultList.querySelectorAll('li:not(.detail):not(.detail-select)'))
+                               .map(li=>li.textContent);
+      const lok = new Intl.DateTimeFormat('fr-FR',{
+        timeZone:'Europe/Paris',year:'numeric',month:'2-digit',
+        day:'2-digit',hour:'2-digit',minute:'2-digit'
       }).format(new Date());
-      const [dp, tp] = lok.split(' ');
-      const [jj, MM] = dp.split('/');
-      const [hh, mm] = tp.split(':');
-      const now = `${jj}-${MM}-${hh}h${mm}`;
-
+      const [dp,tp]=lok.split(' '),[jj,MM]=dp.split('/'),[hh,mm]=tp.split(':');
+      const now=`${jj}-${MM}-${hh}h${mm}`;
       const subs = Array.from(document.querySelectorAll('.subcase'));
-      const presCount = subs.filter(sc => sc.classList.contains('selected')).length;
-      const absList = subs.filter(sc => !sc.classList.contains('selected'))
-                          .map(sc => `case n°${sc.dataset.case}`);
-
-      const payload = {
-        date: now + ' (Europe/Paris)',
-        infractions,
-        presents: presCount,
-        absents: absList
-      };
-      const data = JSON.stringify(payload, null, 2);
-      const blob = new Blob([data], { type: 'application/json' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      if ('download' in a) {
-        a.href     = url;
-        a.download = `infractions_${now}.json`;
-        document.body.append(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      } else {
-        window.open(url);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      }
+      const presCount = subs.filter(sc=>sc.classList.contains('selected')).length;
+      const absList = subs.filter(sc=>!sc.classList.contains('selected'))
+                          .map(sc=>`case n°${sc.dataset.case}`);
+      const payload={date:now+' (Europe/Paris)',infractions,presents:presCount,absents:absList};
+      const data=JSON.stringify(payload,null,2);
+      const blob=new Blob([data],{type:'application/json'}), url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      if('download' in a){ a.href=url; a.download=`infractions_${now}.json`; document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+      else{ window.open(url); setTimeout(()=>URL.revokeObjectURL(url),1000); }
     });
 
-    // Appel terminé
-    document.getElementById('appel-box').addEventListener('click', () => {
-      const subs = Array.from(document.querySelectorAll('.subcase'));
-      const pres = subs.filter(sc => sc.classList.contains('selected'));
-      const abs  = subs.filter(sc => !sc.classList.contains('selected'));
+    // appel terminé
+    document.getElementById('appel-box').addEventListener('click',()=>{
+      const subs=Array.from(document.querySelectorAll('.subcase'));
+      const pres=subs.filter(sc=>sc.classList.contains('selected'));
+      const abs = subs.filter(sc=>!sc.classList.contains('selected'));
       let html = `<p>Élèves présents : ${pres.length}</p><p>Élèves absents :</p>`;
-      if (abs.length) {
-        abs.forEach(sc => html += `<p>case n°${sc.dataset.case}</p>`);
-      } else {
-        html += `<p>—</p>`;
-      }
+      if(abs.length) abs.forEach(sc=> html+=`<p>case n°${sc.dataset.case}</p>`);
+      else html+='<p>—</p>';
       document.getElementById('appel-result').innerHTML = html;
     });
 
-    // Mode contrôle : bouton rouge + liens “Copie n°i” + message + saisie page
+    // mode contrôle
     const modeBtn = document.getElementById('mode-controle-box');
     const controleResult = document.getElementById('controle-result');
     let modeActive = false;
 
-    modeBtn.addEventListener('click', () => {
+    modeBtn.addEventListener('click',()=>{
       modeActive = !modeActive;
       modeBtn.classList.toggle('active', modeActive);
 
-      // À l’activation on affiche une fois le message souligné
-      if (modeActive) {
-        controleResult.innerHTML = '<p class="control-message">A terminé le contrôle</p>';
+      // afficher ou vider la zone de contrôle
+      if(modeActive) {
+        controleResult.innerHTML = '<p class="control-message">A terminé le contrôle</p>'
+                                 + '<div id="control-lines"></div>';
       } else {
         controleResult.innerHTML = '';
       }
 
-      // Transformation des titres en liens / retour en span
-      document.querySelectorAll('.subcase').forEach(sc => {
+      // transformer titres ↔ liens
+      document.querySelectorAll('.subcase').forEach(sc=>{
         const c = sc.dataset.case;
-        if (modeActive) {
+        if(modeActive){
           const span = sc.querySelector('span.title');
-          if (!span) return;
+          if(!span) return;
           const a = document.createElement('a');
           a.href = '#';
           a.textContent = `Copie n°${c}`;
           a.className = 'title-link';
-          // Clic sur "Copie n°i"
-          a.addEventListener('click', e => {
+          a.addEventListener('click', e=>{
             e.stopPropagation();
-            // Ajoute une nouvelle ligne de saisie
-            const line = document.createElement('p');
-            line.innerHTML = `Copie n°${c} : page : <input type="number" min="1" />`;
-            controleResult.append(line);
-            const input = line.querySelector('input');
+            // ajouter une nouvelle ligne
+            const lines = document.getElementById('control-lines');
+            const p = document.createElement('p');
+            p.innerHTML = `Copie n°${c} : page : <input type="number" min="1" />`;
+            lines.appendChild(p);
+            const input = p.querySelector('input');
             input.focus();
-            input.addEventListener('keydown', evt => {
-              if (evt.key === 'Enter') {
+            input.addEventListener('keydown', evt=>{
+              if(evt.key==='Enter'){
                 const val = input.value;
-                line.textContent = `Copie n°${c} : page : ${val}`;
+                p.textContent = `Copie n°${c} : page : ${val}`;
               }
             });
           });
           span.replaceWith(a);
-
         } else {
           const link = sc.querySelector('a.title-link');
-          if (!link) return;
+          if(!link) return;
           const span = document.createElement('span');
           span.className = 'title';
           span.textContent = link.textContent.replace('Copie','Case');
