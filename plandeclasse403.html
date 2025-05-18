@@ -46,7 +46,6 @@
     .subcase.selected {
       background: #006400; color: #fff;
     }
-    /* marque la copie comme terminée */
     .subcase.completed {
       background: #ff4d4d !important;
       color: #fff !important;
@@ -134,7 +133,7 @@
       ]
     };
 
-    // Génération des 30 sous-cases
+    // Génération des sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
     for (let row = 0; row < 5; row++) {
@@ -145,7 +144,7 @@
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
-          // entête
+          // en-tête
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -157,7 +156,7 @@
           title.textContent = `Case ${num}`;
           header.append(toggle, title);
           sc.append(header);
-          // options infractions
+          // options d’infractions
           const opts = document.createElement('div');
           opts.className = 'options';
           ["Comportement","Travail non fait","Oubli de matériel"].forEach(cat => {
@@ -190,8 +189,9 @@
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
         const opts = sc.querySelector('.options');
-        if (this.checked) opts.style.display = 'block';
-        else {
+        if (this.checked) {
+          opts.style.display = 'block';
+        } else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
             if (cb.checked) {
@@ -301,7 +301,7 @@
       const abs  = subs.filter(sc=>!sc.classList.contains('selected'));
       let html = `<p>Élèves présents : ${pres.length}</p><p>Élèves absents :</p>`;
       if (abs.length) abs.forEach(sc=> html+=`<p>case n°${sc.dataset.case}</p>`);
-      else html += `<p>—</p>`;
+      else html+= `<p>—</p>`;
       document.getElementById('appel-result').innerHTML = html;
     });
 
@@ -324,21 +324,19 @@
           if (!span) return;
           const a = document.createElement('a');
           a.href = '#';
-          a.textContent = `Copie n°${c}`;
+          a.textContent = `Case ${c}`;
           a.className = 'title-link';
           a.addEventListener('click', e => {
             e.stopPropagation();
-            // nouvelle ligne de saisie
             const line = document.createElement('p');
-            line.innerHTML = `Copie n°${c} : page : <input type="number" min="1">`;
+            line.innerHTML = `Case ${c} : page : <input type="number" min="1">`;
             controleResult.append(line);
             const input = line.querySelector('input');
             input.focus();
             input.addEventListener('keydown', evt => {
               if (evt.key === 'Enter') {
                 const val = input.value;
-                line.textContent = `Copie n°${c} : page : ${val}`;
-                // et on marque la sous-case
+                line.textContent = `Case ${c} : page : ${val}`;
                 document.querySelector(`.subcase[data-case="${c}"]`)
                         .classList.add('completed');
               }
@@ -350,10 +348,11 @@
           if (!link) return;
           const span = document.createElement('span');
           span.className = 'title';
-          span.textContent = link.textContent.replace('Copie','Case');
+          span.textContent = `Case ${c}`;
           link.replaceWith(span);
         }
       });
+
       modeBtn.textContent = modeActive ? 'Quitter contrôle' : 'Mode contrôle';
     });
   </script>
