@@ -9,9 +9,7 @@
     .container { display: flex; gap: 20px; align-items: flex-start; }
 
     /* Colonne de gauche */
-    .left-panel {
-      display: flex; flex-direction: column; gap: 10px;
-    }
+    .left-panel { display: flex; flex-direction: column; gap: 10px; }
     .lien-box {
       width: 120px; padding: 10px;
       background-color: #87CEEB; border-radius: 5px;
@@ -23,7 +21,7 @@
       background-color: #ff4d4d; color: #fff;
     }
 
-    /* Grille de cases */
+    /* Grille */
     .cases {
       display: grid;
       grid-template-columns: repeat(3,1fr);
@@ -46,9 +44,7 @@
     .toggle { cursor: pointer; }
     .title { font-weight: bold; }
 
-    .options {
-      margin-top: 8px; display: none; padding-left: 4px;
-    }
+    .options { margin-top: 8px; display: none; padding-left: 4px; }
 
     /* Zone résultats */
     .result {
@@ -62,7 +58,6 @@
     li.detail-select label { display: block; cursor: pointer; }
     li.detail { font-style: italic; padding-left: 20px; margin-bottom: 10px; cursor: default; }
 
-    /* Message de contrôle */
     #controle-result .control-message {
       text-decoration: underline; margin-top: 10px; font-weight: bold;
     }
@@ -80,8 +75,6 @@
   <h1>Plan de classe</h1>
 
   <div class="container">
-
-    <!-- Actions gauche -->
     <div class="left-panel">
       <div class="lien-box" id="lien-box">Lien</div>
       <div class="lien-box" id="appel-box">Appel terminé</div>
@@ -89,15 +82,12 @@
       <div id="appel-result"></div>
     </div>
 
-    <!-- Grille de 30 sous-cases -->
     <div class="cases" id="cases"></div>
 
-    <!-- Zone infractions & contrôle -->
     <div class="result">
       <ul id="result-list"></ul>
       <div id="controle-result"></div>
     </div>
-
   </div>
 
   <div class="footer-container">
@@ -105,7 +95,7 @@
   </div>
 
   <script>
-    // Infractions disponibles
+    // 1) Infractions possibles
     const detailsOptions = {
       "Comportement": [
         "Insulte envers le professeur","Insulte envers un camarade","Insolence",
@@ -124,19 +114,18 @@
       ]
     };
 
-    // Génération de la grille
+    // 2) Génération des sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col < 3; col++) {
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 3; c++) {
         const cont = document.createElement('div');
         cont.className = 'case-container';
-        for (let half = 0; half < 2; half++) {
+        for (let h = 0; h < 2; h++) {
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
-
-          // Header toggle + titre
+          // header
           const header = document.createElement('div');
           header.className = 'header';
           const toggle = document.createElement('input');
@@ -148,8 +137,7 @@
           title.textContent = `Case ${num}`;
           header.append(toggle, title);
           sc.append(header);
-
-          // Options infractions
+          // options infractions
           const opts = document.createElement('div');
           opts.className = 'options';
           Object.keys(detailsOptions).forEach(cat => {
@@ -162,7 +150,6 @@
             opts.append(lbl, document.createElement('br'));
           });
           sc.append(opts);
-
           cont.append(sc);
           num++;
         }
@@ -170,41 +157,32 @@
       }
     }
 
-    // Sélection visuelle
+    // 3) Sélection et infractions
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
         sc.classList.toggle('selected');
       });
     });
-
-    // Toggle options
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('change', function() {
         const sc = this.closest('.subcase');
         const opts = sc.querySelector('.options');
-        if (this.checked) {
-          opts.style.display = 'block';
-        } else {
+        if (this.checked) opts.style.display = 'block';
+        else {
           opts.style.display = 'none';
           opts.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.checked) {
-              removeResult(cb.dataset.case, cb.value);
-              cb.checked = false;
-            }
+            if (cb.checked) { removeResult(cb.dataset.case, cb.value); cb.checked = false; }
           });
         }
       });
     });
-
-    // Gestion des infractions
     document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', function() {
         this.checked ? addResult(this.dataset.case, this.value)
                      : removeResult(this.dataset.case, this.value);
       });
     });
-
     const resultList = document.getElementById('result-list');
     function addResult(c, v) {
       const id = `result-${c}-${v}`;
@@ -219,13 +197,9 @@
       const el = document.getElementById(`result-${c}-${v}`);
       if (!el) return;
       const next = el.nextElementSibling;
-      if (next && (next.classList.contains('detail-select') || next.classList.contains('detail'))) {
-        next.remove();
-      }
+      if (next && (next.classList.contains('detail-select') || next.classList.contains('detail'))) next.remove();
       el.remove();
     }
-
-    // Détails d’infraction au clic
     resultList.addEventListener('click', e => {
       const li = e.target;
       if (li.tagName !== 'LI' || li.classList.contains('detail') || li.classList.contains('detail-select')) return;
@@ -253,10 +227,10 @@
       li.insertAdjacentElement('afterend', sel);
     });
 
-    // Tableau des rendus
+    // 4) Tableau des rendus
     const rendus = [];
 
-    // Mode contrôle
+    // 5) Mode contrôle & saisie pages
     const modeBtn = document.getElementById('mode-controle-box');
     const controleResult = document.getElementById('controle-result');
     let modeActive = false;
@@ -267,7 +241,6 @@
       controleResult.innerHTML = modeActive
         ? '<p class="control-message">A terminé le contrôle</p>'
         : '';
-
       document.querySelectorAll('.subcase').forEach(sc => {
         const c = sc.dataset.case;
         if (modeActive) {
@@ -279,7 +252,6 @@
           a.className = 'title-link';
           a.addEventListener('click', e => {
             e.stopPropagation();
-            // nouvelle ligne de saisie
             const line = document.createElement('p');
             line.innerHTML = `Case ${c} : page : <input type="number" min="1">`;
             controleResult.append(line);
@@ -290,7 +262,6 @@
                 const pages = parseInt(input.value, 10) || 0;
                 line.textContent = `Case ${c} : page : ${pages}`;
                 sc.classList.add('completed');
-                // stocker le rendu
                 rendus.push({ case: c, pages });
               }
             });
@@ -305,58 +276,52 @@
           link.replaceWith(span);
         }
       });
-
       modeBtn.textContent = modeActive ? 'Quitter contrôle' : 'Mode contrôle';
     });
 
-    // Export JSON
+    // 6) Export JSON + noms=[...] list
     document.getElementById('lien-box').addEventListener('click', () => {
-      // a) infractions regroupées par catégorie
+      // a) infractions regroupées
       const infractionsByCat = {
-        "Comportement": [],
-        "Travail non fait": [],
-        "Oubli de matériel": []
+        "Comportement": [], "Travail non fait": [], "Oubli de matériel": []
       };
       document.querySelectorAll('#result-list li:not(.detail-select)').forEach(li => {
         const [_, cat] = li.textContent.split(' : ');
         infractionsByCat[cat].push(li.textContent);
       });
-
       // b) présents / absents
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const presents = subs.filter(sc => sc.classList.contains('selected')).length;
       const absents  = subs.filter(sc => !sc.classList.contains('selected'))
                            .map(sc => `case n°${sc.dataset.case}`);
-
-      // c) copies dans l'ordre des rendus (multiplicité)
+      // c) copies dans l'ordre (multiplicité)
       const copiesOrdr = [];
       rendus.forEach(o => {
         for (let i = 0; i < o.pages; i++) {
           copiesOrdr.push(`Case n°${o.case}`);
         }
       });
-
       // d) horodatage
-      const now = new Intl.DateTimeFormat('fr-FR', {
-        timeZone: 'Europe/Paris', year:'numeric',
-        month:'2-digit', day:'2-digit',
-        hour:'2-digit', minute:'2-digit'
-      }).format(new Date()).replace(',', '');
-      const [dp, tp] = now.split(' ');
+      const now = new Intl.DateTimeFormat('fr-FR',{
+        timeZone:'Europe/Paris',year:'numeric',month:'2-digit',
+        day:'2-digit',hour:'2-digit',minute:'2-digit'
+      }).format(new Date()).replace(',','');
+      const [dp,tp] = now.split(' ');
       const [jj,MM] = dp.split('/'), [hh,mm] = tp.split(':');
       const stamp = `${jj}-${MM}-${hh}h${mm}`;
-
-      // e) construction du payload
-      const payload = {
+      // e) JSON principal
+      const mainJson = JSON.stringify({
         date: `${stamp} (Europe/Paris)`,
         infractions: infractionsByCat,
         presents,
         absents,
         "Copies dans l'ordre des rendus": copiesOrdr
-      };
-
-      // f) export
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      }, null, 2);
+      // f) noms=[...] liste
+      const nomsList = JSON.stringify(copiesOrdr, null, 2);
+      const text = mainJson + ',\n\nnoms=' + nomsList + ';';
+      // g) export
+      const blob = new Blob([text], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       if ('download' in a) {
@@ -370,5 +335,6 @@
       }
     });
   </script>
+
 </body>
 </html>
