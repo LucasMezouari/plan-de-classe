@@ -16,9 +16,7 @@
       user-select: none; transition: background-color .3s, color .3s;
     }
     .lien-box:hover { background-color: #00bfff; }
-    #mode-controle-box.active {
-      background-color: #ff4d4d; color: #fff;
-    }
+    #mode-controle-box.active { background-color: #ff4d4d; color: #fff; }
 
     /* Grille */
     .cases {
@@ -27,7 +25,7 @@
       gap: 20px;
     }
     .case-container {
-      display: flex; background: #87CEEB;
+      display: flex; background-color: #87CEEB;
       border-radius: 5px; overflow: hidden;
     }
     .subcase {
@@ -43,9 +41,7 @@
     .toggle { cursor: pointer; }
     .title { font-weight: bold; }
 
-    .options {
-      margin-top: 8px; display: none; padding-left: 4px;
-    }
+    .options { margin-top: 8px; display: none; padding-left: 4px; }
 
     /* Zone résultats */
     .result {
@@ -56,7 +52,6 @@
     #result-list { list-style: none; padding: 0; margin: 0; }
     #result-list li { margin-bottom: 5px; cursor: pointer; }
     li.detail-select { padding-left: 20px; margin-bottom: 10px; }
-    li.detail-select label { display: block; cursor: pointer; }
 
     /* Message de contrôle */
     #controle-result .control-message {
@@ -76,8 +71,6 @@
   <h1>Plan de classe</h1>
 
   <div class="container">
-
-    <!-- Actions -->
     <div class="left-panel">
       <div class="lien-box" id="lien-box">Lien</div>
       <div class="lien-box" id="appel-box">Appel terminé</div>
@@ -85,15 +78,12 @@
       <div id="appel-result"></div>
     </div>
 
-    <!-- Grille -->
     <div class="cases" id="cases"></div>
 
-    <!-- Infractions & contrôle -->
     <div class="result">
       <ul id="result-list"></ul>
       <div id="controle-result"></div>
     </div>
-
   </div>
 
   <div class="footer-container">
@@ -101,7 +91,7 @@
   </div>
 
   <script>
-    // 1) Infractions disponibles
+    // 1) Infractions possibles
     const detailsOptions = {
       "Comportement": [
         "Insulte envers le professeur","Insulte envers un camarade","Insolence",
@@ -120,18 +110,17 @@
       ]
     };
 
-    // 2) Génération de la grille 3×5×2 = 30 sous-cases
+    // 2) Génération des sous-cases
     const casesContainer = document.getElementById('cases');
     let num = 1;
     for (let r = 0; r < 5; r++) {
       for (let c = 0; c < 3; c++) {
         const cont = document.createElement('div');
         cont.className = 'case-container';
-        for (let half = 0; half < 2; half++) {
+        for (let h = 0; h < 2; h++) {
           const sc = document.createElement('div');
           sc.className = 'subcase';
           sc.dataset.case = num;
-
           // entête
           const header = document.createElement('div');
           header.className = 'header';
@@ -144,7 +133,6 @@
           title.textContent = `Case ${num}`;
           header.append(toggle, title);
           sc.append(header);
-
           // options infractions
           const opts = document.createElement('div');
           opts.className = 'options';
@@ -158,7 +146,6 @@
             opts.append(lbl, document.createElement('br'));
           });
           sc.append(opts);
-
           cont.append(sc);
           num++;
         }
@@ -166,7 +153,7 @@
       }
     }
 
-    // 3) Gestion sélection & infractions
+    // 3) Sélection et infractions
     document.querySelectorAll('.subcase').forEach(sc => {
       sc.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') return;
@@ -206,7 +193,7 @@
       const el = document.getElementById(`result-${c}-${v}`);
       if (!el) return;
       const next = el.nextElementSibling;
-      if (next && (next.classList.contains('detail-select'))) next.remove();
+      if (next && next.classList.contains('detail-select')) next.remove();
       el.remove();
     }
     resultList.addEventListener('click', e => {
@@ -222,7 +209,7 @@
       sel.className = 'detail-select';
       opts.forEach(opt => {
         const lbl = document.createElement('label');
-        const cb  = document.createElement('input');
+        const cb = document.createElement('input');
         cb.type = 'checkbox'; cb.dataset.case = c; cb.value = opt;
         lbl.append(cb, ' ' + opt);
         sel.append(lbl, document.createElement('br'));
@@ -236,7 +223,7 @@
       li.insertAdjacentElement('afterend', sel);
     });
 
-    // Au clic "Appel terminé"
+    // 4) Appel terminé
     document.getElementById('appel-box').addEventListener('click', () => {
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const pres = subs.filter(sc => sc.classList.contains('selected'));
@@ -247,11 +234,8 @@
       document.getElementById('appel-result').innerHTML = html;
     });
 
-    // 4) Tableau des rendus et noms
-    const rendus = [];
-    let noms = [];
-
-    // 5) Mode contrôle & saisie pages
+    // 5) Mode contrôle et rendus
+    const rendus = [], noms = [];
     const modeBtn = document.getElementById('mode-controle-box');
     const controleResult = document.getElementById('controle-result');
     let modeActive = false;
@@ -262,16 +246,14 @@
       controleResult.innerHTML = modeActive
         ? '<p class="control-message">A terminé le contrôle</p>'
         : '';
-      if (!modeActive) noms = []; // réinitialise si on quitte
+      if (!modeActive) { rendus.length = 0; noms.length = 0; }
       document.querySelectorAll('.subcase').forEach(sc => {
         const c = sc.dataset.case;
         if (modeActive) {
           const span = sc.querySelector('span.title');
           if (!span) return;
           const a = document.createElement('a');
-          a.href = '#';
-          a.textContent = `Case ${c}`;
-          a.className = 'title-link';
+          a.href = '#'; a.textContent = `Case ${c}`; a.className = 'title-link';
           a.addEventListener('click', e => {
             e.stopPropagation();
             const line = document.createElement('p');
@@ -281,11 +263,10 @@
             input.focus();
             input.addEventListener('keydown', evt => {
               if (evt.key === 'Enter') {
-                const pages = parseInt(input.value,10) || 0;
+                const pages = parseInt(input.value, 10) || 0;
                 line.textContent = `Case ${c} : page : ${pages}`;
                 sc.classList.add('completed');
                 rendus.push({ case: c, pages });
-                // remplir noms multiplicité
                 for (let i = 0; i < pages; i++) {
                   noms.push(`Case n°${c}`);
                 }
@@ -307,15 +288,14 @@
 
     // 6) Export JSON
     document.getElementById('lien-box').addEventListener('click', () => {
-      // infractions regroupées
+      // infractions par catégorie
       const infractionsByCat = {
         "Comportement": [], "Travail non fait": [], "Oubli de matériel": []
       };
-      document.querySelectorAll('#result-list li:not(.detail-select)')
-        .forEach(li => {
-          const [_, cat] = li.textContent.split(' : ');
-          infractionsByCat[cat].push(li.textContent);
-        });
+      document.querySelectorAll('#result-list li:not(.detail-select)').forEach(li => {
+        const [_, cat] = li.textContent.split(' : ');
+        infractionsByCat[cat].push(li.textContent);
+      });
       // présents / absents
       const subs = Array.from(document.querySelectorAll('.subcase'));
       const presents = subs.filter(sc => sc.classList.contains('selected')).length;
@@ -336,27 +316,23 @@
       const [dp,tp] = now.split(' ');
       const [jj,MM] = dp.split('/'), [hh,mm] = tp.split(':');
       const stamp = `${jj}-${MM}-${hh}h${mm}`;
-      // payload
-      const payload = {
+      // construire JSON complet
+      const output = {
         date: `${stamp} (Europe/Paris)`,
         infractions: infractionsByCat,
         presents,
         absents,
-        "Copies dans l'ordre des rendus": copiesOrdr
+        "Copies dans l'ordre des rendus": copiesOrdr,
+        noms
       };
-      // exporter
-      const jsonText = JSON.stringify(payload, null, 2);
-      const nomsText = JSON.stringify(noms, null, 2);
-      const fileContent = `const payload = ${jsonText};\nconst noms = ${nomsText};`;
-      const blob = new Blob([fileContent], { type: 'application/javascript' });
+      // exporter .json
+      const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       a.href     = url;
-      a.download = `plan_de_classe_${stamp}.js`;
+      a.download = `plan_de_classe_${stamp}.json`;
       document.body.append(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      a.click(); a.remove(); URL.revokeObjectURL(url);
     });
   </script>
 
